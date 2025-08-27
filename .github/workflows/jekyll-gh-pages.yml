@@ -41,10 +41,10 @@ jobs:
         run: |
           set -euo pipefail
           ROOT="docs"
-          DATA="$ROOT/_data"
           TRANS="$ROOT/_transparency"
-          CACHE="$TRANS/cache"
-          BUILDDIR="$TRANS/build"
+          DATA="$TRANS/build"
+          CACHE="$DATA/cache"
+          BUILDDIR="$DATA/out"
           mkdir -p "$DATA" "$CACHE" "$BUILDDIR"
 
           SNAP="$DATA/git.yml"                       # full current snapshot

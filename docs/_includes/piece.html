@@ -1,2 +1,6 @@
 ### [{{ piece.title }}]({{ piece.url }})
 {:.journal-font}
+{% capture body %}{{ piece.content | markdownify | strip_html }}{% endcapture %}
+{% assign word_count = body | number_of_words %}
+{% assign reading_time = word_count | divided_by:200 | ceil %}
+{{ word_count }}w • {{ reading_time }}m
