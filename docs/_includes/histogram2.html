@@ -1,0 +1,29 @@
+{% assign git = site.data.git[include.git] %}
+{% assign first_w = git.summary.first_commit | date: "%V" | plus: 0 | minus: 1 %}
+{% assign last_w  = git.summary.last_commit  | date: "%V" | plus: 0 | minus: 1 %}
+{% assign grad_start_pct = 100.0 | times: first_w | plus: 50.0 | divided_by: 52.0 %}
+{% assign grad_end_pct   = 100.0 | times: last_w  | plus: 50.0 | divided_by: 52.0 %}
+{%- comment -%} {% if grad_end_pct - grad_start_pct < 1 %}
+{% assign grad_end_pct = grad_start_pct | plus: 0.5 %}
+{% endif %} {%- endcomment -%}
+<div class="wk-52"
+     style="--grad-start: {{ grad_start_pct }}%;
+            --grad-end:   {{ grad_end_pct }}%;
+            --grad-color: var(--hot, hsl(12 90% 55%));">
+  {% assign slots = (0..51) %}
+  {% for i in slots %}
+    {% assign is_filled = false %}
+    {% for h in git.histogram_weekly %}
+      {% assign wnum = h.week | slice: 6, 2 | plus: 0 | minus: 1 %}
+      {% if wnum == i %}
+        {% assign is_filled = true %}
+        {% assign d = h.density | times: 4.0 | divided_by: git.scales.clamp_hi_count %}
+      {% endif %}
+    {% endfor %}
+    <div
+      {% if is_filled %}data-label="{{ wnum }}"{% endif %}
+      class="wk {{ is_filled | default: false }}"
+      style="--d: {{ d | default: 0 }}"
+    ></div>
+  {% endfor %}
+</div>
