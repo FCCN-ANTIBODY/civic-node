@@ -1,0 +1,160 @@
+/* Compact commit timeline + weekly histogram
+   Matches the Liquid DOM from earlier:
+   .timeline > li[style="--s: <0..1>"]
+   .gap[data-days]
+   .hist > .bar[style="height: <0..100>%"] */
+
+:root{
+  --c-ink: #111;           /* text */
+  --c-muted: #666;         /* axes, minor marks */
+  --c-dot: #0a7;           /* commit dots */
+  --c-gap: #e66;           /* gap clip */
+  --c-bar: #08f;           /* histogram bars */
+  --dot-min: 6px;          /* min dot radius */
+  --dot-max: 18px;         /* max dot radius */
+  --track-h: 36px;         /* timeline lane height */
+  --bar-w: 6px;            /* histogram column width */
+  --bar-gap: 3px;          /* histogram column gap */
+  --focus: 2px solid #333; /* keyboard focus ring */
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --c-ink:#eaeaea; --c-muted:#9aa0a6;
+    --c-dot:#40dba8; --c-gap:#ff8a80; --c-bar:#7bb7ff;
+  }
+}
+@media (prefers-reduced-motion: reduce){
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+/* ===== Timeline (per-commit dots) ===== */
+.timeline{
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max(8px, 1fr); /* compress many commits gracefully */
+  align-items: center;
+  gap: 2px;
+  min-height: var(--track-h);
+  border-bottom: 1px solid color-mix(in oklab, var(--c-muted) 35%, transparent);
+}
+
+/* baseline track */
+.timeline::before{
+  content:"";
+  position:absolute; left:0; right:0; top: calc(50% - 1px);
+  height:2px;
+  background: linear-gradient(90deg,
+     color-mix(in oklab, var(--c-muted) 35%, transparent),
+     color-mix(in oklab, var(--c-muted) 55%, transparent) 50%,
+     color-mix(in oklab, var(--c-muted) 35%, transparent));
+  pointer-events:none;
+}
+
+/* dot: size driven by --s (0..1), clamped with CSS vars */
+.timeline > li{
+  --r: calc( clamp(0.08, var(--s, .2), 1) * (var(--dot-max) - var(--dot-min)) + var(--dot-min) );
+  width: var(--r);
+  height: var(--r);
+  border-radius: 50%;
+  margin: 0 auto;
+  background:
+    radial-gradient(circle at 30% 30%, #fff3 0 30%, transparent 35% 100%),
+    var(--c-dot);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--c-dot) 40%, transparent) inset,
+    0 0 0 2px #00000010;
+  transform: translateY(0); /* hovering lifts slightly */
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.timeline > li:hover,
+.timeline > li:focus{
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--c-dot) 50%, transparent) inset,
+    0 4px 12px #0003;
+}
+.timeline > li:focus-visible{ outline: var(--focus); outline-offset: 2px; }
+
+/* ===== Gaps (clip marks over the timeline) ===== */
+.gap{
+  position: relative;
+  height: 10px;
+  margin: 4px 0;
+}
+.gap::before{
+  /* red diagonal clip bar sized by data-days (log-ish visual weight) */
+  --days: attr(data-days number, 1);
+  --w: clamp(14px, calc(4px + (ln(var(--days)) + 1) * 8px), 80px);
+  content:"";
+  display:block;
+  width: var(--w);
+  height: 8px;
+  background:
+    repeating-linear-gradient(135deg, color-mix(in oklab, var(--c-gap) 85%, transparent) 0 6px, transparent 6px 12px),
+    color-mix(in oklab, var(--c-gap) 30%, transparent);
+  border: 1px solid color-mix(in oklab, var(--c-gap) 70%, transparent);
+  border-radius: 4px;
+}
+
+/* ===== Histogram (weekly, recent-weighted) ===== */
+.hist{
+  --h: 72px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--bar-w);
+  gap: var(--bar-gap);
+  align-items: end;
+  height: var(--h);
+  margin: 10px 0 2px;
+  border-bottom: 1px solid color-mix(in oklab, var(--c-muted) 35%, transparent);
+  position: relative;
+}
+
+/* faint reference bands */
+.hist::before,
+.hist::after{
+  content:"";
+  position:absolute; left:0; right:0;
+  height:1px; background: color-mix(in oklab, var(--c-muted) 25%, transparent);
+}
+.hist::before{ bottom: calc(var(--h) * .5); }
+.hist::after { bottom: calc(var(--h) * .25); }
+
+.hist .bar{
+  display:block;
+  width: 100%;
+  min-height: 1px;
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--c-bar) 95%, white) 0%, var(--c-bar) 90%),
+    var(--c-bar);
+  border-radius: 2px 2px 0 0;
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  opacity: .9;
+}
+.hist .bar:hover,
+.hist .bar:focus{
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px #0003;
+  opacity: 1;
+}
+.hist .bar:focus-visible{ outline: var(--focus); outline-offset: 2px; }
+
+/* optional labels row */
+.hist-labels{
+  display:flex; justify-content: space-between;
+  font: 11px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: var(--c-muted);
+  margin-top: 4px;
+}
+
+/* Utility: compact caption text */
+.figcap{
+  margin: 6px 0 0; font: 12px/1.35 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: var(--c-muted);
+}

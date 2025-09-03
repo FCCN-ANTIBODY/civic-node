@@ -15,6 +15,8 @@ published: true
 index: true
 ---
 
+{% include histogram.html slug=page.dir %}
+
 {% include toc/aside.html %}
 
 

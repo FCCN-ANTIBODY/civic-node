@@ -1,0 +1,21 @@
+{% assign key = include.slug | remove_first: '/journal/' | split: '/' | first %}
+{% assign stats = site.data.git.journal[key] %}
+{% if stats %}
+  {% assign commits = stats.commits %}
+  <ol class="timeline">
+    {% for c in commits %}
+      <li style="--s: {{ c.dot }};" title="{{ c.ts }} • ±{{ c.delta }} lines">{{ "" }}</li>
+    {% endfor %}
+  </ol>
+
+  {% for g in stats.gaps %}
+    <div class="gap" data-days="{{ g.days }}" title="Gap: {{ g.days }} days"></div>
+  {% endfor %}
+
+  {% assign bins = stats.histogram_weekly %}
+  <div class="hist">
+    {% for b in bins %}
+      <span class="bar" style="height: {{ b.density | times: 10 | round }}%" title="{{ b.week }} • {{ b.commits }} commits"></span>
+    {% endfor %}
+  </div>
+{% endif %}

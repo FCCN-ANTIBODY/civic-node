@@ -208,7 +208,7 @@ body {
   min-width: 400px;
   max-width: 700px;
   /* padding: 8px 20px; */
-  margin: 130px auto 20px;
+  margin: 0 auto;
 }
 .content > * {
   color: var(--fg2);
