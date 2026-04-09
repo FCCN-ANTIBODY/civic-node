@@ -8,11 +8,10 @@
     width="{% if include.width %}{{ include.width }}px{% else %}100%{% endif %}"
     height="{{ include.height | default: 400 }}px"
     frameBorder="0"
-    {% if include.sandbox %}
-    sandbox="{{ include.sandbox | default: 'allow-scripts allow-same-origin' }}"
-    {% endif %}
-    {% if include.style %}
-    style="{{ include.style }}"
-    {% endif %}></iframe>
+    sandbox="{% if include.sandbox %}{{ include.sandbox }}{% else %}allow-scripts allow-same-origin{% endif -%}"
+    {% if include.allowfullscreen %}allowfullscreen{% endif %}
+    {% if include.referrerpolicy %}referrerpolicy="{{ include.referrerpolicy }}"{% endif %}
+    {% if include.allow %}allow="{{ include.allow }}"{% endif %}
+    {% if include.style %}style="{{ include.style }}"{% endif %}></iframe>
   <figcaption>{{ include.caption }}</figcaption>
 </aside>
