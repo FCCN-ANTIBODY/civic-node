@@ -782,10 +782,15 @@ case.
   - **Sketch (unbuilt):** the offline-transfer envelope (anecdote `composer/transfer.mjs`) carrying
     a registration entry + a signed receipt back; the registry write happens wherever the registry
     lives, later, verifiably.
-- **`age-keygen` without a VPS.** The one bootstrap secret that cannot be generated in CI *or* on a
-  phone today; iPad operators fall back to free cloud terminals and key exfiltration.
+- **`age-keygen` without a VPS.** The one bootstrap secret that could not be generated in CI *or* on
+  a phone; iPad operators fell back to free cloud terminals and key exfiltration.
   - **Blocks:** phone-native pile bootstrap; the premise above, applied to the pile's own identity.
-  - **Sketch (unbuilt):** the `seal-enough` boundary (anecdote `docs/git-enough.md`) — WebCrypto-native
-    at rest, `age` spoken only at the Tell-interop boundary — extended to the pile identity, so the
-    recipient keypair mints in the browser and `age` remains an export format, not a keygen
-    environment. Couples to **O** (supply/verification of the instrument that does the minting).
+  - **Built (rework slice 2, anecdote #58 companion PR):** `anecdote …/composer/age-mint.mjs` — the
+    recipient keypair mints in the browser on **platform WebCrypto X25519** (Baseline since 2025; no
+    vendored curve — only bech32, a wire format, is implemented), the identity stays on the device
+    (gesture-gated export provenance via `attestRecipient`), and `age` remains an export format:
+    verified **byte-interoperable** with the real tool (`age-keygen -y` agrees; `age` encrypt →
+    identity decrypt round-trips). data-pile `keys/README.md` → "Minting without a VPS" is the
+    operator path; `setup.yml` stays as the Computer-posture fallback.
+  - **Open remainder:** the wider `seal-enough` boundary (anecdote `docs/git-enough.md`) — sealing,
+    not keygen — and **O** (supply/verification of the instrument that does the minting).
