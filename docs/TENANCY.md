@@ -162,3 +162,10 @@ poll-lifecycle issues carry [`PIPELINE.md`](PIPELINE.md):
    enforceable**: the tables plus the CI checks that hold them.
 6. [#62](https://github.com/FCCN-ANTIBODY/civic-node/issues/62) — **spec-or-attestation** for
    third-party pile-managers, seeded minimally in slice 3b.
+
+## Beyond the road
+
+What follows the six slices is **Milestone: Dark Mode** — the offline origin fleshed out as its
+own category, QR exchange proven in place of the PR mechanics this note demoted, and delivery
+carried from Atlases and their friends. It is pinned at
+[`anecdote …/docs/dark-mode.md`](https://github.com/FCCN-ANTIBODY/anecdote.channel/blob/main/docs/dark-mode.md).
