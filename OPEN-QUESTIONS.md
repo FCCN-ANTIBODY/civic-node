@@ -438,6 +438,13 @@ they're not mistaken for "wired."
   must supply its real `age` recipient for encrypted delivery.
 - **`vars.ATLAS_MATCH_CMD`** is unset by default, so `match.yml` keeps `matches.json` empty (the honest
   default accepts nothing). Set it to a judge — an agent or a human seam — to accept matches (**A**).
+- **The submit-gateway is undeployed** — rework slice 1 shipped the worker
+  (`tell …/workers/submit-gateway/`), but until an operator runs `wrangler deploy` +
+  `wrangler secret put TELL_POST_TOKEN` on the orange-clouded Tell domain (and mints with
+  `bin/qr --submit-url`), QRs still use the prefilled-link / QR-embed paths.
+- **`PILE_NEW_TOKEN` is unset** — rework slice 3 shipped rented provisioning
+  (`data-pile provision.yml`), but no provisioner can run until an operator installs a
+  repo-create-capable credential as that secret wherever the canonical provisioner should live.
 
 ---
 
@@ -787,8 +794,16 @@ case.
 - **Spec-or-attestation for third-party pile-managers.** A market that manages piles for people is
   still solving multi-tenant, and it must not be *possible* to solve it wrong.
   - **Blocks:** delegating pile management without laundering custody.
-  - **Sketch (unbuilt):** managers use this spec, or their homebrew is **attested in the metadata**
-    whenever anything talks to it — the same claims-about-subjects grammar as **N**.
+  - **Built (rework slice 6, data-pile #62 companion PR — the grammar and its travel):**
+    `pile.yml` carries `provisioner:` (who) + `provisioner_spec:` (what they speak —
+    `data-pile/pile-new/v1`, or `homebrew:<id>`; data-pile `CONTRACT.md` → "The provisioner
+    attestation"). Our tooling always stamps both; the attestation **travels** — the handshake
+    entry and the offline exchange (`register-exchange.mjs`) carry it into the Tell registry, so
+    anything consulting `_data/piles.yml` sees which piles are managed and by what. `bin/ingest`
+    notices (never fails) a `provisioner` without a spec.
+  - **Open remainder:** the richer grammar — manager identity as a *claim about a subject* that
+    others can endorse or contest (**N**), and any market-side verification beyond the notice —
+    waits on real rented use, as planned.
 - **Offline representation of PR-consent.** The propose/merge consent gesture, represented between
   offline origins as an **exchange of QR scans — id and receipt data** (open and merge without
   GitHub in the loop). Couples to **B**: the registration-idiom family inventoried there is the
