@@ -761,13 +761,18 @@ case.
     `data-pile` / `tell-poll`) extended to a stated reuse table per posture.
 - **Rented data-pile provisioning — the gate.** Provisioning *piles* in a rented interaction model
   is what makes any GitHub-side bootstrap/maintenance work of effect; the Tell doesn't need to do
-  it, the **workspace running it** does. Beneath it, even **single-tenant automation for adding
-  piles** does not exist (today: template + `setup.yml` + handshake + hand-pinned signer, each with
-  a manual PAT step).
+  it, the **workspace running it** does.
   - **Blocks:** everything hosted; the market below; the Computer track earning its keep.
-  - **Sketch (unbuilt):** the workspace provisions a pile on an operator's behalf at registration
-    time — the same capture-install-validate bootstraps, run by the host, with the pile's private
-    identity still minted on (or handed only to) the owner's side.
+  - **Built (rework slice 3, data-pile #59 companion PR):** `data-pile bin/pile-new {plan|fill|create}`
+    — the one-gesture stand-up (template-generate, fill, handshake entry), two postures
+    (`--recipient`, device-minted via slice 2's `age-mint.mjs`, no identity host-side; `--keygen`,
+    Computer) — and `provision.yml`, the rented flow: recipient-only inputs, `PILE_NEW_TOKEN` as the
+    provisioner-held create credential, and the **custody rule enforced in code** (`--provisioner`
+    with `--keygen` hard-fails — a provisioner never touches an identity). The pile is stamped
+    `provisioner:` (the attestation below, minimal form).
+  - **Open remainder:** the workspace-side wiring (a civic-node running the provision flow for the
+    piles it fronts, at registration time); merge-consent coupling (**B**); the richer rented
+    lifecycle (renewal, transfer — couples **G**).
 - **Spec-or-attestation for third-party pile-managers.** A market that manages piles for people is
   still solving multi-tenant, and it must not be *possible* to solve it wrong.
   - **Blocks:** delegating pile management without laundering custody.
