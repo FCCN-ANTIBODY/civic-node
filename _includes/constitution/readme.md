@@ -1,4 +1,4 @@
-This is [an open-source publication](https://github.com/tiliv/antibody) of
+This is [an open-source publication](https://github.com/FCCN-ANTIBODY/civic-node) of
 local-made journalism.
 
 News media will waste our time; Their nutrition is secured through our

@@ -4,12 +4,12 @@ name: "Federate · answer bills"
 # (the request/<scope>/<id> branches) and return the accepted matches as one bulk signed PR back.
 # Answering a bill is the existing matchmaker with ATLAS_NEEDS=<the bill> + ATLAS_MATCH_CMD=<judge>
 # over this node's own piles/tells — the same `vars.ATLAS_MATCH_CMD` match.yml already uses. The work
-# is atlas's reusable `answer-bills` action, mounted over the atlas/ submodule. See
-# atlas/CONTRACT.md -> "Requested search from a peer".
+# is atlas's reusable `answer-bills` action, mounted over the .atlas-engine/ submodule. See
+# https://github.com/FCCN-ANTIBODY/atlas.anecdote.channel/blob/main/CONTRACT.md -> "Requested search from a peer".
 #
 # SCAFFOLD: the action runs the matcher+judge seam but does not yet read the request/** branches or
 # deliver the answer PR back (deferred — see "D. Cross-Atlas peering" in OPEN-QUESTIONS.md). Requires
-# the atlas/ submodule pin to carry the answer-bills action. The honest default (no ATLAS_MATCH_CMD)
+# the .atlas-engine/ submodule pin to carry the answer-bills action. The honest default (no ATLAS_MATCH_CMD)
 # accepts nothing.
 #
 # Cadence is THIS workspace's to set. Dispatch-only by default; uncomment + edit the cron when the
@@ -31,7 +31,7 @@ jobs:
   answer:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (with the atlas/ submodule for the action code)
+      - name: Checkout (with the .atlas-engine/ submodule for the action code)
         uses: actions/checkout@v4
         with:
           submodules: recursive

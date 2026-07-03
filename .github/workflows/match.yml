@@ -7,7 +7,7 @@ name: "Federate · match"
 # which Jekyll serves at /matches.json. The asker PULLS it; this node never writes into
 # an asker.
 #
-# The work itself is atlas's reusable `match` composite action, carried in the atlas/
+# The work itself is atlas's reusable `match` composite action, carried in the .atlas-engine/
 # submodule (advanced by modules-upgrade.yml). This workflow just points it at this
 # node's data — the same `./.atlas-engine/.github/actions/<name>` convention modules-upgrade.yml
 # already uses for advance-engine. Set the repo variable ATLAS_MATCH_CMD to a judge
@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive # the match action lives in the atlas/ submodule
+          submodules: recursive # the match action lives in the .atlas-engine/ submodule
       - uses: ./.atlas-engine/.github/actions/match
         with:
           needs: _data/needs.yml
