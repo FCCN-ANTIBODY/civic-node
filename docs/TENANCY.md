@@ -115,7 +115,10 @@ Computer pipeline's remaining investment points at hosting, not at more per-oper
 
 If pile management goes out to a market of hosts who want to run it, they are still solving
 multi-tenant — and it must not be **possible** for them to solve it wrong: a third-party pile-manager
-uses this spec, or gets its homebrew **attested in the metadata** when anything talks to it. ┄ §P.
+uses this spec, or gets its homebrew **attested in the metadata** when anything talks to it. The
+grammar is **built** (rework slice 6: `provisioner:` + `provisioner_spec:`, stamped by our tooling,
+travelling with the handshake entry and the offline exchange — data-pile `CONTRACT.md` → "The
+provisioner attestation"); the richer claims-about-subjects form waits on real rented use. ┄ §P.
 
 ## What this demotes, and what stays
 
