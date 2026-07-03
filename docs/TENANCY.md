@@ -101,12 +101,12 @@ enshrine first. The two tracks are the same chair.
 
 For any GitHub version of the bootstrap/maintenance work to be **of any effect**, it must be able to
 provision *data-piles* in a rented interaction model. The Tell doesn't specifically need to do it —
-the **workspace running it** does. Today neither exists: piles are strictly self-service
-([`data-pile`](https://github.com/FCCN-ANTIBODY/data-pile) — template, `setup.yml`, handshake,
-hand-pinned signer), there is no single-tenant automation for *adding* piles either, and the manual
-GitHub steps make the whole track unattractive. This is the gate — **┄ §P** — and it is why the
-Computer pipeline's remaining investment should point at hosting rather than at more per-operator
-chores.
+the **workspace running it** does. The gate is now **open at the data-pile layer** (rework slice 3):
+`data-pile bin/pile-new` is the one-gesture stand-up, and its `provision.yml` runs the same gesture
+*for* someone — who hands over only a device-minted recipient (slice 2), because the custody rule is
+enforced in code: **a provisioner never touches an identity.** What remains — the workspace-side
+wiring, consent coupling, the richer rented lifecycle — is **┄ §P**; the direction stands: the
+Computer pipeline's remaining investment points at hosting, not at more per-operator chores.
 
 If pile management goes out to a market of hosts who want to run it, they are still solving
 multi-tenant — and it must not be **possible** for them to solve it wrong: a third-party pile-manager
