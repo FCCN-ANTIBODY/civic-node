@@ -744,8 +744,14 @@ case.
   reaches into a pile).
   - **Blocks:** the canonical site as an honest multi-tenant host; plural operators adding someone
     else to a Tell they made; anything token-per-poll shaped (non-viable on the first go without it).
-  - **Sketch (unbuilt):** the custody boundary stated per-secret (whose is it, who may mint it, who
-    may hold it), enforced by the same code-vs-data split the composite actions already make.
+  - **Built (rework slice 5, #61 — the declaration and its enforcement):** every secret-bearing repo
+    carries **`keys/custody.yml`** (per-secret: kind, minter, holder per posture) and
+    **`bin/check-custody`** fails CI on any workflow reading an undeclared secret; this workspace's
+    manifest is checked by the tell engine's checker through its code-vs-data seams
+    (`antibody.yml`). The bootstraps' never-echo promise is now *tested*, not asserted (tell test
+    [15]: gh stubbed, the exact installed bytes proven absent from the console).
+  - **Open remainder:** the *hosted* half — custody of tenant secrets a host holds on behalf of
+    others (per-tenant namespacing in a worker/KV store) — lands with the host-minted item below.
 - **Host-minted credentials.** Credentials the host generates that **obviate host-level secrets for
   storing client secrets** — mint on demand instead of warehousing. Subsumes the `TELL_POST_TOKEN`
   graduation (**F**): the scan-time worker-minted short-lived token, under per-node custody (a
@@ -757,8 +763,13 @@ case.
   vouching), the rule that makes reuse safe rather than habitual.
   - **Blocks:** small operators who will reuse keys regardless; auditability of what a signature
     *means* when one key serves several namespaces.
-  - **Sketch (unbuilt):** namespace discipline (`ssh-keygen -Y` namespaces already separate
-    `data-pile` / `tell-poll`) extended to a stated reuse table per posture.
+  - **Built (rework slice 5, #61 — the declaration and its guard):** each repo's
+    **`keys/custody.yml` `namespaces:`** section states which key serves which namespace
+    (`TELL_SIGNER_KEY` → `data-pile` + `tell-poll`; data-pile verifies only; atlas declares none —
+    explicitly), and `bin/check-custody` fails CI when a **new namespace appears undeclared**.
+  - **Open remainder:** per-posture reuse rules beyond namespaces (the Mobile device identity
+    serving QR provenance *and* gesture-gated attestations is one key by design — state when that
+    is the rule and when it must split).
 - **Rented data-pile provisioning — the gate.** Provisioning *piles* in a rented interaction model
   is what makes any GitHub-side bootstrap/maintenance work of effect; the Tell doesn't need to do
   it, the **workspace running it** does.
