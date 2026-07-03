@@ -5,7 +5,7 @@ name: "Federate · register peer"
 # `atlas/<scope>/<id>` branch whose commit is signed with this node's Atlas peer-signer key.
 # When the peer merges, each side lists the other and the reciprocal-discovery deal is in force.
 #
-# The work is atlas's reusable `register-peer` composite action, mounted over the atlas/
+# The work is atlas's reusable `register-peer` composite action, mounted over the .atlas-engine/
 # submodule (the same ./.atlas-engine/.github/actions/<name> convention match.yml uses). The action's
 # code ships with it; the IDENTITY is read from this node's OWN atlas.yml + keys/atlas.fpr (this
 # node self-hosts the Atlas role, so its identity is the workspace root — not the submodule).
@@ -29,7 +29,7 @@ jobs:
   register:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (with the atlas/ submodule for the action code)
+      - name: Checkout (with the .atlas-engine/ submodule for the action code)
         uses: actions/checkout@v4
         with:
           submodules: recursive

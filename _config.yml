@@ -39,8 +39,8 @@ license_url: https://firstdonoharm.dev/version/3/0/bds-media-sup-sv.html
 civic_node: Fort Collins
 civic_abbr: FCCN
 civic_tag: For immediate replication
-repo_url: https://github.com/tiliv/antibody
-repo_name: tiliv/antibody
+repo_url: https://github.com/FCCN-ANTIBODY/civic-node
+repo_name: FCCN-ANTIBODY/civic-node
 og_description: >-
   We assert that there are degrees of information quality, that we must not
   struggle to distinguish them and that they are these: 1) First-party claims

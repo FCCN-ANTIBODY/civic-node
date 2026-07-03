@@ -190,16 +190,22 @@ needs the Tell's delivery signer.
 
 ---
 
-## Step 5 — Scan the QR → the answer-intake page  · ─ · ┄ §F (expiry / pickup)
+## Step 5 — Scan the QR → the answer runtime  · ─ · ┄ §F (expiry / pickup)
 
-**What.** Anyone scans the QR and lands back on `tell.anecdote.channel` ready to answer. Nothing phones
-home: the page just builds a prefilled GitHub action from the QR's own params.
+**What.** Anyone scans the QR and lands on **the answer runtime, `anecdote.channel/poll.html`** — the
+canonical Tell website is anecdote shaped by a QR. Nothing phones home: the page renders the question
+and builds the reply from the QR's own params (`pile`, `poll`, `round`, `tok`, `type`, `q`, `opts`,
+`guidance`, `mode`, `canonical`, and `sig`/`kid` if signed), always offering a custom answer.
 
-**Artifact.**
-[`tell …/index.md`](https://github.com/FCCN-ANTIBODY/tell.anecdote.channel/blob/main/index.md) reads
-`pile`, `poll`, `round`, `tok`, `type`, `q`, `opts`, `guidance`, `mode`, `canonical`, (`sig`, `kid` if
-signed) and constructs a prefilled **`issues/new`** link (or a comment link on the canonical Issue when
-`mode=comment`).
+**Artifacts.**
+[`anecdote …/poll.html`](https://github.com/FCCN-ANTIBODY/anecdote.channel/blob/main/poll.html) +
+[`composer/poll-answer.mjs`](https://github.com/FCCN-ANTIBODY/anecdote.channel/blob/main/composer/poll-answer.mjs)
+(the runtime);
+[`tell …/index.md`](https://github.com/FCCN-ANTIBODY/tell.anecdote.channel/blob/main/index.md) is now a
+thin **verbatim forward** to that runtime for QRs minted against the Tell's domain — verbatim because a
+signed poll's `sig` covers a canonical preimage of the payload, so the bytes must not re-encode in
+transit. The move is recorded in
+[`tell …/docs/answer-runtime.md`](https://github.com/FCCN-ANTIBODY/tell.anecdote.channel/blob/main/docs/answer-runtime.md).
 
 **┄ Gap — QR expiry / pre-public pickup (§F).** The HMAC token has no intrinsic expiry (it relies on a
 `round` bump), and Phase-0 intake sits in *public* Issues for an exposure window. Narrowing that window
@@ -211,7 +217,15 @@ signed) and constructs a prefilled **`issues/new`** link (or a comment link on t
 
 **What.** The respondent posts. The Issue (or comment) body carries a fenced `tell` block
 (`tell.submission/v1`) with `pile`, `poll`, `round`, `type`, `tok`, `answer`, `ts`, and optional
-`nonce` / `run` / `anecdote` / `qr`.
+`nonce` / `run` / `anecdote` / `qr`. The reply travels one of **two ways**: the respondent's own
+account posts it (the runtime builds a prefilled `issues/new` / comment link — the click is the user's,
+and their account is the spam/cost shield), or the runtime **POSTs directly** using the QR-carried
+`TELL_POST_TOKEN` — a repo-scoped, issues-only credential that is *public by design*, for kiosk and
+no-account respondents
+([`tell …/docs/submission-credential.md`](https://github.com/FCCN-ANTIBODY/tell.anecdote.channel/blob/main/docs/submission-credential.md)).
+These are the **Computer** and **Mobile** faces of the same wire — the operating postures are pinned in
+[`tell …/keys/README.md`](https://github.com/FCCN-ANTIBODY/tell.anecdote.channel/blob/main/keys/README.md),
+and where the split is going is [`TENANCY.md`](TENANCY.md).
 
 **Artifact.** Plain GitHub Issues/comments — the public mailbox. The optional `anecdote` payload is the
 egress side of [`anecdote.channel`](https://github.com/FCCN-ANTIBODY/anecdote.channel)
