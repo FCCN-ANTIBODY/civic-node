@@ -34,6 +34,18 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
           submodules: recursive
+      - name: Custody boundary — workflows read only declared secrets
+        # keys/custody.yml is the workspace's declared custody (rework slice 5, #61); the tell
+        # engine carries the checker and its code-vs-data seams point it at THIS tree. Same
+        # best-effort probe idiom as the widget below: the build must not fail while the
+        # .tell-engine pin predates the checker.
+        shell: bash
+        run: |
+          if [ -x .tell-engine/bin/check-custody ]; then
+            CUSTODY_YML=keys/custody.yml WORKFLOWS_DIR=.github BINS_DIR=bin .tell-engine/bin/check-custody
+          else
+            echo "::notice::.tell-engine pin predates bin/check-custody — custody check skipped this build"
+          fi
       - name: Detect the Tell widget action in the pinned submodule
         # The node must build even when the .tell-engine pin is behind the action's introduction.
         # Probe for it so the render below is best-effort, not a hard cross-repo dependency.

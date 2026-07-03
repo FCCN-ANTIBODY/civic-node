@@ -1,0 +1,34 @@
+# DECLARED, BOUNDED CUSTODY of the workspace (rework slice 5, #61; the posture is
+# docs/TENANCY.md → "The collapse"). Every secret a workflow in this workspace may read is
+# declared here. Enforced by the tell engine's checker via its code-vs-data seams
+# (.tell-engine/bin/check-custody with CUSTODY_YML/WORKFLOWS_DIR pointed at THIS tree — the
+# same batteries-included pattern every engine action uses); antibody.yml runs it on build
+# once the engine pin carries it. The per-engine custody lives with each engine
+# (tell keys/custody.yml, atlas keys/custody.yml, data-pile keys/custody.yml); this file is
+# only what the WORKSPACE itself accretes.
+
+secrets:
+  - name: TELL_SIGNER_KEY
+    kind: this node's Tell delivery-signer (register-self reads it to sign the self-listing)
+    minter: bin/tell-bootstrap (via the tell engine)
+    holder: "repo secret; the engine's custody.yml is the full per-posture story"
+  - name: ATLAS_SIGNER_KEY
+    kind: this node's Atlas peer-signer (bill/register-peer sign with it)
+    minter: bin/atlas-bootstrap (via the atlas engine)
+    holder: "repo secret; public fingerprint committed as keys/atlas.fpr"
+  - name: ATLAS_PR_TOKEN
+    kind: consent transport (write on the peer Atlas being joined — the peer's grant; self-consent when self-listed)
+    minter: the peer Atlas operator (or self)
+    holder: "repo secret, read by register-peer.yml / bill.yml / answer-bills.yml"
+  - name: CLOUDFLARE_API_TOKEN
+    kind: serving-substrate credential (cache purge; worker deploys are manual `wrangler`)
+    minter: the operator, in the Cloudflare dashboard
+    holder: "repo secret, read only by antibody.yml's purge-cache job"
+  - name: CLOUDFLARE_ZONE_ID
+    kind: zone identifier (not sensitive in itself; declared because purge-cache reads it as a secret fallback)
+    minter: the Cloudflare dashboard
+    holder: "repo var, or repo secret as fallback"
+
+namespaces: []
+# The workspace signs nothing itself — every signature is an engine's, under the engine's
+# declared namespaces.
