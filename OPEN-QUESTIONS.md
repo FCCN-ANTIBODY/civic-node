@@ -784,9 +784,15 @@ case.
   surface to cover, member by member.
   - **Blocks:** consent between phone operators; Tells provisioned like group chats
     (`anecdote …/docs/system-viewer.md` has the many-Tells-one-origin model).
-  - **Sketch (unbuilt):** the offline-transfer envelope (anecdote `composer/transfer.mjs`) carrying
-    a registration entry + a signed receipt back; the registry write happens wherever the registry
-    lives, later, verifiably.
+  - **Built (rework slice 4, anecdote #60 companion PR):** `anecdote …/composer/register-exchange.mjs`
+    — `openRegistration` packs a §B-family entry (all four registries, strict shapes) into the
+    transfer envelope; `mergeRegistration` signs a **consent receipt** binding that exact envelope,
+    proposer, and verdict (`merged`|`declined`); `verifyConsent` re-checks the pair from anyone, zero
+    secrets; the pair **replays onto the mirror** as the ordinary idiom (`registryYaml`/`branchFor`
+    emit the family's own entry + branch forms). Travels over the existing carrier (chunk/reassemble).
+  - **Open remainder:** the chamber UI (scan → confirm → counter-scan); wiring a receipt-replay into
+    the registries' PR flows (couples **B**'s validation — a replayed pair is exactly what the
+    branch/signature check should recognize); gesture-gating the merge as a standing policy.
 - **`age-keygen` without a VPS.** The one bootstrap secret that could not be generated in CI *or* on
   a phone; iPad operators fell back to free cloud terminals and key exfiltration.
   - **Blocks:** phone-native pile bootstrap; the premise above, applied to the pile's own identity.

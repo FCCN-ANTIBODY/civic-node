@@ -84,8 +84,13 @@ The GitHub PR pipeline for consent — propose, then a human merges — is repre
 offline-origin model by **exchanging QR scans: open and merge, entirely between offline origins that
 just exchanged id and receipt data.** This re-represents the registration idiom, it does not replace
 it; the idiom family (canonical `bin/register` and its descendants) is inventoried at
-[`OPEN-QUESTIONS.md`](../OPEN-QUESTIONS.md) **§B**, and the offline representation is what **§P**
-must cover for each member of that family.
+[`OPEN-QUESTIONS.md`](../OPEN-QUESTIONS.md) **§B**. The exchange itself is **built** (rework
+slice 4): anecdote's
+[`composer/register-exchange.mjs`](https://github.com/FCCN-ANTIBODY/anecdote.channel/blob/main/composer/register-exchange.mjs)
+carries all four family members as signed envelope + consent receipt, re-verifiable by anyone with
+zero secrets, and a verified pair **replays onto the GitHub mirror as the ordinary PR idiom** — the
+exchange moves where consent happens, never what the registries hold. The chamber UI and the
+registry-side replay wiring remain **┄ §P**.
 
 ## Civic-node: the unit of group association
 
