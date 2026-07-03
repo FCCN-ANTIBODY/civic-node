@@ -134,3 +134,26 @@ Everything this note points at that does not exist yet lives in
 credentials; key-reuse rules; rented pile provisioning (and the missing single-tenant automation
 beneath it); spec-or-attestation for third-party pile-managers; the offline representation of
 PR-consent; and `age-keygen` without a VPS.
+
+## The road
+
+The rework runs as **six slices**, each shipping alone, each killing a named pain on day one and
+laying the beachhead for the next. One issue per slice carries its checklist, the way the
+poll-lifecycle issues carry [`PIPELINE.md`](PIPELINE.md):
+
+1. [#57](https://github.com/FCCN-ANTIBODY/civic-node/issues/57) — **shield the submission
+   credential** in the Tell's own worker (pure relay; the credential still only knocks, `tok`
+   still admits at ingest). Beachhead: the judge summoning point (§A).
+2. [#58](https://github.com/FCCN-ANTIBODY/civic-node/issues/58) — **mint the age identity in the
+   browser** (X25519 + bech32; the AEAD gap stays at the seal-enough export boundary). Beachhead:
+   phone-native pile bootstrap.
+3. [#59](https://github.com/FCCN-ANTIBODY/civic-node/issues/59) — **pile provisioning**:
+   single-tenant automation (`bin/pile-new`), then rented — the gate, opened, with the host
+   provably never holding `PILE_AGE_IDENTITY`.
+4. [#60](https://github.com/FCCN-ANTIBODY/civic-node/issues/60) — **offline PR-consent**: the
+   transfer envelope carries the registration entry, a met-record-shaped receipt comes back;
+   open-and-merge as two signed halves (§B, member by member).
+5. [#61](https://github.com/FCCN-ANTIBODY/civic-node/issues/61) — **custody and key-reuse made
+   enforceable**: the tables plus the CI checks that hold them.
+6. [#62](https://github.com/FCCN-ANTIBODY/civic-node/issues/62) — **spec-or-attestation** for
+   third-party pile-managers, seeded minimally in slice 3b.
