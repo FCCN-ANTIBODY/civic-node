@@ -139,6 +139,22 @@ Two things are still open:
     `register` widens what one signed PR can carry from "list *me*" (identity) to "commit *this bucket,
     backed by this logic*" (content). The generalization and the judge are one decision, not two.
 
+**The family, inventoried** (consolidation debt made checkable — this is documentation of the
+descendants as they stand, not a new plan):
+
+| Form | Branch | Registry | Notes |
+| --- | --- | --- | --- |
+| tell `bin/register` | `tell/<scope>/<id>` | atlas `_data/tells.yml` | **canonical**: `{entry\|branch\|pr}` split, signed commit, `signer` anchor; ships as the `register` composite action |
+| atlas `bin/register-atlas` | `atlas/<scope>/<id>` | peer `_data/atlases.yml` | deliberate one-tier-up clone — self-declared (`register-atlas` header, atlas `AGENTS.md`, atlas `CONTRACT.md`) |
+| atlas `bin/bill` (emit deferred, **D**) | `request/<scope>/<id>` | peer `_data/requests.yml` | mirrors `register-atlas`'s branch/PR gesture; the near-parallel third path |
+| data-pile `handshake.yml` | `handshake/<repo>` | tell `_data/piles.yml` | inline re-implementation; no ownership signature |
+| `bin/need` + `need.yml` | — | atlas `_data/needs.yml` | inline re-implementation |
+
+The duplication reaches the code level: the flat-YAML scalar reader `ty()` is copied verbatim between
+`bin/register-atlas` and `bin/bill` (the latter's comment says so). This family is also the surface the
+**offline representation of PR-consent** (**P**) must cover, member by member — the QR-scan exchange
+re-represents exactly these gestures.
+
 ---
 
 ## C. Aggregation, reporting-law, and standing
@@ -322,7 +338,10 @@ ties these together; the geo-gate (below) is the lever that unlocks the rest.
     fine-grained PAT carried in the QR (`TELL_POST_TOKEN`) — so the runtime (`anecdote.channel`) POSTs
     the comment with **no respondent account**, kiosk-style. The credential rides outside the provenance
     signature and is never bound under the user's signature; `tok` still gates *acceptance*. The graduation
-    is a **GitHub App + scan-time worker-minted short-lived token** (no durable credential in the QR).
+    is a **scan-time, worker-minted short-lived token** (no durable credential in the QR) — minted under
+    **per-node custody**: a GitHub App was considered and **rejected** (one App key re-centralizes exactly
+    the custody being declined — `tell …/docs/submission-credential.md` → "Rejected"), so the minting
+    worker is the Tell's own. The custody model it graduates *into* is **P**.
 - **The public-issue side-channel's two abuse problems (homebrew running cost).** We open this access
   model on purpose — it's a side-channel `anecdote.channel` sites expect, and it must NOT be the operator's
   Cloudflare edge *deciding* anything. Two distinct risks while we sit on the public GitHub issue layer:
@@ -706,3 +725,67 @@ it will not bother you with it.
 - **Blocks:** ingress of anything at all (it is first contact); trustworthy local reduction without
   surveillance; and the whole label/collision economy (**C**) and claims-about-subjects (**N**), which
   all assume utterances arrive already atomised.
+
+---
+
+## P. The hosted collapse: multi-tenant custody and phone-native provisioning
+
+**Tier: node (workspace) · tell · pile · atlas.** The shaped direction is
+[`docs/TENANCY.md`](docs/TENANCY.md); this section tracks only what is unbuilt. The premise it
+follows from: every workflow env secret is parallel development that never runs for a phone
+operator, so the Computer pipeline collapses into a **multi-tenant hosted concept** rather than
+remaining the default, and the offline origin (**O**, the runtime) drives signing as the default
+case.
+
+- **Multi-tenant secret custody.** How a GitHub repo holds multi-tenant secrets *when it must* — a
+  declared, bounded custody posture. The shakeout that forced it: a Tell nearly shipped as a global
+  registry for all polls ever made, and was taken down a notch to **per-node credentials** (a Tell
+  holds credentials for itself, used to service its multi-tenant piles; ownership of the Tell never
+  reaches into a pile).
+  - **Blocks:** the canonical site as an honest multi-tenant host; plural operators adding someone
+    else to a Tell they made; anything token-per-poll shaped (non-viable on the first go without it).
+  - **Sketch (unbuilt):** the custody boundary stated per-secret (whose is it, who may mint it, who
+    may hold it), enforced by the same code-vs-data split the composite actions already make.
+- **Host-minted credentials.** Credentials the host generates that **obviate host-level secrets for
+  storing client secrets** — mint on demand instead of warehousing. Subsumes the `TELL_POST_TOKEN`
+  graduation (**F**): the scan-time worker-minted short-lived token, under per-node custody (a
+  GitHub App is rejected — `tell …/docs/submission-credential.md`).
+  - **Blocks:** retiring durable semi-public credentials from QRs; kiosk flows at scale.
+  - **Sketch (unbuilt):** the Tell's own worker mints; expiry rides in the mint; the repo secret
+    shrinks to the minting seed.
+- **Safe key reuse.** When a node needfully reuses a key across gestures (signing, registration,
+  vouching), the rule that makes reuse safe rather than habitual.
+  - **Blocks:** small operators who will reuse keys regardless; auditability of what a signature
+    *means* when one key serves several namespaces.
+  - **Sketch (unbuilt):** namespace discipline (`ssh-keygen -Y` namespaces already separate
+    `data-pile` / `tell-poll`) extended to a stated reuse table per posture.
+- **Rented data-pile provisioning — the gate.** Provisioning *piles* in a rented interaction model
+  is what makes any GitHub-side bootstrap/maintenance work of effect; the Tell doesn't need to do
+  it, the **workspace running it** does. Beneath it, even **single-tenant automation for adding
+  piles** does not exist (today: template + `setup.yml` + handshake + hand-pinned signer, each with
+  a manual PAT step).
+  - **Blocks:** everything hosted; the market below; the Computer track earning its keep.
+  - **Sketch (unbuilt):** the workspace provisions a pile on an operator's behalf at registration
+    time — the same capture-install-validate bootstraps, run by the host, with the pile's private
+    identity still minted on (or handed only to) the owner's side.
+- **Spec-or-attestation for third-party pile-managers.** A market that manages piles for people is
+  still solving multi-tenant, and it must not be *possible* to solve it wrong.
+  - **Blocks:** delegating pile management without laundering custody.
+  - **Sketch (unbuilt):** managers use this spec, or their homebrew is **attested in the metadata**
+    whenever anything talks to it — the same claims-about-subjects grammar as **N**.
+- **Offline representation of PR-consent.** The propose/merge consent gesture, represented between
+  offline origins as an **exchange of QR scans — id and receipt data** (open and merge without
+  GitHub in the loop). Couples to **B**: the registration-idiom family inventoried there is the
+  surface to cover, member by member.
+  - **Blocks:** consent between phone operators; Tells provisioned like group chats
+    (`anecdote …/docs/system-viewer.md` has the many-Tells-one-origin model).
+  - **Sketch (unbuilt):** the offline-transfer envelope (anecdote `composer/transfer.mjs`) carrying
+    a registration entry + a signed receipt back; the registry write happens wherever the registry
+    lives, later, verifiably.
+- **`age-keygen` without a VPS.** The one bootstrap secret that cannot be generated in CI *or* on a
+  phone today; iPad operators fall back to free cloud terminals and key exfiltration.
+  - **Blocks:** phone-native pile bootstrap; the premise above, applied to the pile's own identity.
+  - **Sketch (unbuilt):** the `seal-enough` boundary (anecdote `docs/git-enough.md`) — WebCrypto-native
+    at rest, `age` spoken only at the Tell-interop boundary — extended to the pile identity, so the
+    recipient keypair mints in the browser and `age` remains an export format, not a keygen
+    environment. Couples to **O** (supply/verification of the instrument that does the minting).
