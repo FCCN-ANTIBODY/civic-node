@@ -24,6 +24,8 @@ phone-native provisioning — is [`docs/TENANCY.md`](docs/TENANCY.md).
   artifact behind each step and drawing the gaps as dotted lines.
 - [`docs/TENANCY.md`](docs/TENANCY.md) — where the GitHub-side pipeline is going: the hosted
   rework, and why the offline origin is the default case.
+- [`docs/ROUTES.md`](docs/ROUTES.md) — the GitHub route and the offline origin mapped stage by
+  stage: one equivalent need each, met two ways, with every worker's seat marked.
 
 ## The engines
 
