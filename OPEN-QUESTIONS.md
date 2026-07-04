@@ -831,3 +831,196 @@ case.
     operator path; `setup.yml` stays as the Computer-posture fallback.
   - **Open remainder:** the wider `seal-enough` boundary (anecdote `docs/git-enough.md`) — sealing,
     not keygen — and **O** (supply/verification of the instrument that does the minting).
+
+---
+
+## Q. Pinned live filters and the labeling commons
+
+**Tier: tell (the filters) · atlas (the range) · anecdote (the instrument).** Surfaced while shaping
+Dark Mode (#76); the labeling half should be solved **before the offline origin steals the show**
+(#80 is the design round).
+
+Joining an Atlas puts a lot in reach — connected directly, and secondhand where the Atlas has
+friends. Filtering it must not fall on every member: **search stays the archives posture** — fully
+capable, never hard, but it feels like going to the archives, looking for what you want. What *comes
+to you* instead is the Tell's **last-mile benefit**: the Tell pins live filters and publishes
+**dynamic lists of what's out there** for its community to fetch — and, probably, discuss locally.
+Not push: "the RSS of it" is setting your dynamic searches and seeing them populate.
+
+- **Pinned live filters (the feature).** A Tell designates keyword/label groups (config — maybe per
+  category of information); its job is to read the Atlas(es) it is registered to — there may be
+  several — and examine what fits each filter. Population is pull all the way down: every Atlas
+  already pulls in what's public about its friends, so the Tell inherits the whole **one-hop
+  discovery range** without any new reach.
+  - **Blocks:** the benefit of being on a *specific* Tell (being on one that tracks the right
+    subjects for you is just fine); the **inoffensiveness of starting your own** — a fork here is a
+    new light in the constellation that might *connect* with you (a little atlas between yourselves;
+    mailboxes kept on each other), never the GitHub fork-vs-star anxiety. This is a gesture the
+    design wants to be true.
+  - **Sketch (unbuilt):** filter groups as Tell config (the per-poll-constitution pattern —
+    reviewable data, not code); the dynamic lists published like `/polls.json` / `matches.json`
+    (build-free, fetchable, honest about freshness per the snapshot discipline); the Tell reads its
+    Atlases on its own cadence.
+- **The labeling commons (how labels get made at the public layer).** Filters presuppose labels, and
+  tags are a miserable way to perform search. The labeler has run **local-side only** (§O). Three
+  candidate mechanisms, deliberately undecided:
+  1. **The Tell's own labeler as a service** — the same singular pinned instrument (§O: one
+     reducer, cold-loaded, never a fork) run Tell-side over what its filters sweep.
+  2. **The cooperative public queue** — merely accessing it once makes you perform a label it needs
+     done (a poll's, or public information generally). Unsupervised by design: a **proof-of-
+     cooperation handshake**; probably more than one label per access.
+  3. **Jury by gesture** — label tasks riding user-authentication gestures, so an attestation
+     carries **the signature of the crowdsourced person who labeled it**: identity never revealed,
+     but the assignment known — *we know exactly who we gave it to* — a random jury, so to speak.
+  - **Blocks:** any filter better than raw keywords; #76's lists; local discussion over them.
+  - **Consent is the membership contract, not a per-act beg.** Cranking the gears is **what you
+    take on when you join a Tell** — named plainly in the joining contract, which asks a little
+    more than before. If you do not want to be generating the public labeling of the people you're
+    around on that Tell, that is natural pressure to **leave** — and refusal-as-exit is the point,
+    not a failure mode: it is the exit system (`VISION.md`) doing its work. The lesson lands early
+    in someone's exploration of the tool — **leaving is always an option** — and subliminally
+    highlights that you do not have that option in the real world; make that culturally implicit.
+  - **The per-act surface is an at-a-glance approval** — you're shown the label reduction and wave
+    it through *as long as it's not obviously wrong*. That glance is the **accountability** the
+    headless server runs never had: it should feel automatic, but a person did it, and the jury
+    assignment records that — **accountability metadata, not identity leakage** (the
+    revocable-nonce discipline applies).
+  - **The crank is also the room's light.** With the Tell pinning the filters, *lighting up the
+    room slightly* falls to the members: making random contact with the polls on your own Tell —
+    approving their reductions at a glance — is also how members see **who their neighbors are**.
+    A Tell is not just a cloak of secrecy held close; the crank work is the neighbor-visibility
+    surface.
+  - **Self-regulation falls out of the economics.** If we all turn a crank to make the stateless
+    thing go, then when **more is being posted than there are people frequenting it**, the backlog
+    is the visible, honest signal — no moderator needed. Giving members more reasons to leave is a
+    *good* thing: people organically do the work of segmenting the ideas and what they stand for
+    personally. **Rejection becomes a powerful growth signal** (speciation, not amendment — the
+    same law `VISION.md` states for constitutions, now operating at the membership grain).
+  - **Constraints (non-negotiable):** the instrument stays singular and pinned (§O) wherever it
+    runs; the crank duty is disclosed **at joining**, never discovered mid-gesture.
+- **Filter semantics over labels.** How search actually works over label hierarchies — couples the
+  progressive document labels (#79) and the label/collision economy (**C**). Unknown on purpose;
+  the honest starting point is "keyword groups," upgraded as the label economy matures.
+- **The derelict case — report, don't moderate.** The terminal state of "more posted than there
+  are people frequenting it": the pool thins until an author must approve **their own** content's
+  label reduction (self-assignment). **Moderation is the wrong tool** — the server withholding or
+  judging content is the machinery this constellation exists against. The Tell's *whole* response is
+  to **publish a graded figure of its own self-signed traffic**: a coarse tier (the vouch-gradient /
+  Atlas "coarse standing, never raw counts" discipline — a band, so the figure itself can't be
+  micro-gamed), attested by the Tell about **itself**, beside the govern transparency it already
+  publishes. Self-attestation, not enforcement; a **line, not a gate** (Atlas `CONSTITUTION.md`).
+  Nobody's post is withheld on this basis. Readers, would-be members, and a joined Atlas's rollup
+  read the grade and judge — a Tell running mostly on self-signed traffic is *visibly* talking to
+  itself, and **the exit system does the rest** (a derelict Tell is exit firing at the room grain:
+  rejection as a growth signal, at room-death).
+  - **Measure the room, not the author.** The grade is computable *because* the jury draw already
+    assigns each label to *someone else*; a self-draw is a reading of the **room's** health taken
+    for free at post-time — so you never detect retries or hold per-author rate state (the state
+    token-is-authority refuses; **F** deferred exactly this for raw submissions, but the labeling
+    layer *has* the signed member identity submissions lacked). Self-signed = one fingerprint as
+    author **and** juror; the Tell counts it into the grade (it holds the assignment map —
+    accountability metadata, never identity leakage).
+  - **Not moderation levers.** Govern's **`held`** stays what it always was — the honest "unjudged"
+    verdict, never wielded as a throttle. The crank-debt cost-to-post (discharging labels on others'
+    backlog) is the **membership contract**, not a derelict penalty — posting slows as the pool thins
+    because cooperation genuinely costs more, not because anyone is being rate-limited.
+  - **Open (→ #80):** the grade's tiers + window; whether/how it rolls into the Atlas Tell-summary
+    (health per Tell the directory can surface — the who-are-my-neighbors figure at room grain);
+    who owes whom (crank-debt per-member across all posting, discharged against anyone's backlog —
+    probably).
+
+---
+
+## R. Promiscuous exchange — socializing the offline origin at contact
+
+**Tier: anecdote (the contact layer) · atlas (the ambassadorship) · tell (the same crank).** The
+push cascade (§Q, #72) seen from the ground: not just carrying stacks and dropping them off, but
+**promiscuously soliciting what we have for what others have** as we bounce near all kinds of
+people. That is how the offline origin *socializes* its stuff — and where shared Atlases or
+friends-of make two origins **ambassadors** who can *prove* it (they joined; the membership is
+signed).
+
+- **The reciprocal crank — the rider on every contact.** What "turning the wheel" (§Q) looks like
+  between two phones: a **stack of bills to label as a batch**, or the minimum — you each turn **one
+  unlabeled item from the other**. You do the work for them *and learn about it*, so the exchange is
+  growth, not a chore; taking a copy never deletes their copy — **you just saw it, so you can
+  remember it**. Same singular labeler as everywhere (§O); this is the offline-origin face of §Q's
+  commons / #80.
+- **Not homework — the tick-tock of the clock.** Headless by default: the labeler runs as fast as it
+  can on your own unlabeled inventory, and **unlabeled things around are not a problem if you have
+  friends** — your phone gets help at every contact. The goal is *automatic*, not a task queue at
+  every turn; the operator supplies a **standing commitment of their own** (a crank budget / policy)
+  so consent is given once, not begged each time.
+- **The supervision ladder is the consent ladder we already have.** "We were prepared to trust the
+  headless version; what we want is the **option** of supervision." That option is exactly the
+  probe-line ladder (`anecdote docs/probe-line-consent.md`, `grants-panel.mjs`: ambient / confirmed /
+  standing): **hidden/headless** = a standing grant; **soft miniaturized notice** ("here's the label
+  I made — tap to see") = ambient disclosure, itself optional so it never turns spammy;
+  **show-and-approve** = confirmed, solved in front of you. Same three rungs, applied to labeling.
+- **The mutual scan is the consent.** Two phones scanning each other **writes on the real-world
+  consent layer** — the same physical layer a poll request writes on. The face-to-face scan *is* the
+  contact-layer consent gesture, distinct from §Q's membership-contract consent: that is what you
+  take on to *belong*; this is what you agree to at *contact*.
+- **The cracked-agent detector — the border.** Once your things are labeled, you can **feed a
+  stranger a pre-labeled item and see what they say.** The QR is a **border**: we do not control what
+  we are scanning, or who made it — a faker can match the wire format. What they *cannot* cheaply
+  match is the **behavior of the singular pinned instrument** (§O): two genuine peers running the
+  verifiable same reducer **converge** on a label; a cracked agent that only mimicked the frames
+  **diverges**. So label-convergence is a **behavioral authenticity signal** — soft, not
+  cryptographic (frames are copyable; instrument behavior is hard to fake) — that feeds friend
+  judgment (verify-from-anyone, act-on-friend-list; `anecdote composer/transfer.mjs`), never an
+  auto-gate. Sybil / bot resistance at the physical border, for free, out of the crank you were
+  already turning.
+- **Why it hangs together:** the singular instrument (§O) is what makes *both* the reciprocal crank
+  trustworthy *and* the detector possible — a fork would break the convergence the detector reads and
+  the commons trusts, in one stroke. Consent is doubled and both halves ride the existing ladder (the
+  mutual scan; the standing supervision grant) — nothing snuck in undisclosed.
+- **Open (→ #72, #74, #80):** how the client *chooses which item to socialize/offer*; the batch
+  ("stack of bills") vs single-item protocol; dedup across the promiscuous mesh when everyone keeps
+  copies (couples the newer-than-yours snapshot discipline, #71/#72); the detector's exact
+  challenge-response and its false-positive posture; the concrete shape of the operator's standing
+  crank-commitment (budget? rate? "up to N per contact"?).
+
+---
+
+## S. Survival: origin seizure, binding the queen, and relocation
+
+**Tier: anecdote (the origin) · node (the home).** The premise Dark Mode and CONSTITUTION both
+rest on, stated plainly for agents: **assume the online origin can become unresolvable for long
+periods, or be seized** — with whoever holds it trying to serve a **new worker that does other
+things**. This is what makes the promiscuous layer (§Q, §R) a *remedy* rather than a nicety — a fix
+for the lack of socialization in a world commercialized to list nothing it cannot make money from.
+**DNS is not our lease on life; it is a callsign** (`anecdote.channel` happened to be where you got
+the tool), and we socialize precisely so we do not *need* it. Securing **CONSTITUTION** means having
+answered what happens when the origin is gone or taken.
+
+- **Bind the queen.** The service worker must do **only what we want** — its powers cuffed to our
+  intent, its side-channels in the elevated environment closed (CSP is the current imagining, not the
+  whole list). The pin (anecdote `docs/origin.md` — firmware pin + SW enforcement; `gesture.mjs`
+  names the swapped-SW **"queen"**) is the start; the seized-origin case origin.md called
+  *unpreventable* is what this must actually answer. **Software updates are unavailable except by the
+  direct socialization CONSTITUTION requires** — which is *why* the milestone needs the side-channel
+  exchange to constitute the user into a document at all.
+  - **If the origin is GONE:** a lease-on-life problem — no updates, no re-serve.
+  - **If the origin is SEIZED:** handcuff the captor to our work immediately — even having them
+    **sign our clearly-poisoned artifacts**, which doubles as a **call for aid**: a
+    restoration-by-update signal that something is wrong.
+- **Relocation — the stargate.** Survive a collapsing universe by moving out: **Castling** (git-
+  enough's Castle — swap the online repo for the local one) generalized to **egress across mediums or
+  to a new domain**. Doomed to cat-and-mouse, we must be able to **evict our storage from this origin
+  and take it elsewhere** — the worker, the troves, the maintenance tasks, all of it. Knowing *how*
+  is what lets us call CONSTITUTION **secured**: a **stargate ready before we know what to connect it
+  to.**
+  - **Trusting a new home.** The test for a would-be home must be written *before* the options
+    appear, so we can apply it as they come. (A home you launch yourself is up exactly as long as the
+    callsign is, anyway.)
+  - **The HOME document.** Knowing our offline origin is the ability to make a meaningful **manifest
+    for shipping out** — made passively, the way the constitution is, about **what home looks like.**
+    Extract the home-shaped concerns out of your constitution into a **HOME document**, unused until
+    it is ready to be sent — **signed by itself, through the stargate.** Relocation is first contact
+    in reverse: **verifiable self-dehydration to a QR that matches the first-contact you got it
+    from**, showing every intent — **our lessons themselves the proof of what a better home would
+    have to mean.**
+- **Open (→ CONSTITUTION milestone):** the concrete queen-binding beyond CSP; the poisoned-sign /
+  call-for-aid protocol; the stargate's egress adapters (medium, domain); the trust test for a new
+  home; the HOME document schema and its self-signed ship-out.
