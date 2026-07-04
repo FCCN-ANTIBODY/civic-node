@@ -901,3 +901,26 @@ Not push: "the RSS of it" is setting your dynamic searches and seeing them popul
 - **Filter semantics over labels.** How search actually works over label hierarchies — couples the
   progressive document labels (#79) and the label/collision economy (**C**). Unknown on purpose;
   the honest starting point is "keyword groups," upgraded as the label economy matures.
+- **The derelict case — when the crank runs dry.** The terminal state of "more posted than there
+  are people frequenting it": the pool thins until an author must approve **their own** content's
+  label reduction. That self-assignment is a **halt signal** — but the design principle that makes
+  it *implementable* is: **don't measure the author, measure the room.** The jury draw already
+  assigns each label to *someone else*; when it can only land on the author, that is a reading of
+  the **room's** health taken for free at post-time — so you never detect retries or hold per-author
+  rate state (the very state the token-is-authority model refuses; **F** deferred exactly this for
+  raw submissions, but the labeling layer *has* the signed member identity submissions lacked). Two
+  regimes, both stateless in the Tell:
+  - **Continuous throttle — emergent, not enforced.** Discharging crank-debt on *others'* backlog
+    (the proof-of-cooperation) takes longer as the pool thins, so posting slows by itself. The state
+    is the queue that must exist anyway, not a rate-limiter.
+  - **Discrete halt — self-evident in the artifact.** A self-labeled item carries one fingerprint
+    as **author and juror**; three parties read that one fact (operator: "derelict room"; author:
+    "talking to myself"; consumers: "jury of one — discount it"). Reuse govern's **`held`** verdict:
+    self-labeled defaults to `held`, so it doesn't propagate to the filters (#76) until a real juror
+    appears — a throttle on *effect*, introducing no author state. The credibility discount is the
+    Atlas "gains weight as it accumulates" rule, begun at less than zero. **A derelict Tell is the
+    exit system firing at the room grain** — rejection as a growth signal, at room-death.
+  - **Open:** ramp vs cliff (surface pool-thinning before the terminal self-draw?); who owes whom
+    (crank-debt is per-member across all posting, discharged against anyone's backlog — probably);
+    the `held`-release path when a real juror finally labels (retroactive propagation, timing tells).
+    Belongs to #80's design round.
