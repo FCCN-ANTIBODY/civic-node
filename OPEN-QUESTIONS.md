@@ -980,3 +980,47 @@ signed).
   copies (couples the newer-than-yours snapshot discipline, #71/#72); the detector's exact
   challenge-response and its false-positive posture; the concrete shape of the operator's standing
   crank-commitment (budget? rate? "up to N per contact"?).
+
+---
+
+## S. Survival: origin seizure, binding the queen, and relocation
+
+**Tier: anecdote (the origin) · node (the home).** The premise Dark Mode and CONSTITUTION both
+rest on, stated plainly for agents: **assume the online origin can become unresolvable for long
+periods, or be seized** — with whoever holds it trying to serve a **new worker that does other
+things**. This is what makes the promiscuous layer (§Q, §R) a *remedy* rather than a nicety — a fix
+for the lack of socialization in a world commercialized to list nothing it cannot make money from.
+**DNS is not our lease on life; it is a callsign** (`anecdote.channel` happened to be where you got
+the tool), and we socialize precisely so we do not *need* it. Securing **CONSTITUTION** means having
+answered what happens when the origin is gone or taken.
+
+- **Bind the queen.** The service worker must do **only what we want** — its powers cuffed to our
+  intent, its side-channels in the elevated environment closed (CSP is the current imagining, not the
+  whole list). The pin (anecdote `docs/origin.md` — firmware pin + SW enforcement; `gesture.mjs`
+  names the swapped-SW **"queen"**) is the start; the seized-origin case origin.md called
+  *unpreventable* is what this must actually answer. **Software updates are unavailable except by the
+  direct socialization CONSTITUTION requires** — which is *why* the milestone needs the side-channel
+  exchange to constitute the user into a document at all.
+  - **If the origin is GONE:** a lease-on-life problem — no updates, no re-serve.
+  - **If the origin is SEIZED:** handcuff the captor to our work immediately — even having them
+    **sign our clearly-poisoned artifacts**, which doubles as a **call for aid**: a
+    restoration-by-update signal that something is wrong.
+- **Relocation — the stargate.** Survive a collapsing universe by moving out: **Castling** (git-
+  enough's Castle — swap the online repo for the local one) generalized to **egress across mediums or
+  to a new domain**. Doomed to cat-and-mouse, we must be able to **evict our storage from this origin
+  and take it elsewhere** — the worker, the troves, the maintenance tasks, all of it. Knowing *how*
+  is what lets us call CONSTITUTION **secured**: a **stargate ready before we know what to connect it
+  to.**
+  - **Trusting a new home.** The test for a would-be home must be written *before* the options
+    appear, so we can apply it as they come. (A home you launch yourself is up exactly as long as the
+    callsign is, anyway.)
+  - **The HOME document.** Knowing our offline origin is the ability to make a meaningful **manifest
+    for shipping out** — made passively, the way the constitution is, about **what home looks like.**
+    Extract the home-shaped concerns out of your constitution into a **HOME document**, unused until
+    it is ready to be sent — **signed by itself, through the stargate.** Relocation is first contact
+    in reverse: **verifiable self-dehydration to a QR that matches the first-contact you got it
+    from**, showing every intent — **our lessons themselves the proof of what a better home would
+    have to mean.**
+- **Open (→ CONSTITUTION milestone):** the concrete queen-binding beyond CSP; the poisoned-sign /
+  call-for-aid protocol; the stargate's egress adapters (medium, domain); the trust test for a new
+  home; the HOME document schema and its self-signed ship-out.
