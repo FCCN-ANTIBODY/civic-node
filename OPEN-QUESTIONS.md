@@ -928,3 +928,55 @@ Not push: "the RSS of it" is setting your dynamic searches and seeing them popul
     (health per Tell the directory can surface — the who-are-my-neighbors figure at room grain);
     who owes whom (crank-debt per-member across all posting, discharged against anyone's backlog —
     probably).
+
+---
+
+## R. Promiscuous exchange — socializing the offline origin at contact
+
+**Tier: anecdote (the contact layer) · atlas (the ambassadorship) · tell (the same crank).** The
+push cascade (§Q, #72) seen from the ground: not just carrying stacks and dropping them off, but
+**promiscuously soliciting what we have for what others have** as we bounce near all kinds of
+people. That is how the offline origin *socializes* its stuff — and where shared Atlases or
+friends-of make two origins **ambassadors** who can *prove* it (they joined; the membership is
+signed).
+
+- **The reciprocal crank — the rider on every contact.** What "turning the wheel" (§Q) looks like
+  between two phones: a **stack of bills to label as a batch**, or the minimum — you each turn **one
+  unlabeled item from the other**. You do the work for them *and learn about it*, so the exchange is
+  growth, not a chore; taking a copy never deletes their copy — **you just saw it, so you can
+  remember it**. Same singular labeler as everywhere (§O); this is the offline-origin face of §Q's
+  commons / #80.
+- **Not homework — the tick-tock of the clock.** Headless by default: the labeler runs as fast as it
+  can on your own unlabeled inventory, and **unlabeled things around are not a problem if you have
+  friends** — your phone gets help at every contact. The goal is *automatic*, not a task queue at
+  every turn; the operator supplies a **standing commitment of their own** (a crank budget / policy)
+  so consent is given once, not begged each time.
+- **The supervision ladder is the consent ladder we already have.** "We were prepared to trust the
+  headless version; what we want is the **option** of supervision." That option is exactly the
+  probe-line ladder (`anecdote docs/probe-line-consent.md`, `grants-panel.mjs`: ambient / confirmed /
+  standing): **hidden/headless** = a standing grant; **soft miniaturized notice** ("here's the label
+  I made — tap to see") = ambient disclosure, itself optional so it never turns spammy;
+  **show-and-approve** = confirmed, solved in front of you. Same three rungs, applied to labeling.
+- **The mutual scan is the consent.** Two phones scanning each other **writes on the real-world
+  consent layer** — the same physical layer a poll request writes on. The face-to-face scan *is* the
+  contact-layer consent gesture, distinct from §Q's membership-contract consent: that is what you
+  take on to *belong*; this is what you agree to at *contact*.
+- **The cracked-agent detector — the border.** Once your things are labeled, you can **feed a
+  stranger a pre-labeled item and see what they say.** The QR is a **border**: we do not control what
+  we are scanning, or who made it — a faker can match the wire format. What they *cannot* cheaply
+  match is the **behavior of the singular pinned instrument** (§O): two genuine peers running the
+  verifiable same reducer **converge** on a label; a cracked agent that only mimicked the frames
+  **diverges**. So label-convergence is a **behavioral authenticity signal** — soft, not
+  cryptographic (frames are copyable; instrument behavior is hard to fake) — that feeds friend
+  judgment (verify-from-anyone, act-on-friend-list; `anecdote composer/transfer.mjs`), never an
+  auto-gate. Sybil / bot resistance at the physical border, for free, out of the crank you were
+  already turning.
+- **Why it hangs together:** the singular instrument (§O) is what makes *both* the reciprocal crank
+  trustworthy *and* the detector possible — a fork would break the convergence the detector reads and
+  the commons trusts, in one stroke. Consent is doubled and both halves ride the existing ladder (the
+  mutual scan; the standing supervision grant) — nothing snuck in undisclosed.
+- **Open (→ #72, #74, #80):** how the client *chooses which item to socialize/offer*; the batch
+  ("stack of bills") vs single-item protocol; dedup across the promiscuous mesh when everyone keeps
+  copies (couples the newer-than-yours snapshot discipline, #71/#72); the detector's exact
+  challenge-response and its false-positive posture; the concrete shape of the operator's standing
+  crank-commitment (budget? rate? "up to N per contact"?).
