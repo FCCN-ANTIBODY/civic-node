@@ -43,6 +43,44 @@ taken down a notch to hold at least *per-node* credentials. There is no TLD regi
 vision) to evade the problem of group ownership, so the canonical site is a **multi-tenant host by
 necessity** — and the credential layer has to say so out loud.
 
+## The storage half of "no TLD registrar"
+
+The line above is about credential custody — one shared canonical host, one shared secret-custody
+boundary. The same gap has a second, independent consequence the credential story doesn't cover:
+**browser storage.** anecdote.channel's offline origin wants to keep a thin, mergeable index of every
+civic-node/Tell/Atlas it's attached to, and eventually to shard what it locally keeps by which one
+that data came from
+([`anecdote …/docs/atlas-index.md`](https://github.com/FCCN-ANTIBODY/anecdote.channel/blob/main/docs/atlas-index.md);
+[`anecdote …/docs/consent-and-nonce.md`](https://github.com/FCCN-ANTIBODY/anecdote.channel/blob/main/docs/consent-and-nonce.md)
+→ "Trove scale"). Without separate registrable domains, every chapter sharing the canonical
+multi-tenant host also shares **one browser storage quota group** (Chromium/Firefox group by
+registrable domain — a shared ceiling, evicted LRU against that ceiling as a whole) — the same "group
+ownership" problem, one layer down, in the browser instead of on GitHub.
+
+The stopgap here is real, not hypothetical: any chapter published via a **Public-Suffix-List-listed
+static host** — `github.io`, `gitlab.io`, `pages.dev`, `netlify.app`, `bitbucket.io` — already gets a
+genuinely separate registrable domain for storage/cookie purposes, for free, today, because the PSL
+lists these as *private* suffixes specifically so one tenant's site can't reach into another's.
+`alice.github.io` and `bob.github.io` share nothing storage-wise, the way a real TLD registrar would
+eventually guarantee constellation-wide. This only covers chapters left on the default subdomain (a
+custom domain drops back out of the PSL benefit) and does nothing for the credential-custody problem
+above — but the storage-sharding half of "no TLD registrar" already has a cheap, immediate answer while
+the custody half waits on real infra.
+
+**Open: what a chapter's own address depth actually buys.** The constellation's addressing nests
+several levels — state, then Atlas, then civic-node, sometimes deeper still — and a **pure Atlas mounts
+nothing at its own hostname**: it's an addressing waypoint, not a place anything is ever written, so it
+never holds storage of its own. That matters because subdomain *depth* is not what draws a storage
+boundary. Origin separation happens at every distinct hostname regardless of how deep it sits — a
+civic-node three levels down is exactly as separate an origin as one two levels down, and none of them
+share data with a sibling either way. But the *group* ceiling (the thing the PSL stopgap above actually
+changes) is set by the **registrable domain**, full stop — nesting state → Atlas → civic-node ten
+subdomains deep under one registered domain still leaves every leaf sharing that single group. So "a
+state gets its own storage" is only true if the hierarchy deliberately crosses onto a separate
+registrable domain (or a PSL-listed private suffix) *at* the state boundary — not merely because state
+is modeled as its own subdomain level. Where that crossing should actually sit — state, Atlas, or
+civic-node — is unresolved. ┄ open.
+
 ## Per-node credentials
 
 "Per-node" means: a Tell holds credentials **for itself**, which it uses to service its multi-tenant
