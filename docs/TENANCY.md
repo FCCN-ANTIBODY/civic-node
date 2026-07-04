@@ -67,6 +67,20 @@ custom domain drops back out of the PSL benefit) and does nothing for the creden
 above — but the storage-sharding half of "no TLD registrar" already has a cheap, immediate answer while
 the custody half waits on real infra.
 
+**Open: what a chapter's own address depth actually buys.** The constellation's addressing nests
+several levels — state, then Atlas, then civic-node, sometimes deeper still — and a **pure Atlas mounts
+nothing at its own hostname**: it's an addressing waypoint, not a place anything is ever written, so it
+never holds storage of its own. That matters because subdomain *depth* is not what draws a storage
+boundary. Origin separation happens at every distinct hostname regardless of how deep it sits — a
+civic-node three levels down is exactly as separate an origin as one two levels down, and none of them
+share data with a sibling either way. But the *group* ceiling (the thing the PSL stopgap above actually
+changes) is set by the **registrable domain**, full stop — nesting state → Atlas → civic-node ten
+subdomains deep under one registered domain still leaves every leaf sharing that single group. So "a
+state gets its own storage" is only true if the hierarchy deliberately crosses onto a separate
+registrable domain (or a PSL-listed private suffix) *at* the state boundary — not merely because state
+is modeled as its own subdomain level. Where that crossing should actually sit — state, Atlas, or
+civic-node — is unresolved. ┄ open.
+
 ## Per-node credentials
 
 "Per-node" means: a Tell holds credentials **for itself**, which it uses to service its multi-tenant
