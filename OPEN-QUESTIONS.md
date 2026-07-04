@@ -831,3 +831,52 @@ case.
     operator path; `setup.yml` stays as the Computer-posture fallback.
   - **Open remainder:** the wider `seal-enough` boundary (anecdote `docs/git-enough.md`) — sealing,
     not keygen — and **O** (supply/verification of the instrument that does the minting).
+
+---
+
+## Q. Pinned live filters and the labeling commons
+
+**Tier: tell (the filters) · atlas (the range) · anecdote (the instrument).** Surfaced while shaping
+Dark Mode (#76); the labeling half should be solved **before the offline origin steals the show**
+(#80 is the design round).
+
+Joining an Atlas puts a lot in reach — connected directly, and secondhand where the Atlas has
+friends. Filtering it must not fall on every member: **search stays the archives posture** — fully
+capable, never hard, but it feels like going to the archives, looking for what you want. What *comes
+to you* instead is the Tell's **last-mile benefit**: the Tell pins live filters and publishes
+**dynamic lists of what's out there** for its community to fetch — and, probably, discuss locally.
+Not push: "the RSS of it" is setting your dynamic searches and seeing them populate.
+
+- **Pinned live filters (the feature).** A Tell designates keyword/label groups (config — maybe per
+  category of information); its job is to read the Atlas(es) it is registered to — there may be
+  several — and examine what fits each filter. Population is pull all the way down: every Atlas
+  already pulls in what's public about its friends, so the Tell inherits the whole **one-hop
+  discovery range** without any new reach.
+  - **Blocks:** the benefit of being on a *specific* Tell (being on one that tracks the right
+    subjects for you is just fine); the **inoffensiveness of starting your own** — a fork here is a
+    new light in the constellation that might *connect* with you (a little atlas between yourselves;
+    mailboxes kept on each other), never the GitHub fork-vs-star anxiety. This is a gesture the
+    design wants to be true.
+  - **Sketch (unbuilt):** filter groups as Tell config (the per-poll-constitution pattern —
+    reviewable data, not code); the dynamic lists published like `/polls.json` / `matches.json`
+    (build-free, fetchable, honest about freshness per the snapshot discipline); the Tell reads its
+    Atlases on its own cadence.
+- **The labeling commons (how labels get made at the public layer).** Filters presuppose labels, and
+  tags are a miserable way to perform search. The labeler has run **local-side only** (§O). Three
+  candidate mechanisms, deliberately undecided:
+  1. **The Tell's own labeler as a service** — the same singular pinned instrument (§O: one
+     reducer, cold-loaded, never a fork) run Tell-side over what its filters sweep.
+  2. **The cooperative public queue** — merely accessing it once makes you perform a label it needs
+     done (a poll's, or public information generally). Unsupervised by design: a **proof-of-
+     cooperation handshake**; probably more than one label per access.
+  3. **Jury by gesture** — label tasks riding user-authentication gestures, so an attestation
+     carries **the signature of the crowdsourced person who labeled it**: identity never revealed,
+     but the assignment known — *we know exactly who we gave it to* — a random jury, so to speak.
+  - **Blocks:** any filter better than raw keywords; #76's lists; local discussion over them.
+  - **Constraints (non-negotiable):** the instrument stays singular and pinned (§O) wherever it
+    runs; work riding a gesture must be **disclosed** — a gesture is consent machinery, and unnamed
+    work snuck into it is the dark pattern this constellation exists against; a jury assignment is
+    **accountability metadata, not identity leakage** (the revocable-nonce discipline applies).
+- **Filter semantics over labels.** How search actually works over label hierarchies — couples the
+  progressive document labels (#79) and the label/collision economy (**C**). Unknown on purpose;
+  the honest starting point is "keyword groups," upgraded as the label economy matures.
