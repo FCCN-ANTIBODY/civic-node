@@ -1005,6 +1005,19 @@ answered what happens when the origin is gone or taken.
   - **If the origin is SEIZED:** handcuff the captor to our work immediately — even having them
     **sign our clearly-poisoned artifacts**, which doubles as a **call for aid**: a
     restoration-by-update signal that something is wrong.
+  - **A candidate for "the concrete queen-binding beyond CSP":** anecdote
+    [`docs/atlas-index.md`](https://github.com/FCCN-ANTIBODY/anecdote.channel/blob/main/docs/atlas-index.md)-adjacent
+    work (anecdote#92) is shaping a dumb-shell-iframes-control-center split for its wildcard-served
+    "bottle" origins — the storage-bearing page stays deliberately minimal, and any privileged logic
+    lives in a separate control-center origin, invited in only as a guest iframe on the same
+    probe-line/consent-ladder terms as everything else. If the queen (the SW / privileged control
+    surface) can *only* ever act by being iframed in, she cannot reach out on her own initiative — a
+    page that never invites her in is permanently unreachable by her, no CSP required to enforce it.
+    This sharpens `docs/single-attention.md`'s existing "no *initiating*" line (today a temporary,
+    user-held pause via the stick) into something structural and permanent. Not yet resolved: what a
+    seized origin's own served shell would need as its *unprompted* minimum job (it still has to boot
+    and serve *something* without a visit) — tracked on the anecdote side as an open audit of `sw.js`'s
+    minimum responsibilities under this constraint.
 - **Relocation — the stargate.** Survive a collapsing universe by moving out: **Castling** (git-
   enough's Castle — swap the online repo for the local one) generalized to **egress across mediums or
   to a new domain**. Doomed to cat-and-mouse, we must be able to **evict our storage from this origin
