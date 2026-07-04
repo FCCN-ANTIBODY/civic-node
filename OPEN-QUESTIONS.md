@@ -873,10 +873,31 @@ Not push: "the RSS of it" is setting your dynamic searches and seeing them popul
      carries **the signature of the crowdsourced person who labeled it**: identity never revealed,
      but the assignment known — *we know exactly who we gave it to* — a random jury, so to speak.
   - **Blocks:** any filter better than raw keywords; #76's lists; local discussion over them.
+  - **Consent is the membership contract, not a per-act beg.** Cranking the gears is **what you
+    take on when you join a Tell** — named plainly in the joining contract, which asks a little
+    more than before. If you do not want to be generating the public labeling of the people you're
+    around on that Tell, that is natural pressure to **leave** — and refusal-as-exit is the point,
+    not a failure mode: it is the exit system (`VISION.md`) doing its work. The lesson lands early
+    in someone's exploration of the tool — **leaving is always an option** — and subliminally
+    highlights that you do not have that option in the real world; make that culturally implicit.
+  - **The per-act surface is an at-a-glance approval** — you're shown the label reduction and wave
+    it through *as long as it's not obviously wrong*. That glance is the **accountability** the
+    headless server runs never had: it should feel automatic, but a person did it, and the jury
+    assignment records that — **accountability metadata, not identity leakage** (the
+    revocable-nonce discipline applies).
+  - **The crank is also the room's light.** With the Tell pinning the filters, *lighting up the
+    room slightly* falls to the members: making random contact with the polls on your own Tell —
+    approving their reductions at a glance — is also how members see **who their neighbors are**.
+    A Tell is not just a cloak of secrecy held close; the crank work is the neighbor-visibility
+    surface.
+  - **Self-regulation falls out of the economics.** If we all turn a crank to make the stateless
+    thing go, then when **more is being posted than there are people frequenting it**, the backlog
+    is the visible, honest signal — no moderator needed. Giving members more reasons to leave is a
+    *good* thing: people organically do the work of segmenting the ideas and what they stand for
+    personally. **Rejection becomes a powerful growth signal** (speciation, not amendment — the
+    same law `VISION.md` states for constitutions, now operating at the membership grain).
   - **Constraints (non-negotiable):** the instrument stays singular and pinned (§O) wherever it
-    runs; work riding a gesture must be **disclosed** — a gesture is consent machinery, and unnamed
-    work snuck into it is the dark pattern this constellation exists against; a jury assignment is
-    **accountability metadata, not identity leakage** (the revocable-nonce discipline applies).
+    runs; the crank duty is disclosed **at joining**, never discovered mid-gesture.
 - **Filter semantics over labels.** How search actually works over label hierarchies — couples the
   progressive document labels (#79) and the label/collision economy (**C**). Unknown on purpose;
   the honest starting point is "keyword groups," upgraded as the label economy matures.
