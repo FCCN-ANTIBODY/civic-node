@@ -12,8 +12,8 @@ url: "https://antibody.fort-collins.colorado.anecdote.channel"
 
 # Site-owned exclude. Declaring it here REPLACES the engine default on merge, so it
 # re-lists the engine's entries. The dotted .*-engine mounts are also auto-ignored
-# by Jekyll (dotfiles); atlas/ and tell/ are reserved pass-through prefixes, built
-# and deployed by their own engines — never by this node's Jekyll build.
+# by Jekyll (dotfiles); atlas/, tell/, and antidote/ are reserved pass-through
+# prefixes, built and deployed by their own engines — never by this node's Jekyll build.
 exclude:
   - CNAME
   - .bundle
@@ -23,8 +23,10 @@ exclude:
   - .journal-engine/
   - .atlas-engine/
   - .tell-engine/
+  - .antidote-engine/
   - atlas/
   - tell/
+  - antidote/
   - node_modules
   - package.json
   - package-lock.json

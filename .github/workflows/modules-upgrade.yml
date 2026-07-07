@@ -65,3 +65,16 @@ jobs:
           submodules: recursive
       - name: Advance tell pin
         uses: ./.tell-engine/.github/actions/advance-engine
+
+  antidote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          fetch-tags: true
+          submodules: recursive
+      - name: Advance antidote pin
+        uses: ./.antidote-engine/.github/actions/advance-engine

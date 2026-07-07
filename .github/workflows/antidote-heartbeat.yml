@@ -1,0 +1,31 @@
+name: "Antidote · heartbeat"
+
+# Re-sign the dated receipt over this node's plaque index (antidote/heartbeat.json).
+# The schedule IS the retention policy (the husk is a heartbeat, not a grant): while
+# this runs, the archive attests "still held, still checked"; stop it, and every copy
+# anyone kept goes visibly stale. Monthly floor + manual, same tempo the engine's own
+# workflow suggests — tighten the cron when the node charters and the archive fills.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 5 1 * *"
+
+permissions:
+  contents: write
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Re-sign the receipt
+        uses: ./.antidote-engine/.github/actions/heartbeat
+        with:
+          charter: antidote.yml
+          index: antidote/index
+          ledger: antidote/ledger/manifest.json
+          output: antidote/heartbeat.json
+          ledger-key: ${{ secrets.ANTIDOTE_LEDGER_KEY }}

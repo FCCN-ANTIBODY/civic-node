@@ -28,6 +28,10 @@ secrets:
     kind: zone identifier (not sensitive in itself; declared because purge-cache reads it as a secret fallback)
     minter: the Cloudflare dashboard
     holder: "repo var, or repo secret as fallback"
+  - name: ANTIDOTE_LEDGER_KEY
+    kind: this node's Antidote ledger-signer (intake ledger heads + the heartbeat receipt — cease-to-attest is the retention gesture, so this key IS the archive's liveness)
+    minter: the antidote engine (bin/punch or bin/attest-heartbeat mint on first run; seat the pkcs8 as the secret and keep it)
+    holder: "repo secret, read by antidote-intake.yml / antidote-heartbeat.yml; public fingerprint committed as keys/ledger.fpr once the first punch publishes it"
 
 namespaces: []
 # The workspace signs nothing itself — every signature is an engine's, under the engine's
