@@ -159,19 +159,30 @@ re-represents exactly these gestures.
 
 ## C. Aggregation, reporting-law, and standing
 
-**Tier: atlas (aggregator + standing) · tell (the report surface) · node (where rollups publish).**
-Circular by nature: each tier defers to the other until a real second Tell publishes reports.
+**Tier: antidote (aggregator + standing) · atlas (the live coarse gauge + intake) · tell (the report
+surface) · node (where rollups publish).** Re-tiered — **aggregation moved off Atlas to the Antidote
+cascade (#94).** The old "atlas is the aggregator" deadlock is gone: Atlas keeps only the live
+coarse gauge of its own scope; the cross-scope rollup was always a different tier.
 
-- **The aggregator itself is not built (Tier: atlas).** Atlas's `CONSTITUTION` attests **affirmative
-  escalation** — every report a listed Tell publishes is rolled into **all** the constituency
-  aggregations it belongs to — and `CONTRACT` pins the contract (a Tell describes its `reports/govern-…`;
-  Atlas requires the shape and aggregates it). The code that pulls each listed Tell's reports and rolls
-  them up on a schedule does not exist.
-  - **Blocks:** constituency/jurisdiction reports; the standing tally below; the whole point of being a
-    directory that *aggregates*, not just lists.
-  - **Sketch (unbuilt):** a scheduled job (cf. `bin/match` + `match.yml`) that reads `_data/tells.yml`,
-    fetches each Tell's described `reports` path, validates the shape its CONSTITUTION promised, and
-    emits a coarse constituency rollup. Lands when a real listed Tell publishes reports to aggregate.
+> **Repositioning note (#94).** Aggregation is **Antidote's, by shape containment** — because *only an
+> Antidote server can determine a COMMON CONSTITUTION* (what a combined dataset is allowed to be), and
+> because Atlas is single-scope by construction (a Fort Collins atlas can't roll up Larimer's other
+> cities) and can't bound what it registers (why the containment sort got messy when we imagined
+> aggregating Atlases). **Atlas is now described as the socialization + discovery layer + ballot
+> intake** (#95, "Atlas, crystallized"): public, forkable, signed, inert — the anti-algorithm public
+> square. Everything below re-homes its "aggregator" to the Antidote cascade.
+
+- **The aggregator is the Antidote cascade (Tier: antidote), not built here.** Reports and ballots
+  roll up **by shape containment** (city → county → state → …) across Antidote servers, each governed
+  by a declared COMMON CONSTITUTION. Atlas's `CONSTITUTION` **affirmative escalation** becomes an
+  *intake + forward* promise (accept lost mail, forward it to a registered Antidote), not a rollup the
+  Atlas performs.
+  - **Blocks:** constituency/jurisdiction reports; the standing tally below — now downstream of the
+    cascade, not the directory.
+  - **Sketch (unbuilt, antidote side):** the placement ledger + spatial join of `docs/cascade.md`
+    (`antidote` repo) — records placed at their best-known-finest shape, rolled up the tree, each vat a
+    reconstructable view over a versioned shape catalog. The Atlas-side job shrinks to intake/forward
+    (the drop door, #86) plus the live coarse gauge below.
 - **The field-level report contract is open (Tier: tell).** The **registration** half is written: a
   Tell lists itself by signed PR, its entry carries a `reports` pointer, and Atlas attests it requires
   that description. Still open is the **field-level** report contract — the exact `reports/govern-…`
@@ -179,13 +190,16 @@ Circular by nature: each tier defers to the other until a real second Tell publi
   The Tell-side declaration (`CONSTITUTION` → "I describe the transparency reports I publish") is the
   surface that contract validates.
   - **Specified direction:** [`tell.anecdote.channel/docs/reporting.md`](https://github.com/FCCN-ANTIBODY/tell.anecdote.channel/blob/main/docs/reporting.md)
-    (after the reporting-locus rethink, `tell.anecdote.channel#27`). The aggregate belongs **here, at the
-    Atlas pool** — not at each Tell. A standalone Tell publishes nothing; *only on joining an Atlas* does
-    it deliver de-identified, membership-tagged summaries (`tell.poll.summary/v1`: per-poll `count`,
-    coarse option tallies, verdict counts, topic; never answer text or `asker`) **promoted into the
-    signed manifest head** like the existing `tell.voucher.summary/v1`. **Small-N suppression must happen
-    at this pool**, where N is large across many Tells — at a 2-person Tell it either blanks or
-    re-identifies. Consequences for this §: "compulsory" means *compulsory-on-joining*, so this tier's
+    (after the reporting-locus rethink, `tell.anecdote.channel#27`). A standalone Tell publishes
+    nothing; *only on joining an Atlas* does it become discoverable and deliver de-identified,
+    membership-tagged summaries (`tell.poll.summary/v1`: per-poll `count`, coarse option tallies,
+    verdict counts, topic; never answer text or `asker`) **promoted into the signed manifest head**
+    like the existing `tell.voucher.summary/v1`. The **live coarse gauge** (this poll's standing, right
+    now, this scope) is what the Atlas shows and all a single scope can honestly provide;
+    cross-scope/cross-Tell rollup is the **Antidote cascade's** job downstream (#94). **Small-N
+    suppression must happen where N is large** — across the pool for the gauge, and again at each
+    Antidote vat for the rollup; at a 2-person Tell it either blanks or re-identifies. Consequences for
+    this §: "compulsory" means *compulsory-on-joining*, so this tier's
     deadlock eases (the Tell-side input is concrete the moment a Tell lists); the field-level contract is
     that delivery; the figures are **manifest-committed + provable** (recomputable from public manifests,
     backed by the pile's `bin/prove`). The per-answer govern log is **re-homed** (sealed evidence locker,
@@ -195,18 +209,21 @@ Circular by nature: each tier defers to the other until a real second Tell publi
     bounded concepts** (label + boundary polygon + authority attestation); and the suspicion that
     **label-authority and report-credibility are one attestation mechanism** — the same "open line, weight
     accumulates" problem the standing item below raises.
-- **The standing mechanism is unwritten (Tier: atlas).** Atlas attests it keeps an **open line** —
-  a report gains weight and credibility as it accumulates — but the *concrete mechanism* that
-  materializes "weight" is unwritten.
+- **The standing mechanism is unwritten (Tier: antidote, surfaced by atlas).** The **open line** — a
+  report gains weight and credibility as it accumulates — is real, but "weight" now materializes
+  **downstream of the cascade**, not in the directory.
   - **Blocks:** any UI or signal showing a constituency's standing rising over time; a machine-readable
-    "credibility" signal a downstream aggregator could rank on.
-  - **Sketch (unbuilt):** a per-constituency tally derived from the reports Atlas aggregates (how long a
-    line has stood, how much it has gathered), surfaced in `/tells.json` or a new `/standing.json` —
-    carried *without* raw per-respondent counts ("coarse standing"). Input is the Tell transparency
-    stream, which isn't aggregated yet (first bullet).
-- **Where this node publishes its rollups (Tier: node).** This workspace's `atlas.yml` names a
-  `reports: reports/aggregate-*` pointer — the surface a peer would consume — but the aggregator that
-  fills it is the same deferred rollup above. The pointer is ready; the producer waits.
+    "credibility" signal.
+  - **Sketch (unbuilt):** a per-constituency tally derived from the **cascade's vats** (how long a line
+    has stood, how much it has gathered), carried *without* raw per-respondent counts ("coarse
+    standing"). The Atlas may *surface* a coarse gauge for its own scope; the accumulated,
+    cross-scope standing is the cascade's. The **label-authority = report-credibility** suspicion
+    (above) is the constitution-comparison substrate #94 leans on (#80/#79).
+- **Where this node publishes its rollups (Tier: node/antidote).** This workspace's `atlas.yml` names a
+  `reports: reports/aggregate-*` pointer — the surface a peer would consume — but the producer is now
+  the node's **`.antidote-engine`** (the intake/heartbeat actions; the cascade), not an Atlas rollup.
+  The pointer is ready; the producer is the Antidote cascade whose first tier is wired (#93), whose
+  containment distillation is #94.
 
 ---
 
