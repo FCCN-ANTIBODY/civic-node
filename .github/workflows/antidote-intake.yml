@@ -1,0 +1,36 @@
+name: "Antidote · intake door"
+
+# Run the archive intake over _data/intake-inbox.json via the naturally pinned engine:
+# verify from anyone, dedup by content-id, judge each arrival's constitution against
+# antidote.yml's declaration (admit / queue / refuse), punch cutouts onto antidote/index,
+# extend the custody ledger, stage raw admissions for the ice pile. The plaques publish
+# under the antidote/ prefix — disk path == URL path, like atlas/ and tell/ before it.
+# Manual for now — the intended trigger is the presumed PR (a teleport bundle arriving as
+# a PR whose merge IS the consent), a later slice kept out until the registration path
+# that fills the inbox exists (.antidote-engine/docs/teleport.md).
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  intake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Run the intake door
+        uses: ./.antidote-engine/.github/actions/intake
+        with:
+          charter: antidote.yml
+          lattice: _data/lattice.json
+          inbox: _data/intake-inbox.json
+          queue: _data/constitution-queue.json
+          output: antidote/intake.json
+          index: antidote/index
+          ledger: antidote/ledger/manifest.json
+          ice-outbox: antidote/ice-outbox.json
+          ledger-key: ${{ secrets.ANTIDOTE_LEDGER_KEY }}

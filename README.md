@@ -37,6 +37,7 @@ batteries included:
 | `.tell-engine/` | [tell.anecdote.channel](https://github.com/FCCN-ANTIBODY/tell.anecdote.channel) | the Tell: ingress/deliver/register composite actions + `bin/*` for fronting piles |
 | `.atlas-engine/` | [atlas.anecdote.channel](https://github.com/FCCN-ANTIBODY/atlas.anecdote.channel) | the Atlas: directory, matchmaker, and peering actions |
 | `.journal-engine/` | [journal.anecdote.channel](https://github.com/FCCN-ANTIBODY/journal.anecdote.channel) | the shared Jekyll build that renders this site |
+| `.antidote-engine/` | [antidote](https://github.com/FCCN-ANTIBODY/antidote) | the archivist: intake/heartbeat/egress actions + the plaque, ledger, and teleport `bin/*` verbs |
 
 Pins roll forward weekly (`modules-upgrade.yml`), with `modules-force-pin.yml` as the manual
 escape hatch. `journal/autumn-ryan` is a personal citation submodule, intentionally under its

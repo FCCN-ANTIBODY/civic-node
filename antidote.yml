@@ -1,0 +1,17 @@
+# Charter face of THIS node acting as its own Antidote — the archivist role, self-hosted the
+# same way this node self-hosts its Atlas (atlas.yml) and Tell. Read by the .antidote-engine
+# actions (intake, heartbeat, egress) as ANTIDOTE_SELF. Public face; no secrets — the ledger
+# signer's private half lives as the ANTIDOTE_LEDGER_KEY repo secret, its fingerprint at
+# keys/ledger.fpr once the first punch publishes it.
+#
+# THE RATCHET RULE (.antidote-engine/ARCHITECTURE.draft-0.md, guard #2): the constitution is
+# DECLARED here, fixed at charter time, versioned by content hash — never computed from
+# holdings. Changing it is re-chartering. As shipped this node is UNCHARTERED: the door admits
+# nothing and honest defaults fire nothing. Chartering — writing the first constitution text
+# under .antidote-engine's constitutions/ convention, hashing it, and setting it here — is a
+# deliberate act, recorded when the lattice work lands.
+
+id: antibody
+category: ""            # the label-vocabulary category this server collects for (empty = general archive)
+constitution: ""        # UNCHARTERED — set to the content hash of the constitution this node wears
+stamp_default: ""       # empty = bare arrivals are refused (no constitution, no catalog)

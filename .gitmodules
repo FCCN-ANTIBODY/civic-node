@@ -10,3 +10,6 @@
 [submodule ".tell-engine"]
 	path = .tell-engine
 	url = https://github.com/fccn-antibody/tell.anecdote.channel
+[submodule ".antidote-engine"]
+	path = .antidote-engine
+	url = https://github.com/fccn-antibody/antidote
