@@ -1,12 +1,15 @@
-# Proto-issues — staged for transplant
+# Proto-issues — design work kept in the repository
 
-These are **fully-drafted issue bodies awaiting transplant** to real GitHub issues. They live here
-as files (rather than as issues) only because the GitHub connector was unavailable when they were
-written; the constellation is otherwise **moving to issues** for planned work (see the Dark Mode set,
-civic-node #71–#80, and the rework road #57–#62).
+These are fully-drafted issue bodies, kept **in the repository on purpose**. This directory began
+as a staging area awaiting transplant to real GitHub issues (the connector was unavailable when
+they were written), but the posture has since inverted: the public issue surface proved to be
+public *social* technology — skimmable, subscribable, and it drew real-world attention we didn't
+want — so design writing now lives here as files, and GitHub issues are reserved for what is
+urgent about the *current* implementation (see `AGENTS.md` → "Where the truth is"). Do not
+transplant these out; drain a file only by doing the work it describes.
 
-**Each file is one issue.** It opens with the title (H1), a `Labels:` line, and its body — copy it
-into a new GitHub issue verbatim, then delete the file (this directory drains as it transplants).
+**Each file is one issue-shaped document.** It opens with the title (H1), a `Labels:` line, and
+its body.
 
 ## Pending: `constitution/` — Milestone: CONSTITUTION (7 issues)
 
@@ -24,7 +27,5 @@ seven issues where an item is one surface with another (map in each file's foote
 | `constitution/C6-bind-the-queen.md` | 10 | the SW cuffed to our intent; seized-origin handcuff (§S) |
 | `constitution/C7-stargate-and-home.md` | 11 + 12 | relocation via Castling; the self-signed HOME document (§S) |
 
-**On transplant:** create each with label `constitution` (create the label if absent). Item 1
-("labels signed by their labelers") is deliberately **not** its own issue — it is a Dark Mode
-prerequisite consumed by C3; when transplanting, also drop a one-line note on #80/#74 that the
-signed-labels build must land there.
+Item 1 ("labels signed by their labelers") is deliberately **not** its own document — it is a
+Dark Mode prerequisite consumed by C3; the signed-labels build must land with #80/#74.
