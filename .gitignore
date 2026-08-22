@@ -25,3 +25,8 @@ _includes/toc/
 /index.md
 /readme.md
 /license.md
+# The journal role's self-declaration, synced in like the rest of skel/. Engine-owned: a site
+# that wants to say more (its canonical url, an id) SHADOWS it — commit its own copy and add
+# --exclude='journal.yml' to the rsync in the engine's bin/sync.sh. Left ignored, this node's
+# claim is carried by atlas.yml, which already declares the same url.
+/journal.yml
