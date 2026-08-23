@@ -15,6 +15,9 @@ url: "https://antibody.fort-collins.colorado.anecdote.channel"
 # by Jekyll (dotfiles); atlas/, tell/, and antidote/ are reserved pass-through
 # prefixes, built and deployed by their own engines — never by this node's Jekyll build.
 exclude:
+  # NAME is deliberately NOT excluded — it is this node's published claim about where it belongs,
+  # and a claim nobody can fetch is not a claim. CNAME stays excluded: host plumbing, not a
+  # statement this node is making.
   - CNAME
   - .bundle
   - Gemfile
