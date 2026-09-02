@@ -39,3 +39,4 @@ re-derived — re-measure before contradicting them.
 | File | Covers | Workstream |
 | --- | --- | --- |
 | `exhibits/E1-sealed-exhibits.md` | selective disclosure of a recording; one pile per journal; player placement | data-pile `prove --seqs` + `media-pack`; journal player fragment |
+| `exhibits/E2-image-exhibits.md` | crop-as-fragment vs resize-as-derivation; tile economics; the never-disclosable invariant | `bin/image-tile`; hover surface; keyless-tile representation |
