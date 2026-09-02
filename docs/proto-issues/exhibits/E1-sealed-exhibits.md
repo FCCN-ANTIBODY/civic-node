@@ -121,8 +121,82 @@ degraded state is honest rather than broken.
 `exhibits/`. A single origin is a single trust decision; N per-piece players would each have to be
 trusted separately. Exhibits eject to the piece; the player never does.
 
+## Multiplicity — measured, 2026-09-01
+
+The recurring worry is whether a repository can hold more than one pile, and whether committing the
+pile to the journal root forecloses that. It does not, because the plurality already exists and is
+in a different place than expected.
+
+**`sources:` in `pile.yml` is already a list, and it is implemented, not aspirational.** `bin/ingest`
+loops `for source in $sources`, and `ingest.yml` persists each into *its own branch*
+(`git push origin "$commit:refs/heads/$branch"`, parented only if that branch already exists — so a
+new source starts a root commit). `drop-pack` enforces one source per branch by refusing a manifest
+whose `source` disagrees. Per-source owner state lands at `state/<source>/`.
+
+So the dichotomy resolves cleanly:
+
+- **The identity is a singleton.** `id`, `scope`, `age_recipient`, `repo_url` and `keys/pile.age.pub`
+  are one per repository. One repo = one recipient = one owner.
+- **The feeds are already plural.** N sources, N branches, N independent chains, one identity.
+
+**Log rotation is therefore a new source, not a new pile.** Closing intake on `feed/tell-2026a` and
+opening `feed/tell-2026b` needs no new concept and no new machinery — the sequence and the
+breakpoints are exactly the branch boundaries. This is the capability the "multiple data piles"
+worry was reaching for, and it is already here.
+
+Genuinely *multiple identities* in one repo is a different thing and is **not** supported. Nothing
+described so far needs it, and adding it would mean multiple recipients under one custody boundary —
+squarely against invariant #4. Leave it unbuilt.
+
+Observing someone else's pile by submoduling it needs no machinery at all: it is a git submodule of
+a public repo, and `bin/verify` requires no secret. That is a third, unrelated sense of "submodule"
+and should not be conflated with the two above.
+
+## Scale — where a long pile actually hurts
+
+Measured against a synthetic drop manifest, key-less verification (digest + chain linkage +
+commitment shape), **holding no block bytes at all**:
+
+| entries | manifest | gzip | verify | per-chunk read |
+| --- | --- | --- | --- | --- |
+| 312 | 111KB | 28KB | 2.3 ms | O(1) |
+| 624 | 222KB | 55KB | 2.5 ms | O(1) |
+| 1,558 | 556KB | 138KB | 6.0 ms | O(1) |
+| 10,000 | 3.5MB | 886KB | 45 ms | O(1) |
+| 100,000 | 35MB | 8.9MB | 383 ms | O(1) |
+
+**Reading a chunk is already not a function of reading everything behind it.** Drop blocks are
+independent by construction; there is no ratchet to walk. No checkpointing scheme is needed for
+reads — the property is already held.
+
+**CPU is not the limit; manifest transfer is.** 100,000 entries verify in under half a second, but
+cost ~8.9MB gzipped to ship. Budgeting ~1MB gzip puts the comfortable ceiling near **11,000 entries**
+— about 15 hours of audio at 5s chunks, or a journal holding ~20 hour-long recordings. Past that,
+rotate to a new source. Rotation is the scaling answer; checkpointing is not.
+
+### Partial verification — a real gap, with a clean fix
+
+**`verifyFeed` currently refuses when a block is absent** (`missing block file ${e.block} at seq ${i}`;
+`bin/verify` dies the same way). A reader who fetched 8 chunks of 93 therefore cannot verify at all
+today. This blocks the player and the ejected piece both.
+
+The fix weakens nothing, because the split is already clean:
+
+- **Without any block bytes** you can verify the digest over entries, the signature over that digest,
+  the `prev_hash` linkage, and every commitment's shape. That establishes *"the author signed this
+  exact list of N chunk hashes, in this order."* Every `this_hash` is already in the manifest and
+  already covered by the signed digest.
+- **Per block you actually fetch**, check its bytes against its own `this_hash`. O(1). That
+  establishes *"this byte string is the chunk committed at seq K."*
+
+Together those are complete. So `verifyFeed` wants a mode where an absent block is **not held**
+rather than **invalid** — and it must stay loud about which entries went unchecked, so a partial
+verification can never be reported as a full one.
+
 ## Do
 
+- [ ] `data-pile`: `verifyFeed` / `bin/verify` partial mode — absent block is "not held", not
+      "invalid"; report the unchecked set explicitly. **Prerequisite for the player and for ejection.**
 - [ ] `data-pile`: generalize `bin/prove --from N` to `--seqs 41-58,102-107`. Small — drop blocks are
       already independent; only the bundle's seq selection changes. Mirror in `prove.mjs`.
 - [ ] `data-pile`: `bin/media-pack` — segment (`-c:a copy`, refuse a re-encode), seal each chunk as a
@@ -138,15 +212,31 @@ trusted separately. Exhibits eject to the piece; the player never does.
       transcripts already exist and the phone's words are the record; only timings are added. No
       whisper.cpp / mlx-whisper present on the author's machine as of 2026-09-01.
 
+## A pile engine, or the template?
+
+The split the engine question needs already exists in the repo: `bin/` + workflows + docs are
+machinery, while `pile.yml` + `keys/` + `inbox/` + `state/` + the `feed/**` branches are the
+operator's. That is the same seam `journal.anecdote.channel` runs on, so the shape is proven rather
+than speculative, and `skel/` is the proven home for what the template currently carries.
+
+**Mounting an engine does not force writing to the root** — the journal engine is mounted at
+`.journal-engine/` while content lives under `journal/`, one config key serving as content dir, URL
+base and data namespace at once. A pile engine could take a directory the same way.
+
+But note what the multiplicity finding above does to the motive: **rotation is a source, not a pile**,
+so the multi-pile use case that made an engine feel urgent mostly evaporates. What remains is the
+ordinary engine argument — fixes reach every pile by bumping a pin instead of by hand-copying into N
+forks — which is a good argument on its own and does not need the multi-pile one.
+
+Deferred deliberately. It is a repo-shape decision with no consumer yet blocked on it, and doing it
+before `media-pack` exists would be designing the glove before the hand.
+
 ## Open
 
 - **Tell's freshness message.** Shape of *"there is a newer head"* is unspecified. It is the only
   live fact in the system, so it should stay a pointer; resist letting payload into it.
-- **Manifest vs. map split at scale.** Rendering needs the map; verifying needs the full entries
-  array (~170KB at 5s for a 51-minute recording). Whether the map ships inline per piece or is
-  fetched is unsettled.
-- **Ejected-piece manifest slice.** An ejected piece needs enough of the chain to verify its own
-  chunks without the whole journal's manifest. The slice's shape — and whether a partial chain can
-  verify against the signed head at all — is not designed.
+- **Rotation ergonomics.** Rotation is expressible today but unautomated: nothing closes a source at
+  a size threshold, and nothing tells a reader that `feed/tell-2026a` continues into `-2026b`.
+  A reader following a rotated journal needs that link to exist somewhere.
 - **Player origin for an ejected piece.** It points back at the origin journal's player; what a
   reader sees when that origin is gone is undecided (the §N derelict-node question, in miniature).
