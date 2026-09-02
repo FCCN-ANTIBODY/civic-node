@@ -29,3 +29,13 @@ seven issues where an item is one surface with another (map in each file's foote
 
 Item 1 ("labels signed by their labelers") is deliberately **not** its own document — it is a
 Dark Mode prerequisite consumed by C3; the signed-labels build must land with #80/#74.
+
+## Pending: `exhibits/` — sealed media exhibits (1 issue)
+
+Design settled across a research session; nothing built. Measured facts (lossless chunking, the
+drop-channel fit, the GitHub raw/Pages header findings) are recorded in the file so they are not
+re-derived — re-measure before contradicting them.
+
+| File | Covers | Workstream |
+| --- | --- | --- |
+| `exhibits/E1-sealed-exhibits.md` | selective disclosure of a recording; one pile per journal; player placement | data-pile `prove --seqs` + `media-pack`; journal player fragment |
