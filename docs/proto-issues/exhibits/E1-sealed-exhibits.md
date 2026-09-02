@@ -72,20 +72,47 @@ time without doing anything*. That backlink is the lease, and it is mechanical r
 
 ### The hosting half — measured, 2026-09-01
 
-`raw.githubusercontent.com` **cannot be framed and cannot serve a document**:
+Of `raw.githubusercontent.com`'s headers, **exactly one matters**, and it is the permissive one:
 
 ```
-content-type: text/plain; charset=utf-8      x-frame-options: deny
-x-content-type-options: nosniff              content-security-policy: default-src 'none'; sandbox
-access-control-allow-origin: *               cache-control: max-age=300
+access-control-allow-origin: *                ← the load-bearing line: fetch() works from anywhere
+content-type: text/plain; charset=utf-8       x-frame-options: deny
+x-content-type-options: nosniff               content-security-policy: default-src 'none'; sandbox
+cache-control: max-age=300
 ```
 
-GitHub already serves raw pre-inerted. But `access-control-allow-origin: *` means **`fetch()` from
-raw works from any origin**. So raw is a legitimate *byte* source and never a *document* source.
+**Raw is a byte source, and that is all it was ever needed for.** The offline origin does not ask
+the browser to render repository source — `jekyll-enough/build.mjs` does, over an in-memory
+`path -> content` tree, which is the standing promise that *the bytes are enough*. GitHub serving
+raw pre-inerted is therefore **aligned** with that posture rather than opposed to it: it is the
+lobotomy already performed.
+
+What the headers *do* foreclose is the narrow shortcut of pointing an `<iframe src>` straight at raw
+and letting the browser render it. That was a convenience, never the thesis. Do not read
+`x-frame-options: deny` as a constraint on the offline-origin path; it constrains only the shortcut.
 
 A constellation Pages origin answers `content-type: text/html`, `access-control-allow-origin: *`,
-`cache-control: max-age=600`, `server: cloudflare`, and **no** `x-frame-options` — so Pages can host
-the player and can be framed.
+`cache-control: max-age=600`, `server: cloudflare`, and **no** `x-frame-options` — so Pages can serve
+the player as a document and can be framed.
+
+**Two paths to the same player, and they agree.**
+
+- **Deployed** — the player is a document served from the journal's Pages origin. Identity is the
+  origin; one origin is one trust decision.
+- **Offline origin** — the player fragment is *built locally* from fetched source bytes by
+  jekyll-enough, inside the reader's own context. Identity is the **hash** of those bytes, not
+  wherever they came from.
+
+The hash identity is the stronger of the two and should be treated as canonical, with the origin as
+the convenience. That keeps the answer consistent with how chunks are already addressed (`this_hash`,
+not a URL) instead of introducing a second, weaker notion of "trusted" that applies only to the
+player. It also means a reader who fetched the player from raw and a reader who loaded it from Pages
+can prove they are running the same player.
+
+`build.mjs` already carries the right seam for the degraded case: `lenient` downgrades an unknown
+tag, filter or missing include to a **named gap** — explicitly *"for a viewer of someone else's
+source."* A reader holding the manifest but not the chunks is that viewer, and a dark timeline is
+that gap. Reuse it; do not invent a second failure vocabulary.
 
 - **`frame-ancestors` is not available.** Pages sets no custom headers, and `frame-ancestors` is
   ignored in a `<meta>` CSP by spec. There is no header defense against hostile framing.
@@ -118,8 +145,12 @@ renders the *whole* timeline — dark and lit — and knows exactly which hashes
 degraded state is honest rather than broken.
 
 **One player per journal, at the journal root.** Not one per piece, and not inside a piece's
-`exhibits/`. A single origin is a single trust decision; N per-piece players would each have to be
-trusted separately. Exhibits eject to the piece; the player never does.
+`exhibits/`. One player is one trust decision; N per-piece players would each have to be trusted
+separately. Exhibits eject to the piece; the player never does.
+
+"One player" is identified by the **hash of its bytes**, with the serving origin as a convenience —
+see "the hosting half" above. That is what lets the deployed path and the offline-origin path be the
+same player rather than two players that merely look alike.
 
 ## Multiplicity — measured, 2026-09-01
 
