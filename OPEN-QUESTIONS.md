@@ -1477,3 +1477,110 @@ the vault to a repo, no import from a repo into the vault, and neither side can 
   else here — the control node, the passkey, the age recipient minted on the device, the keeper's
   origin-bound vend — are candidate answers to that one question, and none of them is currently
   connected to the others.
+
+---
+
+## Y. The springboard inside the carrier — where the DNS pointer rides in a QR that is not for cameras
+
+**Tier: anecdote (gravel) · tell (the poll QR) · research.**
+
+The poll QR carried a plain URL because that is the one thing a vanilla camera does: it opens
+links. A gravel frame (`AC1|d|…`, `composer/carrier.mjs`) is not a URL, so a phone that does not
+already have the app gets nothing from it — and after D14/D15 the frame is the thing being shown.
+Onboarding therefore needs a **springboard code** somewhere in the picture: the smallest possible
+pointer, DNS-routable, that a camera notices first — ideally large enough to be *the* thing it sees
+even with a video running behind it. DNS is the one pointer the world's cameras already unpack;
+what the others would be is unknown.
+
+- **The instinct: eat into the QR's redundancy.** A QR survives up to ~7/15/25/30% module loss at
+  L/M/Q/H, and the usual logo-in-the-middle trick spends that budget on artwork. The idea is to
+  spend it on a *second, tiny QR* — the springboard — stamped over every frame of the video. Cap:
+  at H the stamp can cover no more than ~30% of the outer code *minus whatever the camera is already
+  costing*, and every frame pays it. Whether a phone camera, shown a big code with a small code
+  inside it, reliably reports the small one is not known and would have to be measured per OS.
+- **The fountain makes the cost different from what it looks like.** The rateless stream is the
+  redundancy; per-frame error correction is only dent detection. A frame that fails to decode is
+  one more droplet the camera has to catch, not a lost byte — so "eating into" the outer code is
+  cheap on the gravel side and expensive only for the vanilla camera that needs the outer code to
+  be *ignored*. That is the opposite of what the overlay wants.
+- **A cheaper shape to test first: the frame *is* a URL.** Prefix every frame with the springboard —
+  `https://<bottle host>/#AC1|d|…` — so any single frame a vanilla camera reads opens the bottle's
+  host with a droplet already in the fragment, and our own decoder just strips the prefix. Cost is
+  ~30 bytes per frame against a 256-byte block. Nothing is overlaid, nothing is stylised, every
+  frame is a springboard, and the fragment never leaves the device (it is not sent to the server), so
+  the first-contact page receives the pointer without the network learning anything about the
+  payload. The layout tile prefixed the same way carries the signed manifest to the landing page on
+  the first scan. This is a proposal to measure, not a decision: it needs a camera test on iOS and
+  Android for (a) a bare host vs a scheme-prefixed URL, (b) fragment length tolerance, and (c) how
+  the OS treats a code that changes 10× a second.
+- **Where it points is now well-defined.** A poll's springboard points at the Tell; anything else
+  is a bottle and points at the bottle's own host (D15: the bottle subdomain is an onboarding
+  surface). There is no third destination.
+- **What the pointer is *for* also moved.** The public QR was a pointer to the transit of a pile's
+  data — the collection — not to the thing itself. A springboard on a bottle points at the thing.
+  The two should not share a vocabulary by accident.
+
+---
+
+## Z. The bottle lands — what the catcher accepts, streams in one pile, and the reply that is not yet a reply
+
+**Tier: anecdote (the catcher and the shell) · pile (streams and attachments) · tell (the online case).**
+
+D15 says only bottles are caught and D16 says the hand-off buys an address. This is what those two
+leave open, kept in one place so the reconciliation does not scatter again.
+
+- **The gravel-catcher is the onboarding surface.** `docs/gravel-whale.md` names it as unbuilt. It
+  is not needed for a consumer you already know will eat the payload; it is the entry point for
+  *anyone who finds a bottle and can read it*. Scope: catch droplets, reassemble, verify the
+  capsule's signature and kind, open in the chamber, keep the seed, offer persist. Every side of it
+  exists (`fountain`, `carrier`, `transfer`, the chamber, `bottle-book`); the catcher is the
+  composition.
+- **Two roll calls.** The service worker's `FALLBACK_SHELL` is a hand-kept list of what the app
+  needs offline; `composer/install.mjs` is a signed manifest of pinned blobs with one entry. "Call
+  one thing up and provision yourself" is the install manifest's job — the firmware is an HTML file
+  that lights everything up, and it is testable once we serve our own views. Either the shell list is
+  derived from the manifest or it is retired into it; two lists will drift.
+- **Every repository gives its own UI.** When a bottle opens, something must be seen, and the
+  bottle's own filesystem supplies it (a UI on a separate branch is one option, so it never competes
+  with root-level files). XSL over an XML feed is attractive because it keeps the machine-readable
+  form as the backbone — but Chromium announced its intent to remove XSLT from the browser (2025,
+  with WebKit and Gecko signalling the same), so a UI that *depends* on it is building on a
+  deprecated floor. Take the principle (the feed is canonical, the view is a stylesheet over it) and
+  pick a rendering path that will still exist. Also: the chamber has no WebCrypto — a bottle's UI
+  cannot verify anything for itself, by design; verification happened before it was opened.
+- **Two bottles in one pile.** A pile holding two pieces of journalism holds two bottles, and their
+  diffs may arrive in alternation. The feed today is one ratchet, one block per window, with no
+  notion of *which attached bottle* a block extends. Either a block names its bottle, or the feed is
+  per-attachment (`feed/<bottle>/<seq>`), or the stream is interleaved and the reader demultiplexes
+  by content-id (invariant #7). The wrong answer is the one that lets two streams compute into each
+  other. Related: §W's disclosure granularity — a per-bottle stream changes what "reveal from N"
+  discloses.
+- **The most minified bottle as the pile's native artifact.** The aside worth keeping: if the pile
+  kept the smallest serialization of each attached bottle (the zero-time animated track, or whatever
+  is smallest), the artifact stored and the artifact shown would be the same bytes. It is opaque from
+  the pile's side — bytes changing — and that is fine. The confusion to avoid is D15's "diff of the
+  QR": frames are derived, diffs are of bytes.
+- **The diff-type bottle needs a base rule.** A patch applies to something. A diff bottle must name
+  the content-id of its base, and a catcher that does not hold the base must say so rather than
+  produce a corrupt fast-forward. Whether an attached bottle on a pile admits *only* diffs to itself
+  (D15 §7) is the same rule seen from the pile.
+- **Replies are hydratable, not native.** `composer/answered.mjs` keeps the exact submission block
+  per (pile, poll, round) — the principal data Antidote aggregates. A reply anecdote must be
+  constructible from it (D15 proposes a `ref` part naming the poll's content-id; no schema change),
+  but the bottled per-anecdote form (`<bottle>-1`, `-2`, …) is a distribution serialization and a
+  poor receipt. Keep what is needed to reconstitute; do not keep every box.
+- **"What if I share this QR online?"** D16 covers the in-person hand-off, where the back-broadcast
+  buys an address. A QR posted to the internet reaches people who were never met, will never
+  broadcast back, and have no registration. That is the old external channel, and it is still worth
+  having; it needs its own answer that is neither the retired springboard nor a worker with a
+  credential (D14). Candidate: the unregistered reply lands in the Tell's mailbox under the poll's
+  own token (the built half of `tell docs/qr-provenance.md`), publicly, as it always did — with the
+  privacy caveat stated rather than papered over.
+- **The constitution as the anti-spam line.** A registered respondent may follow up on the Tell;
+  the per-Tell constitution is what keeps a polling-respondent Tell from becoming a spam channel,
+  and what would let a strong answer be offered onward with consent already in hand (Antidote's
+  recontacting power, the polling group they were in). Not designed; the judging engine is the
+  dependency.
+- **An onboarding message does not exist.** Every path above lands a person somewhere and shows
+  them something; none of them says *what this is*. The message is a product deliverable, not a
+  doc.
