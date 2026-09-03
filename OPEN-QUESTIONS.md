@@ -1414,6 +1414,35 @@ the vault to a repo, no import from a repo into the vault, and neither side can 
   one, the floor is a viewer and "typing a name mints one" is a fiction the vault maintains. Both
   readings are supported by something already written down, which is how it stayed unresolved.
 
+- **THE FLOOR IS ALREADY A BOTTLE, IN THE CODE, TODAY.** `composer/bottle-uri.mjs` treats `tell` as a
+  `<storage>` value exactly like `bottles`: *"the subdomain — `tell` for data-piles, `bottles` for
+  arbitrary cubbies"*, one grammar `<label>.<storage>.<apex>`, one wildcard on the sub-sub-domain,
+  the same `/storage/.<adapter>` facet. D4 lists them as two bullets of one decision. So a floor is
+  not a different kind of thing from a bottle — it is a bottle under Tell's storage subdomain, and
+  the addressing layer has never believed otherwise. "The floor is not real, provisioning it is
+  real" is a correct reading of the code as it stands.
+  - Which makes the ephemerality complaint answerable with what exists: **loading an existing pile
+    is loading a bottle, and persisting one is evicting to a bottle** — D7's book remembers it,
+    D11's capsule distributes it. The floor needed a saveability story; the bottle already is one.
+
+- **So what does `*.tell` actually encode? Vouching, and only vouching.** D4's sole distinction
+  between the two is whose office it is — *"Tell's subdomain; Tell's office is collection"* against
+  *"Not Tell's to vouch for."* That is a real claim, not a naming preference. But D7 then introduced
+  a **signed** `kind` at inception, carried in `bottle-attest`, precisely so a picker can trust what
+  a bottle is *before connecting* — vouching by signature rather than by hostname. **A wildcard
+  subdomain and a signed attestation are two mechanisms for one claim**, and D7 already chose the
+  signed one everywhere else.
+  **Blocks:** deciding whether `*.tell.<apex>` is load-bearing or is DNS doing a job a signature
+  does better. Not urgent, and cheaper to answer before more names exist than after.
+
+- **The iframe direction is a constraint, not a preference — and inverting it fights D8.** Today
+  `floor/floor.mjs` says its one outward surface *"points at vanilla Tell"*: the dumb, wildcard-served
+  room embeds the capable thing. That is D8's posture exactly — the room is "the least-trusted code
+  in the system" and the keeper is "the capable child" it invites in. **Tell iframing a bottle
+  inverts that**: the capable, vouching service would embed content it does not control, taking on
+  exactly the exposure the shell pattern exists to keep out of it. If the inversion is wanted, it
+  needs an argument against D8's direction rather than alongside it.
+
 - **Worth a research turn, and worth scoping first.** The subject is not "how do piles work" but the
   narrower: *what act makes a person the owner of a pile, and which artifact records it?* Everything
   else here — the control node, the passkey, the age recipient minted on the device, the keeper's
