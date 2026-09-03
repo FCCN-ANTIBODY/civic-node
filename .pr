@@ -1,58 +1,32 @@
-E3 redaction geometry — pad to a global ladder, prove continuity with a Merkle manifest
+OPEN-QUESTIONS §T: one item answered by E3, two seams opened
 
-Adds the geometry section to `E3-sealed-prose.md` (#113, merged). Cut fresh from `main`.
+Reconciling §T against the constellation work handed over from the other session. E3 closes one item outright; composing E3 against the pile's own contract opens two that were not visible from either side alone.
 
-Autumn's requirement, stated exactly: *not so much hiding the size of a redaction as proving the two
-revealed ends are absolutely continuous with it.* Those are two problems and only one is about padding.
+## Answered — and better than §T's answer was
 
-## Inflate — but pad with filler, not neighbours
+§T argued the unredacted input needed a **repository/bottle boundary** because a journal repo is public and path separation leaks. **E3 removes the need for a boundary at all:** the draft lives in the pile encrypted, publishing is key release, and *an ejected piece is a disclosure state, not a structural difference*. No plaintext in the public repo, no second public version to keep in step.
 
-The move is right: seal a span at a block size, not its own length, padding **both** sides so the
-secret's position inside the block isn't disclosed either.
+Struck rather than deleted, because "public repo, therefore separate location" is exactly the reasoning someone re-derives.
 
-One refinement — spilling into neighbouring text **spends revealed material to buy concealment**; the
-absorbed neighbours are now inside the withheld block and can't be shown. Synthetic filler gives the
-same concealment with no revealed text sacrificed.
+## Opened — the disclosure geometries have never been composed
 
-## The one place the instinct goes the wrong way
+This is the one worth your attention, because it is cheap now and unfixable later by E3's own account.
 
-*"We size relative for this one cut."* **A block size derived from the thing it hides leaks it.** A 3 KB
-block around a 2.9 KB secret says a lot; so does a 32-byte one.
+- **E3 seals prose with HKDF fan-out:** one root per piece, per-span keys derived from it. Releasing span 5 says nothing about span 6, so selective redaction works.
+- **A data-pile seals with a forward hash ratchet:** `K_{seq+1} = sha256("ratchet:" || K_seq)`, and per `data-pile/CONTRACT.md`, "revealing `K_n` discloses blocks `seq >= n` and **never** the blocks before it" — a suffix, never a selection.
 
-A fixed **global ladder** (64 / 256 / 1 KB / 4 KB …) leaks strictly less — only which bucket, coarse by
-construction, identical across unrelated cuts. Under 2× worst-case cost, and "something lining up on the
-same grid" stops being a hazard because everything is on the same grid on purpose.
+Both correct for their own job. Nothing states how they nest.
 
-Worth being blunt about because it's unfixable after anything is sealed.
+**The deciding question: is a piece's E3 root ever delivered as a pile block?** If it is, the ratchet subsumes the fan-out — revealing that block's key yields the root, the root derives every span key, and per-span redaction silently stops working *while still appearing to*. It would also disclose every later pile block, so publishing one early piece pre-opens everything filed after it.
 
-## Continuity is a Merkle problem
+E3 leans the right way already ("the keeper vends the capability, never the root"), which puts the root outside the ratchet. That is probably the answer — but it is an implication rather than a statement, and E3's own warning is that granularity cannot be re-chosen once plaintext is out.
 
-Padding hides length and says nothing about adjacency. Commit to the **ordered segment sequence**, sign
-the root once. A revealed segment is plaintext plus its opening; a withheld one is still present as a
-bare commitment. The reader verifies that segments *i*, *i+1*, *i+2* are **consecutive under the signed
-root** — nothing removed, nothing inserted, order intact, without the plaintext or its true length.
+## Opened — append-only and retention want opposite things
 
-No new cryptography (invariant #8) — sha256, a Merkle path, the signature already in use. Structurally
-the same manifest E1 keeps over audio chunks, so prose and media stay one mechanism.
+D13 records that a mask's cache vault may be squashed or purged on a cadence, per-TLD. That holds while a pile stores **digests**. It stops holding if piles ingest the **payload diff** (the fast-forward-bottles direction, #105), because an append-only tank carrying content cannot discard it — the only deletion primitive is D7's enumerate-and-destroy on the whole origin.
 
-## Multi-pass composes
+So either hearsay snapshots do not belong in a pile, or "retention" means *destroy the pile*, not *trim it*. Worth settling before an operator is offered a retention setting that cannot do what it says.
 
-*"You have to use a composite of all of them."* Yes — **a disclosure is a set of openings against a
-fixed signed manifest**, never a re-cut. Several redactions are several withheld indices; several
-renders are several disclosure sets; a later release is a superset. Every past disclosure still
-verifies. That's also what lets a render pick a different slice: the slice is *which openings you hand
-over*.
+## Note
 
-## Two rules, one a trap
-
-- **The cut is fixed at seal time** — re-cutting invalidates every opening ever issued.
-- **A redaction is ONE bucketed segment, never a run.** A secret spanning six consecutive withheld
-  segments discloses its length in segment count — the bucketing leak reintroduced through the index
-  list. Inflate to the next bucket instead.
-
-## What still leaks, named
-
-Segment count, which indices are withheld, which bucket. That is: how many redactions, roughly where,
-coarsely how big. **"Roughly where" is wanted** — it's the attestation value; a reader must see that a
-redaction exists for withholding to be a checkable claim. **"Coarsely how big" is the residual cost**,
-and the ladder is the knob: fewer, wider buckets leak less and waste more.
+Also: #116 (redaction geometry) is on `main` as `e75ba5b`, though the handoff listed it as open. Nothing depends on that here.
