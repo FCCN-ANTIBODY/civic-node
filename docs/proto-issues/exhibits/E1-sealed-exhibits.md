@@ -72,20 +72,47 @@ time without doing anything*. That backlink is the lease, and it is mechanical r
 
 ### The hosting half — measured, 2026-09-01
 
-`raw.githubusercontent.com` **cannot be framed and cannot serve a document**:
+Of `raw.githubusercontent.com`'s headers, **exactly one matters**, and it is the permissive one:
 
 ```
-content-type: text/plain; charset=utf-8      x-frame-options: deny
-x-content-type-options: nosniff              content-security-policy: default-src 'none'; sandbox
-access-control-allow-origin: *               cache-control: max-age=300
+access-control-allow-origin: *                ← the load-bearing line: fetch() works from anywhere
+content-type: text/plain; charset=utf-8       x-frame-options: deny
+x-content-type-options: nosniff               content-security-policy: default-src 'none'; sandbox
+cache-control: max-age=300
 ```
 
-GitHub already serves raw pre-inerted. But `access-control-allow-origin: *` means **`fetch()` from
-raw works from any origin**. So raw is a legitimate *byte* source and never a *document* source.
+**Raw is a byte source, and that is all it was ever needed for.** The offline origin does not ask
+the browser to render repository source — `jekyll-enough/build.mjs` does, over an in-memory
+`path -> content` tree, which is the standing promise that *the bytes are enough*. GitHub serving
+raw pre-inerted is therefore **aligned** with that posture rather than opposed to it: it is the
+lobotomy already performed.
+
+What the headers *do* foreclose is the narrow shortcut of pointing an `<iframe src>` straight at raw
+and letting the browser render it. That was a convenience, never the thesis. Do not read
+`x-frame-options: deny` as a constraint on the offline-origin path; it constrains only the shortcut.
 
 A constellation Pages origin answers `content-type: text/html`, `access-control-allow-origin: *`,
-`cache-control: max-age=600`, `server: cloudflare`, and **no** `x-frame-options` — so Pages can host
-the player and can be framed.
+`cache-control: max-age=600`, `server: cloudflare`, and **no** `x-frame-options` — so Pages can serve
+the player as a document and can be framed.
+
+**Two paths to the same player, and they agree.**
+
+- **Deployed** — the player is a document served from the journal's Pages origin. Identity is the
+  origin; one origin is one trust decision.
+- **Offline origin** — the player fragment is *built locally* from fetched source bytes by
+  jekyll-enough, inside the reader's own context. Identity is the **hash** of those bytes, not
+  wherever they came from.
+
+The hash identity is the stronger of the two and should be treated as canonical, with the origin as
+the convenience. That keeps the answer consistent with how chunks are already addressed (`this_hash`,
+not a URL) instead of introducing a second, weaker notion of "trusted" that applies only to the
+player. It also means a reader who fetched the player from raw and a reader who loaded it from Pages
+can prove they are running the same player.
+
+`build.mjs` already carries the right seam for the degraded case: `lenient` downgrades an unknown
+tag, filter or missing include to a **named gap** — explicitly *"for a viewer of someone else's
+source."* A reader holding the manifest but not the chunks is that viewer, and a dark timeline is
+that gap. Reuse it; do not invent a second failure vocabulary.
 
 - **`frame-ancestors` is not available.** Pages sets no custom headers, and `frame-ancestors` is
   ignored in a `<meta>` CSP by spec. There is no header defense against hostile framing.
@@ -118,11 +145,140 @@ renders the *whole* timeline — dark and lit — and knows exactly which hashes
 degraded state is honest rather than broken.
 
 **One player per journal, at the journal root.** Not one per piece, and not inside a piece's
-`exhibits/`. A single origin is a single trust decision; N per-piece players would each have to be
-trusted separately. Exhibits eject to the piece; the player never does.
+`exhibits/`. One player is one trust decision; N per-piece players would each have to be trusted
+separately. Exhibits eject to the piece; the player never does.
+
+"One player" is identified by the **hash of its bytes**, with the serving origin as a convenience —
+see "the hosting half" above. That is what lets the deployed path and the offline-origin path be the
+same player rather than two players that merely look alike.
+
+## Multiplicity — measured, 2026-09-01
+
+The recurring worry is whether a repository can hold more than one pile, and whether committing the
+pile to the journal root forecloses that. It does not, because the plurality already exists and is
+in a different place than expected.
+
+**`sources:` in `pile.yml` is already a list, and it is implemented, not aspirational.** `bin/ingest`
+loops `for source in $sources`, and `ingest.yml` persists each into *its own branch*
+(`git push origin "$commit:refs/heads/$branch"`, parented only if that branch already exists — so a
+new source starts a root commit). `drop-pack` enforces one source per branch by refusing a manifest
+whose `source` disagrees. Per-source owner state lands at `state/<source>/`.
+
+So the dichotomy resolves cleanly:
+
+- **The identity is a singleton.** `id`, `scope`, `age_recipient`, `repo_url` and `keys/pile.age.pub`
+  are one per repository. One repo = one recipient = one owner.
+- **The feeds are already plural.** N sources, N branches, N independent chains, one identity.
+
+**Log rotation is therefore a new source, not a new pile.** Closing intake on `feed/tell-2026a` and
+opening `feed/tell-2026b` needs no new concept and no new machinery — the sequence and the
+breakpoints are exactly the branch boundaries. This is the capability the "multiple data piles"
+worry was reaching for, and it is already here.
+
+Genuinely *multiple identities* in one repo is a different thing and is **not** supported. Nothing
+described so far needs it, and adding it would mean multiple recipients under one custody boundary —
+squarely against invariant #4. Leave it unbuilt.
+
+Observing someone else's pile by submoduling it needs no machinery at all: it is a git submodule of
+a public repo, and `bin/verify` requires no secret. That is a third, unrelated sense of "submodule"
+and should not be conflated with the two above.
+
+## Scale — where a long pile actually hurts
+
+Measured against a synthetic drop manifest, key-less verification (digest + chain linkage +
+commitment shape), **holding no block bytes at all**:
+
+| entries | manifest | gzip | verify | per-chunk read |
+| --- | --- | --- | --- | --- |
+| 312 | 111KB | 28KB | 2.3 ms | O(1) |
+| 624 | 222KB | 55KB | 2.5 ms | O(1) |
+| 1,558 | 556KB | 138KB | 6.0 ms | O(1) |
+| 10,000 | 3.5MB | 886KB | 45 ms | O(1) |
+| 100,000 | 35MB | 8.9MB | 383 ms | O(1) |
+
+**Reading a chunk is already not a function of reading everything behind it.** Drop blocks are
+independent by construction; there is no ratchet to walk. No checkpointing scheme is needed for
+reads — the property is already held.
+
+**CPU is not the limit; manifest transfer is.** 100,000 entries verify in under half a second, but
+cost ~8.9MB gzipped to ship. Budgeting ~1MB gzip puts the comfortable ceiling near **11,000 entries**
+— about 15 hours of audio at 5s chunks, or a journal holding ~20 hour-long recordings. Past that,
+rotate to a new source. Rotation is the scaling answer; checkpointing is not.
+
+### Partial verification — a real gap, with a clean fix
+
+**`verifyFeed` currently refuses when a block is absent** (`missing block file ${e.block} at seq ${i}`;
+`bin/verify` dies the same way). A reader who fetched 8 chunks of 93 therefore cannot verify at all
+today. This blocks the player and the ejected piece both.
+
+The fix weakens nothing, because the split is already clean:
+
+- **Without any block bytes** you can verify the digest over entries, the signature over that digest,
+  the `prev_hash` linkage, and every commitment's shape. That establishes *"the author signed this
+  exact list of N chunk hashes, in this order."* Every `this_hash` is already in the manifest and
+  already covered by the signed digest.
+- **Per block you actually fetch**, check its bytes against its own `this_hash`. O(1). That
+  establishes *"this byte string is the chunk committed at seq K."*
+
+Together those are complete. So `verifyFeed` wants a mode where an absent block is **not held**
+rather than **invalid** — and it must stay loud about which entries went unchecked, so a partial
+verification can never be reported as a full one.
+
+## Run end to end, 2026-09-02 — it works
+
+Claim → cut → seal → disclose → render, against the real Precision Security call, in a control
+node with `data-pile` mounted at `.pile-engine/`:
+
+```
+1. unclaimed pile refuses to hold anything    drop-pack: no recipient
+2. claim                                       installed pile.yml from the mounted engine
+3. cut                                         116 chunk(s), 578.664s, lossless (verified)
+4. seal                                        117 block(s), digest 2bd41a93…
+5. verify                                      verified          (holding no secret)
+6. disclose                                    DISCLOSES 117 of 117: seq 0-116
+7. render                                      data-disclosure="revealed"
+```
+
+The rendered exhibit reads `audio/mp4 · Call Recording.m4a · d5767d70200e4cc5 · 9:39 — complete`,
+the 14.6MB `<audio>` embed is gone, and the ciphertext sits in `inbox/` off the clean face.
+
+### The two bugs it found, which no unit test could
+
+Both survived every suite because **each half was correct and only the join was wrong.**
+
+- **The map names the TIMELINE; the manifest names the BYTES.** The player fetched by the map's
+  filename (`index7.m4s.enc`) while `drop-pack` stores that chunk as `000008.enc`. Every request
+  would have 404'd. Address everything by seq and read the block name off the signed manifest —
+  which is also the only join that survives a payload appended into a pile it does not start at.
+- **The init segment is not special.** The player treated it as shipping in the clear; the sealer
+  had sealed it as an ordinary block. This document already said init is a block ("always disclosed
+  (seq 0)"), so the player was the wrong half. `data-init-seq` now carries where it landed.
+
+**The lesson is the reusable part: a format with two vocabularies needs its join asserted somewhere.**
+Nothing was wrong with either side in isolation, so nothing local could detect it.
+
+### Page weight, measured
+
+With block names coming from the manifest, a chunk's filename and size are dead weight in the page:
+
+| | |
+| --- | --- |
+| map as first emitted | 9KB (11% of an 81KB page) |
+| timeline only (index/start/duration) | 5KB — **-42%** |
+| a 51:51 recording, ~624 chunks | ~52KB inline, per piece |
+
+So the page gets the timeline; the full map stays with the pile as the account of what was cut.
+
+### Still unverified
+
+**The player has never run in a browser.** Everything above concerns its inputs. Whether MSE
+gap-jumping actually skips a sealed stretch is written from the spec and is the one claim here that
+no amount of local work can settle.
 
 ## Do
 
+- [ ] `data-pile`: `verifyFeed` / `bin/verify` partial mode — absent block is "not held", not
+      "invalid"; report the unchecked set explicitly. **Prerequisite for the player and for ejection.**
 - [ ] `data-pile`: generalize `bin/prove --from N` to `--seqs 41-58,102-107`. Small — drop blocks are
       already independent; only the bundle's seq selection changes. Mirror in `prove.mjs`.
 - [ ] `data-pile`: `bin/media-pack` — segment (`-c:a copy`, refuse a re-encode), seal each chunk as a
@@ -138,15 +294,41 @@ trusted separately. Exhibits eject to the piece; the player never does.
       transcripts already exist and the phone's words are the record; only timings are added. No
       whisper.cpp / mlx-whisper present on the author's machine as of 2026-09-01.
 
+## A pile engine, or the template?
+
+The split the engine question needs already exists in the repo: `bin/` + workflows + docs are
+machinery, while `pile.yml` + `keys/` + `inbox/` + `state/` + the `feed/**` branches are the
+operator's. That is the same seam `journal.anecdote.channel` runs on, so the shape is proven rather
+than speculative, and `skel/` is the proven home for what the template currently carries.
+
+**Mounting an engine does not force writing to the root** — the journal engine is mounted at
+`.journal-engine/` while content lives under `journal/`, one config key serving as content dir, URL
+base and data namespace at once. A pile engine could take a directory the same way.
+
+But note what the multiplicity finding above does to the motive: **rotation is a source, not a pile**,
+so the multi-pile use case that made an engine feel urgent mostly evaporates. What remains is the
+ordinary engine argument — fixes reach every pile by bumping a pin instead of by hand-copying into N
+forks — which is a good argument on its own and does not need the multi-pile one.
+
+Deferred deliberately. It is a repo-shape decision with no consumer yet blocked on it, and doing it
+before `media-pack` exists would be designing the glove before the hand.
+
 ## Open
 
 - **Tell's freshness message.** Shape of *"there is a newer head"* is unspecified. It is the only
   live fact in the system, so it should stay a pointer; resist letting payload into it.
-- **Manifest vs. map split at scale.** Rendering needs the map; verifying needs the full entries
-  array (~170KB at 5s for a 51-minute recording). Whether the map ships inline per piece or is
-  fetched is unsettled.
-- **Ejected-piece manifest slice.** An ejected piece needs enough of the chain to verify its own
-  chunks without the whole journal's manifest. The slice's shape — and whether a partial chain can
-  verify against the signed head at all — is not designed.
+- **Rotation ergonomics.** Rotation is expressible today but unautomated: nothing closes a source at
+  a size threshold, and nothing tells a reader that `feed/tell-2026a` continues into `-2026b`.
+  A reader following a rotated journal needs that link to exist somewhere.
 - **Player origin for an ejected piece.** It points back at the origin journal's player; what a
   reader sees when that origin is gone is undecided (the §N derelict-node question, in miniature).
+- **`exhibits/` may not survive.** The direction Autumn has named: the piece folder becomes the
+  whole of it, `.core` handles sit beside the prose, and the same mechanism manifests redacted
+  intermediates for TEXT as well as media — ultimately for a whole static site. Recorded as a
+  direction, not a design; nothing here is built against it, and the naming (`sheaf` for what the
+  folder holds, `.core` for a handle) was chosen to survive the folder going away.
+- **The never-disclosable invariant is unheld for audio.** `bin/revealed` (data-pile) makes an
+  accidental re-disclosure hard — it names what is newly going out and refuses a withheld block —
+  but that is the rule-shaped half. The absence-shaped half, never wrapping a key at all, is
+  specified in E2 and unbuilt. Rotation is the collision: E1's "close one source, open another"
+  would re-key a withheld region as ordinary maintenance.
