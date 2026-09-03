@@ -1443,6 +1443,35 @@ the vault to a repo, no import from a repo into the vault, and neither side can 
   exactly the exposure the shell pattern exists to keep out of it. If the inversion is wanted, it
   needs an argument against D8's direction rather than alongside it.
 
+- **"There is only one clean room" is already true, and it is not a wildcard.** It is the
+  **`data:` chamber** — `docs/origin.md`'s "offline-first shipyard of data:chambers": a
+  `data:text/html` tab whose origin is **null**, which never uses a service worker, retains nothing,
+  and is trusted purely by a transferred MessagePort over the probe line. So the three isolation
+  mechanisms in this system are doing three different jobs and have been read as competing:
+
+  | mechanism | what it grants | what it cannot do |
+  | --- | --- | --- |
+  | wildcard sub-sub-domain (floor / bottle) | a **persistent hermetic origin** — storage that survives | be cheap; each storage subdomain is a real cert and a real name |
+  | `data:` chamber | **powerlessness** — null origin, nothing retained, capability only | hold anything, or act without a capable parent |
+  | iframe + probe line | **capability transfer** without trusting code | exist without something capable on the other end |
+
+  A bottle is where you **keep**; the chamber is where you **work**. They are complementary, and
+  both are built. "You cannot load a bottle without the clean room" is a coherent rule and costs
+  nothing new.
+
+- **The polling spec and the floors are not two designs for one thing. They are ephemeral relay and
+  durable room, and the difference is WHO KEEPS SOMETHING.** The QR-to-Tell path makes Tell a
+  springboard: parameters carry the destination, the answer submits, and the respondent leaves
+  **nothing behind** — which for a stranger answering one poll is the correct and kind outcome.
+  A floor does the opposite on purpose: the label is a key into a vault that persists forever.
+  - So the sorting question is not floor-versus-bottle, it is **does this participant keep
+    anything?** A poll respondent: no — springboard plus chamber, no origin minted in their browser.
+    A pile owner: yes — a bottle to keep in, a chamber to work in.
+  - Read that way §X's "which one is the pile" softens: the vault is the **owner's** view, the
+    springboard is the **respondent's** path, and the repo is the **durability and publication**
+    form. Three roles of one thing rather than three competing claims — which still leaves the
+    ownership act unanswered, but stops it being a contradiction.
+
 - **Worth a research turn, and worth scoping first.** The subject is not "how do piles work" but the
   narrower: *what act makes a person the owner of a pile, and which artifact records it?* Everything
   else here — the control node, the passkey, the age recipient minted on the device, the keeper's
