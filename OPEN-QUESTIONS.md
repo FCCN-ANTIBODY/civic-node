@@ -1245,3 +1245,50 @@ someone who was not already following the author.
     property) *and* it is the failure mode that turned every previous web-annotation layer into a
     harassment surface. The absence of discovery-by-target is load-bearing for safety, not an
     artifact of the no-registry rule, and that is not obvious from outside.
+
+---
+
+## U. The directory is Atlas's work, and it is being done in the wrong repository
+
+**Tier: atlas (whose office this is) · anecdote (where it currently runs).** `anecdote.channel`
+publishes a directory of the constellation: `scripts/sync-sites.mjs` probes every host in
+`config/sites.txt`, resolves `repo:` entries through the GitHub API, checks each name against the
+TLS coverage in `config/san-list.txt`, and writes `sites.json` — which `index.html` fetches at
+runtime and renders, falling back to a bare standing-by message when it is absent.
+
+**That is a directory of sites, and a directory is Atlas's office** (`AGENTS.md`: *"a directory of
+Tells + reflecting gateway"*). It lives in anecdote for an accidental reason — that is where the
+deploy hook happened to be. The intended shape is Atlas building and serving it, and anecdote
+**embedding** it rather than generating it.
+
+- **It is the only reason anecdote needs a build at all.** Everything else in that repository is
+  served exactly as committed — the design it states about itself, and the property that makes it
+  publishable anywhere with no toolchain. Move the directory out and anecdote becomes static files
+  and nothing else: no build command, no API token, no generated artifact, no build-time failure
+  mode. That simplification is the point, not a side effect.
+  **Blocks:** nothing today; it is the difference between a host that must run a build and a host
+  that must only serve.
+
+- **Three things must travel with it, and each fails quietly if it does not.**
+  - **The TLS guard.** `sync-sites.mjs` *fails* when a listed host has no certificate coverage.
+    That failure is what stops a name being published before its certificate exists. It has to keep
+    failing something on the Atlas side, or it silently stops guarding.
+  - **The token.** `repo:` entries are resolved through the GitHub API; unauthenticated that is 60
+    requests an hour, and **a rate-limited lookup reads exactly like a site that is not there** — the
+    entry vanishes from the directory rather than erroring.
+  - **The empty-directory failure mode.** A missing `sites.json` does not error, it renders the
+    standing-by fallback. `scripts/page.test.mjs` exists because that already happened once in
+    production. Whatever serves the directory next inherits that obligation.
+
+- **Embedding it re-opens a settled question.** If anecdote iframes a directory Atlas serves, that is
+  a cross-origin embed, and D9's 2026-09-01 amendment records that `'self'`-based CSP refuses
+  subdomains **in both directions**. The server needs `frame-ancestors` naming anecdote; anecdote
+  needs `frame-src` naming it. This is the same trap as the journal engine's `frame-src` gap, which
+  presented as an empty rectangle with no error a reader could see.
+  **Blocks:** the embed working at all, and it will look like a rendering bug rather than a policy one.
+
+- **Open: does the directory stay a build artifact, or become a live surface?** Generating
+  `sites.json` at publish keeps the probe results honest as of a moment and requires a build.
+  Serving it from Atlas as a live fetch removes the build entirely but makes the reader's view depend
+  on Atlas being up. The first is what exists; the second is what "Atlas provides discovery" usually
+  means. Choosing decides whether anecdote is ever built again.
