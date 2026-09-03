@@ -915,6 +915,35 @@ Not push: "the RSS of it" is setting your dynamic searches and seeing them popul
     same law `VISION.md` states for constitutions, now operating at the membership grain).
   - **Constraints (non-negotiable):** the instrument stays singular and pinned (§O) wherever it
     runs; the crank duty is disclosed **at joining**, never discovered mid-gesture.
+- **A board's categorization is not the author's own tags, and must not be.** The tags a piece
+  declares about itself and the labels that place it on a subject board (*"this is local
+  journalism"*) are **different objects with different authors**. Self-declared tags are a claim;
+  board placement is a finding, and it is the labeling commons above that produces it. Collapsing
+  them turns a board into a self-promotion surface where the loudest self-description wins, which is
+  the exact failure the commons exists to avoid. **A piece never places itself.** (The derelict case
+  below is the one deliberate exception, and it is named as a degradation.)
+- **Everything above is blocked on a reducer that does not work yet.** All three candidate
+  mechanisms presuppose an instrument that can produce a label; the honest status is not "local-side
+  only" but **not yet arrived at** — it has been attempted and has not landed. Until it does there is
+  **no work to hand anyone at contact**, which means §R's crank has nothing to turn and the labeling
+  commons cannot start. This is the dependency to state plainly rather than discover: **the crank is
+  the mechanism, labeling is the work, and the reducer is what makes the work performable at all.**
+- **The subsidy stopgap — and the reason it must be marked.** While the mesh is small, a node may
+  **float the labeling itself** — an operator covering a large share of traffic, plausibly with an
+  agent API standing in for the reducer. That is a legitimate thing for a better-resourced node to do
+  and it is not cheating; it is the node-tier form of §R's standing crank-commitment (*"I'll float
+  it for a while"*), and it is what lets a board exist before anyone else has arrived.
+  - **But a subsidized label is a different claim from an instrument label, and the difference has
+    to be recorded.** §R's authenticity detector reads **label-convergence between two peers running
+    the verifiably same pinned instrument** — a cracked agent diverges. A label produced by a cloud
+    API did not come from that instrument, so it carries none of that signal; if subsidized and
+    instrument labels are stored indistinguishably, **the detector silently starts reading noise as
+    agreement** and the Sybil resistance §R claims for free is quietly gone.
+  - **So: provenance on every label — which labeler, of what kind.** Cheap to record now, and
+    unrecoverable later, because a corpus of unmarked labels cannot be sorted out after the fact.
+  - **Open:** whether a subsidized label is provisional (re-labeled by the instrument when one
+    exists) or permanent-but-flagged; and whether an operator subsidizing most of a board should be
+    visible to readers as such.
 - **Filter semantics over labels.** How search actually works over label hierarchies — couples the
   progressive document labels (#79) and the label/collision economy (**C**). Unknown on purpose;
   the honest starting point is "keyword groups," upgraded as the label economy matures.
