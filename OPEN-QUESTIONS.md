@@ -16,7 +16,9 @@ Sections **A–I** are protocol-level deferrals from shaking each service out in
 surfaced by running the **end-to-end poll use case** across all three at once, where the *product
 surface* (authoring, answering, the batch rhythm) lags the cryptographic spine that is otherwise built
 and tested. Some of the latter were left open on purpose; with the whole flow in view they are now
-worth closing rather than deferring.
+worth closing rather than deferring. **T** is the newest and sits apart from both: it came from
+following the *publishing* use case down instead of the poll, and it is the first section whose
+blocker is a service not doing its job yet (Atlas ingestion) rather than a decision nobody has taken.
 
 ---
 
@@ -1113,3 +1115,60 @@ answered what happens when the origin is gone or taken.
 - **Open (→ CONSTITUTION milestone):** the concrete queen-binding beyond CSP; the poisoned-sign /
   call-for-aid protocol; the stargate's egress adapters (medium, domain); the trust test for a new
   home; the HOME document schema and its self-signed ship-out.
+
+---
+
+## T. The research tier: the private notebook, and who is allowed to find any of it
+
+**Tier: anecdote (the origin) · node (the journal) · atlas (discovery).** An **edit mask** — a signed
+diff stencilled over a *content-addressed version* of a target, proposed as D13 in
+anecdote.channel#214 — is publishable by anyone and owed acceptance by no one. Subscribing to
+someone's is subscribing to a bottle. Publishing them habitually is not a new role: a stream of
+signed bottles from one identity on a cadence **is a journal**, whose citations happen to be masks
+rather than pieces, which also makes "the mask grew until it was the work" a change of proportion
+rather than of format. None of that is what is open. What is open is the tier *underneath* a piece —
+the private, unredacted material a piece is built **from** — and whether any of it can be found by
+someone who was not already following the author.
+
+- **The unredacted input has no home, and it cannot be a directory.** Manifestation out of a data
+  pile has been writing into the journal piece's own folder, and the pile is starting to treat that
+  location as an output. That is correct for the *output*. It is wrong for the *input*: a journal
+  repository is public, or is ejected into something public, and a path-based separation leaks —
+  a stray `git add`, a history that keeps what a delete removed, an ejection that carries more than
+  was meant. **The boundary has to be a repository/bottle boundary, not a path.** The existing shape
+  already points at the answer: `build-intermediates` writes INERT derived artifacts *outward* while
+  sources stay put, and the same split works here — the private tier is its own bottle, and
+  manifestation crosses the boundary rather than living on both sides of it.
+  **Blocks:** manifesting anything that carries redactions into a public journal at all.
+
+- **The private tier needs a name, and may not need a new primitive.** It is a profile spanning many
+  sites — research notes, cached snapshots, drafts, masks — from which pieces are later assembled.
+  That is D9's **dossier**, except a dossier is defined per-site and this is the union of them read
+  as one stream. So the thing missing may be a name for the *aggregate*, not a new object.
+  *Desk* is the current candidate: newsroom-native, pre-publication, personal, carries the
+  many-subjects-one-person sense, and collides with nothing already taken (pile, floor, bottle,
+  mask, keeper, glove, book, ledger). **Blocks:** nothing mechanical; blocks writing about it
+  consistently, which is how two homes for one fact start.
+
+- **What the folders inside it are named is open.** Encoding the target URL as the folder name was
+  considered and deliberately walked back: researching one piece touches many links, so the tier is
+  a *stream* rather than a folder per target, and a piece is assembled from it afterwards. A piece
+  has no name when the research starts. **Blocks:** the manifestation output layout, above.
+
+- **Whether the notebook is itself followable.** If it lives in a bottle it can be published like
+  anything else, and someone may want the research and not the pieces — or may want several
+  people's research and to write their own journalism from it. That is a publication tier *below*
+  the piece which nothing currently describes. **Blocks:** whether the tier gets its own cadence and
+  ejection path, or is private-only by construction.
+
+- **Atlas has no ingestion, and that is the actual blocker for all of it.** Tell manifests anecdotes
+  out of a data pile and posts them in the clear; Atlas has to ingest those and bake them into its
+  directory view before anything published here — mask, notebook or piece — is findable by a
+  stranger. Until then discovery is entirely word-of-mouth and every tier above is invisible.
+  **Blocks:** §M cross-node discovery, and the whole point of publishing a mask.
+  - **A door to leave shut while building it.** Masks are discoverable **by author, only** —
+    you followed a person and their masks arrive. "Show me every mask on this URL" is the obvious
+    next feature and must not be built: it is a registry (rejected in D4/D7 for the name-is-a-key
+    property) *and* it is the failure mode that turned every previous web-annotation layer into a
+    harassment surface. The absence of discovery-by-target is load-bearing for safety, not an
+    artifact of the no-registry rule, and that is not obvious from outside.
