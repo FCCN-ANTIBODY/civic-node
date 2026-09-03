@@ -68,6 +68,19 @@ capability should land as offline-origin code first, with the workflow as its de
   bound at build time.
 - **Zero third-party vendors, on purpose.** Prefer the idioms already here over a dependency;
   keep changes small and legible enough for the next operator.
+- **A submodule pin can move by accident, and nothing will tell you.** A stale submodule checkout
+  shows in `git status` as a modified path, so any broad `git add -A` or `git commit -a` sweeps the
+  *checkout* into the commit as a new pin — in a commit about something else entirely. It has
+  happened here: `803812b`, a proto-issue document, silently rolled `journal/autumn-ryan`
+  **backwards** three commits and un-published a correction to a named third party's quote that had
+  already been merged upstream. Nothing failed and no test caught it, because a moved pin is a valid
+  commit.
+  - **Read the pin from the tree, never from the checkout.** `git submodule status` prints the
+    **checked-out** SHA; a leading `+` means it disagrees with the recorded pin. The pin itself is
+    `git ls-tree origin/main <path>`, and `origin/main` matters — a local `HEAD` behind the remote
+    answers a third way, which is how the regression stayed invisible.
+  - **Stage submodule pointers by name or not at all.** Bumping a pin is its own commit, with the
+    reason in the message (see the CI rollers named above).
 - **Replication is the test.** Would the next operator be able to copy this and understand it?
 
 ## Built here — reuse, don't rebuild
