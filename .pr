@@ -1,58 +1,35 @@
-E3 redaction geometry — pad to a global ladder, prove continuity with a Merkle manifest
+Restore the citation pin, and carry the supervisor correction
 
-Adds the geometry section to `E3-sealed-prose.md` (#113, merged). Cut fresh from `main`.
+`journal/autumn-ryan` **ca2fab7 -> e019691** (cite-autumn-ryan `main`). One line.
 
-Autumn's requirement, stated exactly: *not so much hiding the size of a redaction as proving the two
-revealed ends are absolutely continuous with it.* Those are two problems and only one is about padding.
+## What happened
 
-## Inflate — but pad with filler, not neighbours
+The pin went **backwards**, in a commit about something else.
 
-The move is right: seal a span at a block size, not its own length, padding **both** sides so the
-secret's position inside the block isn't disclosed either.
+```
+69c5908  Roll the citation pin forward to include the End Matter   -> c82e81a   (#104)
+803812b  Record the image-exhibit design as a proto-issue          -> ca2fab7   (regressed)
+```
 
-One refinement — spilling into neighbouring text **spends revealed material to buy concealment**; the
-absorbed neighbours are now inside the withheld block and can't be shown. Synthetic filler gives the
-same concealment with no revealed text sacrificed.
+`803812b` is a proto-issue document. It also moved a submodule pointer, almost certainly from a stale local checkout swept up by a broad `git add`. That silently reverted #104 and left the recorded pin **3 behind** `main`.
 
-## The one place the instinct goes the wrong way
+## Why it matters more than a stale pin usually does
 
-*"We size relative for this one cut."* **A block size derived from the thing it hides leaks it.** A 3 KB
-block around a 2.9 KB secret says a lot; so does a 32-byte one.
+The three commits it dropped include **tiliv/cite-autumn-ryan#3** — the supervisor's inverted line, marked. Verified directly:
 
-A fixed **global ladder** (64 / 256 / 1 KB / 4 KB …) leaks strictly less — only which bucket, coarse by
-construction, identical across unrelated cuts. Under 2× worst-case cost, and "something lining up on the
-same grid" stops being a hazard because everything is on the same grid on purpose.
+- at the currently recorded pin `ca2fab7`: the marked line is **absent**
+- at cite `main` `e019691`: **present**
 
-Worth being blunt about because it's unfixable after anything is sealed.
+So as it stands this node publishes the uncorrected quote — a named third party rendered saying the opposite of what he said, with the correction sitting merged upstream and unadopted. That is the one defect in that piece nobody wanted left standing.
 
-## Continuity is a Merkle problem
+## Also fixed upstream, not here
 
-Padding hides length and says nothing about adjacency. Commit to the **ordered segment sequence**, sign
-the root once. A revealed segment is plaintext plus its opening; a withheld one is still present as a
-bare commitment. The reader verifies that segments *i*, *i+1*, *i+2* are **consecutive under the signed
-root** — nothing removed, nothing inserted, order intact, without the plaintext or its true length.
+The End Matter's second claim (that the transcript garbled "Omri" into "A U M R I") was **withdrawn** in the same upstream PR: she asked him to spell it and that is him spelling it. Correcting it would have misspelled a real man against his own spoken spelling. That withdrawal rides along with this pin too.
 
-No new cryptography (invariant #8) — sha256, a Merkle path, the signature already in use. Structurally
-the same manifest E1 keeps over audio chunks, so prose and media stay one mechanism.
+## What this PR does NOT touch
 
-## Multi-pass composes
+`.journal-engine` is already correct. Its **recorded** pin on `main` is `34a7bfb` — current engine main, `frame-src 'self'` included. Only the *working checkout* in the main tree is stale at `58e6a0d`, which is local hygiene (`git submodule update`), not a deploy decision, and does not gate anything.
 
-*"You have to use a composite of all of them."* Yes — **a disclosure is a set of openings against a
-fixed signed manifest**, never a re-cut. Several redactions are several withheld indices; several
-renders are several disclosure sets; a later release is a superset. Every past disclosure still
-verifies. That's also what lets a render pick a different slice: the slice is *which openings you hand
-over*.
+## Verified
 
-## Two rules, one a trap
-
-- **The cut is fixed at seal time** — re-cutting invalidates every opening ever issued.
-- **A redaction is ONE bucketed segment, never a run.** A secret spanning six consecutive withheld
-  segments discloses its length in segment count — the bucketing leak reintroduced through the index
-  list. Inflate to the next bucket instead.
-
-## What still leaks, named
-
-Segment count, which indices are withheld, which bucket. That is: how many redactions, roughly where,
-coarsely how big. **"Roughly where" is wanted** — it's the attestation value; a reader must see that a
-redaction exists for withholding to be a checkable claim. **"Coarsely how big" is the residual cost**,
-and the ladder is the knob: fewer, wider buckets leak less and waste more.
+Pin ancestry checked (`ca2fab7` is an ancestor of `e019691`, 3 behind; no divergence), and the presence/absence of the marked line confirmed at both commits.
