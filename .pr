@@ -1,0 +1,58 @@
+E3 redaction geometry — pad to a global ladder, prove continuity with a Merkle manifest
+
+Adds the geometry section to `E3-sealed-prose.md` (#113, merged). Cut fresh from `main`.
+
+Autumn's requirement, stated exactly: *not so much hiding the size of a redaction as proving the two
+revealed ends are absolutely continuous with it.* Those are two problems and only one is about padding.
+
+## Inflate — but pad with filler, not neighbours
+
+The move is right: seal a span at a block size, not its own length, padding **both** sides so the
+secret's position inside the block isn't disclosed either.
+
+One refinement — spilling into neighbouring text **spends revealed material to buy concealment**; the
+absorbed neighbours are now inside the withheld block and can't be shown. Synthetic filler gives the
+same concealment with no revealed text sacrificed.
+
+## The one place the instinct goes the wrong way
+
+*"We size relative for this one cut."* **A block size derived from the thing it hides leaks it.** A 3 KB
+block around a 2.9 KB secret says a lot; so does a 32-byte one.
+
+A fixed **global ladder** (64 / 256 / 1 KB / 4 KB …) leaks strictly less — only which bucket, coarse by
+construction, identical across unrelated cuts. Under 2× worst-case cost, and "something lining up on the
+same grid" stops being a hazard because everything is on the same grid on purpose.
+
+Worth being blunt about because it's unfixable after anything is sealed.
+
+## Continuity is a Merkle problem
+
+Padding hides length and says nothing about adjacency. Commit to the **ordered segment sequence**, sign
+the root once. A revealed segment is plaintext plus its opening; a withheld one is still present as a
+bare commitment. The reader verifies that segments *i*, *i+1*, *i+2* are **consecutive under the signed
+root** — nothing removed, nothing inserted, order intact, without the plaintext or its true length.
+
+No new cryptography (invariant #8) — sha256, a Merkle path, the signature already in use. Structurally
+the same manifest E1 keeps over audio chunks, so prose and media stay one mechanism.
+
+## Multi-pass composes
+
+*"You have to use a composite of all of them."* Yes — **a disclosure is a set of openings against a
+fixed signed manifest**, never a re-cut. Several redactions are several withheld indices; several
+renders are several disclosure sets; a later release is a superset. Every past disclosure still
+verifies. That's also what lets a render pick a different slice: the slice is *which openings you hand
+over*.
+
+## Two rules, one a trap
+
+- **The cut is fixed at seal time** — re-cutting invalidates every opening ever issued.
+- **A redaction is ONE bucketed segment, never a run.** A secret spanning six consecutive withheld
+  segments discloses its length in segment count — the bucketing leak reintroduced through the index
+  list. Inflate to the next bucket instead.
+
+## What still leaks, named
+
+Segment count, which indices are withheld, which bucket. That is: how many redactions, roughly where,
+coarsely how big. **"Roughly where" is wanted** — it's the attestation value; a reader must see that a
+redaction exists for withholding to be a checkable claim. **"Coarsely how big" is the residual cost**,
+and the ladder is the knob: fewer, wider buckets leak less and waste more.
