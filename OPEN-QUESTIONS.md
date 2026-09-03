@@ -1332,3 +1332,49 @@ different signer, a non-forward version, or failed file integrity — and `sw.js
   pinned, versioned and load-bearing. A demo is a moving surface whose whole value is being current.
   Freezing everything on a refusal is simple and wrong; freezing only the shell is right and means a
   refused origin still serves fresh non-shell bytes, which needs an argument nobody has made yet.
+
+---
+
+## W. Anecdotes in a forward ratchet — the disclosure model is built for polls
+
+**Tier: tell (the producer) · pile (the tank) · node (both, here).** Traced through the built
+machinery rather than the intent, this is how a node stores an anecdote on its Tell:
+
+1. `bin/collect-submissions` stages authorized submissions as plaintext JSON under
+   `.submissions/<id>/` — a staging area, not storage.
+2. `bin/rollup <id>` folds everything staged for that pile into **one plaintext digest block** on
+   stdout. Empty stdout means nothing new and the pile is skipped.
+3. `bin/deliver --block` encrypts that block under its own ratchet key `K_seq`, writes the
+   ciphertext as `<seq>.enc`, and appends a **clear** manifest entry — `{seq, created_at, source,
+   block, this_hash, prev_hash, ratchet_pub}` — a signed hash chain. A coarse voucher summary is
+   promoted into the clear entry; the records themselves never are.
+4. It lands at **`piles/<id>/feed/*` in the Tell's own served tree** — disk path == URL path — and is
+   served as plain static, CORS-open, for the pile to fetch and verify.
+
+So a node running a Tell publishes **ciphertext from its own site**, and the plaintext exists only
+in staging, before the seal. There is no `piles/` directory in this repo yet: the storage is
+designed and has never been exercised.
+
+- **THE RATCHET IS THE WRONG SHAPE FOR ANECDOTES, AND RIGHT FOR POLLS.** `K_{seq+1} =
+  sha256("ratchet:" || K_seq)`, so revealing `K_n` discloses **every block from `n` onward, forever**.
+  For a poll that is exactly right: disclosure is one act at the end, and forward-only reveal is the
+  feature. An anecdote stream is the opposite — items are made discoverable **selectively and
+  continuously**, and publishing the key for anecdote #3 opens #4, #5, and everything the node ever
+  seals afterwards. The mechanism cannot express "this one is public and the next is not."
+  - This is the same collision recorded in §T for E3's prose: HKDF fan-out gives per-item keys that
+    reveal nothing about their neighbours, while the pile's ratchet gives a suffix. Anecdotes need
+    the fan-out shape. **Blocks:** any anecdote being made public without opening its successors.
+
+- **The Tell is not blind, and the design says so.** `deliver` writes `inbox/seed.age` for the pile
+  owner *and* `inbox/seed.tell.age` wrapped to the Tell, and the rollup handles plaintext before
+  sealing. So the node operator can read submissions pre-seal — CONTRACT already names the exposure
+  ("a raw answer is world-readable in its Issue between posting and sealing"). Fine while the
+  operator and the author are the same person. **The moment members post, the operator is reading
+  other people's unsealed words**, and that is a disclosure to state plainly rather than discover.
+
+- **Open: does one block hold one anecdote, or a window of them?** `rollup` folds *everything staged*
+  into a single block per window, which is right for poll answers and wrong for selectively-published
+  anecdotes: a window is the smallest thing a key can open, so batching decides disclosure
+  granularity. One anecdote per block makes per-item disclosure possible and makes the block count
+  the anecdote count, which leaks cadence. Neither is obviously correct; the choice is currently
+  being made by a batching convenience rather than by an argument.
