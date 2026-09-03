@@ -1378,3 +1378,44 @@ designed and has never been exercised.
   granularity. One anecdote per block makes per-item disclosure possible and makes the block count
   the anecdote count, which leaks cadence. Neither is obviously correct; the choice is currently
   being made by a batching convenience rather than by an argument.
+
+---
+
+## X. Two things are called a data-pile, and nothing bridges them
+
+**Tier: tell (the floor) · pile (the repo) · anecdote (the keeper between them).** This is the one
+that keeps swallowing every other thread, so it is stated as a fact about the code rather than a
+worry.
+
+**The FLOOR's pile.** `floor/floor.mjs`: *"The name is a KEY, not an address. Every
+`<name>.tell.anecdote.channel` serves this same page… typing a made-up name MINTS one… a data-pile
+is a PRIVATE repo, never deployed, never addressable — its questions arrive in the vault only by the
+owner's own gesture (pasted in from cold storage, **or created right here**)."* It exists the moment
+someone types a name, lives in that hostname's same-origin vault, fetches nothing, and holds no
+credential. It is fabricated by *use*.
+
+**The REPO pile.** A fork of the `data-pile` template with `pile.yml`, an age recipient, a
+`PILE_AGE_IDENTITY`, a forward ratchet, and blocks a Tell seals to `piles/<id>/feed/*`. It exists
+when `bin/pile-new` makes it, and it is provisioned, addressable and CI-bearing.
+
+**They share a slug convention and nothing else.** `pile-new` knows the id "doubles as the pile's
+Floor hostname" — that is the entire coupling: a naming rule, in a comment. There is no export from
+the vault to a repo, no import from a repo into the vault, and neither side can produce the other.
+
+- **The floor fabricates a pile and cannot authorize one.** Which is correct by D8 — the room is
+  "the least-trusted code in the system, a wildcard-served dumb shell" and must hold no credential.
+  But it means the surface where a person actually *meets* their pile is structurally incapable of
+  granting them anything, and the surface that can grant (the keeper) has no pile-shaped thing to
+  grant against. **Blocks:** every route attempted so far. Authorizing the journal's pile, giving a
+  contributor access without GitHub, arming an unarmed role — each ends at this seam.
+
+- **The question is which one is the pile.** If the vault pile is the real one, the repo is a
+  durability mirror and the ratchet is the wrong disclosure model (§W). If the repo pile is the real
+  one, the floor is a viewer and "typing a name mints one" is a fiction the vault maintains. Both
+  readings are supported by something already written down, which is how it stayed unresolved.
+
+- **Worth a research turn, and worth scoping first.** The subject is not "how do piles work" but the
+  narrower: *what act makes a person the owner of a pile, and which artifact records it?* Everything
+  else here — the control node, the passkey, the age recipient minted on the device, the keeper's
+  origin-bound vend — are candidate answers to that one question, and none of them is currently
+  connected to the others.
