@@ -1292,3 +1292,43 @@ deploy hook happened to be. The intended shape is Atlas building and serving it,
   Serving it from Atlas as a live fetch removes the build entirely but makes the reader's view depend
   on Atlas being up. The first is what exists; the second is what "Atlas provides discovery" usually
   means. Choosing decides whether anecdote is ever built again.
+
+---
+
+## V. Red light, green light — cache policy is a derived state, not a preference
+
+**Tier: anecdote (the origin) · node (every holder).** Whether a device may take new bytes from the
+origin is already decided, and nothing acts on the decision. `composer/firmware.mjs`'s `pinDecision`
+returns exactly this verdict — accept on first contact or a same-key roll-forward, refuse on a
+different signer, a non-forward version, or failed file integrity — and `sw.js` records a refusal at
+`pinSet("rejected", …)` and then carries on serving. The light exists; nothing is wired to it.
+
+- **The two postures are in genuine tension, and the intuition about which is "safe" is backwards.**
+  **Red** — hold, do not take new bytes — is the SECURITY posture: it is what stops a possessed
+  origin swapping the shell under a holder (§S). **Green** — take the current bytes — is the SAFETY
+  posture: it is what stops a holder being stranded on broken code with no reachable path to fix
+  them. A frozen device cannot be rescued, and that failure has already been lived here: a demo page
+  cached once was unreachable by any redeploy, purge, or change of host, because the request never
+  left the browser again. Neither posture is simply safer; they protect against opposite disasters.
+
+- **It must not be a user setting.** A holder cannot be asked to choose between those two without
+  being handed the whole threat model, and the wrong choice is unrecoverable in one direction. The
+  verdict is already computed from the pin; the platform's job is to act on it and to SHOW it, not
+  to delegate it. **Blocks:** nothing today, because nothing acts on it either way.
+
+- **What acting on it would mean.** Green: network-first for everything, shell rolls forward when a
+  signature checks out. Red: shell frozen at the last verified version, non-shell still fetched, and
+  **the reason surfaced** — today a refusal lands in IndexedDB where no holder will ever see it.
+  A red light nobody can see is indistinguishable from a site that has stopped being updated.
+
+- **Only one of the three caches is governed, and that is the part most likely to mislead.** A
+  holder's bytes pass through the browser's own HTTP cache, the service worker's Cache API, and the
+  edge. This verdict governs the **middle one only**. `precache` already bypasses the first with
+  `cache: "reload"`; the third is now the origin itself rather than a cache in front of one. Anyone
+  reasoning about "the cache policy" as a single switch will be wrong about two layers out of three.
+  **Blocks:** any honest claim about what a holder is running.
+
+- **Open: what a red light should do about a demo.** The shell is the thing worth freezing — it is
+  pinned, versioned and load-bearing. A demo is a moving surface whose whole value is being current.
+  Freezing everything on a refusal is simple and wrong; freezing only the shell is right and means a
+  refused origin still serves fresh non-shell bytes, which needs an argument nobody has made yet.
