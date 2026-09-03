@@ -1130,16 +1130,44 @@ rather than of format. None of that is what is open. What is open is the tier *u
 the private, unredacted material a piece is built **from** — and whether any of it can be found by
 someone who was not already following the author.
 
-- **The unredacted input has no home, and it cannot be a directory.** Manifestation out of a data
-  pile has been writing into the journal piece's own folder, and the pile is starting to treat that
-  location as an output. That is correct for the *output*. It is wrong for the *input*: a journal
-  repository is public, or is ejected into something public, and a path-based separation leaks —
-  a stray `git add`, a history that keeps what a delete removed, an ejection that carries more than
-  was meant. **The boundary has to be a repository/bottle boundary, not a path.** The existing shape
-  already points at the answer: `build-intermediates` writes INERT derived artifacts *outward* while
-  sources stay put, and the same split works here — the private tier is its own bottle, and
-  manifestation crosses the boundary rather than living on both sides of it.
-  **Blocks:** manifesting anything that carries redactions into a public journal at all.
+- **~~The unredacted input has no home, and it cannot be a directory.~~** *Answered by E3
+  (`docs/proto-issues/exhibits/E3-sealed-prose.md`), and better than the answer here was.* This item
+  argued the input/output split had to be a **repository/bottle boundary rather than a path**,
+  because a journal repo is public and path separation leaks through stray adds, retained history
+  and over-eager ejection. E3 removes the need for a boundary at all: **the draft lives in the pile
+  encrypted and publishing is key release**, so an *ejected piece is a disclosure state, not a
+  structural difference*. There is no plaintext in the public repo to leak, and no second "public
+  version" to keep in step. Retained here rather than deleted because the reasoning that made the
+  weaker answer look right — public repo, therefore separate location — is the reasoning someone
+  will re-derive.
+
+- **The two disclosure geometries have never been composed, and the seam is the unfixable kind.**
+  E3 seals prose with **HKDF fan-out**: one root per piece, per-span keys derived from it, so
+  releasing span 5 says nothing about span 6 and selective redaction works. A data-pile seals with a
+  **forward hash ratchet**: `K_{seq+1} = sha256("ratchet:" || K_seq)`, and per its CONTRACT
+  "revealing `K_n` discloses blocks `seq ≥ n` and **never** the blocks before it" — a suffix, never
+  a selection. Both are right for their own job. They compose badly, and nothing states how they
+  nest.
+  - The question that decides it: **is a piece's E3 root ever delivered as a pile block?** If it is,
+    the ratchet subsumes the fan-out — revealing that block's `K_n` yields the root, the root
+    derives every span key, and per-span redaction silently stops working while still appearing to.
+    It would also disclose every *later* pile block, so publishing one early piece would pre-open
+    everything filed after it.
+  - E3 already leans the other way — "D8's posture applies unchanged: the keeper vends the
+    capability, never the root" — which puts the root with the keeper and outside the ratchet. That
+    is probably the answer, but it is currently an implication rather than a statement, and E3's own
+    warning is that **granularity cannot be re-chosen once plaintext is out**.
+  **Blocks:** sealing any real corpus. This is cheap now and unfixable later, which is the specific
+  shape of thing this file exists to catch.
+
+- **Append-only and retention policy want opposite things.** D13 records that a mask's cache vault
+  may be squashed, force-pushed or purged on a cadence — per top-level domain, so an untrusted TLD
+  keeps only the latest copy. That holds while a pile stores **digests** of what it witnessed. It
+  stops holding if piles move to ingesting the **payload diff** (the fast-forward-bottles direction,
+  civic-node#105), because an append-only tank that carries content cannot discard it: the only
+  deletion primitive is D7's enumerate-and-destroy on the whole origin. Either hearsay snapshots do
+  not belong in a pile, or "retention" means *destroy the pile*, not *trim it*.
+  **Blocks:** the honesty of any retention setting offered to an operator.
 
 - **The private tier needs a name, and may not need a new primitive.** It is a profile spanning many
   sites — research notes, cached snapshots, drafts, masks — from which pieces are later assembled.
