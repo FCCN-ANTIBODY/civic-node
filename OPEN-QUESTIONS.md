@@ -997,6 +997,36 @@ signed).
   copies (couples the newer-than-yours snapshot discipline, #71/#72); the detector's exact
   challenge-response and its false-positive posture; the concrete shape of the operator's standing
   crank-commitment (budget? rate? "up to N per contact"?).
+- **The crank runs at the cloud layer too, and DNS is what makes it possible — for now.** The
+  reciprocal crank above is written phone-to-phone, but the same exchange should ride **every
+  privileged gesture**, including the ones made against a hosted node. Posting to a Tell is a
+  proof-of-identity gesture; the position is that it should also **process some of the server's
+  outstanding work** — equivalent exchange, not a favor. *"I'm not only giving something to the
+  server, I'm processing some of its needs along the way."* Ideally **tunable**: an operator sets
+  how much a gesture costs, and a participant who posts more carries more.
+  - **What DNS buys while we have it:** the cloud can reach down and hand a browser work as though it
+    were *another phone held out to you* — the same privileged gesture, no second device present.
+    That is a **temporary affordance, not the destination**: on the gravel path it is phones and QRs
+    again, and the crank has to already mean the same thing in both places or the hosted case will
+    have quietly grown a different protocol.
+  - **Joining is how you get the work.** People admitted to a Tell help process its traffic by using
+    it. That is the honest version of "membership has obligations" — the obligation is the thing you
+    were doing anyway.
+- **Coverage, not just contribution — the first-ten-percent failure.** Work handed out at contact
+  has to be *distributed*, or every carrier verifies the same easy front of the queue and the tail is
+  never touched. **Repeat verification is wanted** — several independent records that a thing was
+  seen is the point, not waste — so the goal is not deduplication but **spread**: a distribution that
+  **heals into something coherent after chaos**, rather than one that assumes an orderly mesh. It has
+  to survive carriers who never meet, go offline for months, and arrive all at once.
+  - **Witnesses, not carriers, are what must be legible.** When the work comes back as a pull request
+    on the node, it does not have to reconstruct who ferried what. **Knowing who *saw* a thing is
+    sufficient and is the durable claim**; the carriage path is incidental and may stay disparate.
+    Recording witnesses also keeps the carrier from accruing an authority it was never given — the
+    D10 §3 distinction (an author is not a distributor) applied to verification.
+  - **Open:** how a client decides *which slice* is its share without a coordinator; whether the
+    slice is self-assigned (hash of your identity over the queue?) or offered by whoever you meet;
+    what "healed" means concretely when N witnesses of the same item arrive by different routes; and
+    whether a node can see its own coverage well enough to ask for the parts nobody has taken.
 
 ---
 
