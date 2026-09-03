@@ -82,6 +82,94 @@ scheme here has to pad to buckets, seal at a coarser unit than the sensitive ite
 the withheld shape uninformative — and it has to be decided **before** anything is written, because a
 corpus sealed at the wrong granularity cannot be re-sealed after the plaintext is out.
 
+## The geometry: hiding a length while proving continuity
+
+The requirement, stated exactly: **not so much hiding the size of a redaction as proving that the two
+revealed ends are absolutely continuous with it** — that nothing was dropped between them and nothing
+spliced in.
+
+Those are two different problems and only one of them is about padding.
+
+### Inflate the redacted region — but pad it with filler, not with your neighbours
+
+The move is right: **do not seal a span at its own length.** Locate the thing, inflate it on **both**
+sides until it fills a block, and render everything else unmodified. Adding to one end only would
+still disclose where the secret sat inside the block.
+
+One refinement. Spilling into the neighbouring text works, but it **spends revealed material to buy
+concealment** — the absorbed neighbours are now inside the withheld block and cannot be shown. Pad
+with **synthetic filler instead**: the block becomes `[filler][secret][filler]`, sealed as one unit,
+and the surrounding prose is untouched and fully revealable. Same concealment, no revealed text
+sacrificed to it.
+
+### Use one global bucket ladder, not a grid sized per cut
+
+*"It is incomprehensible that something else would line up on the same grid, we size relative for
+this one cut"* — this is the one place the instinct goes the wrong way, and it is worth being blunt
+about because it is unfixable later.
+
+**A block size chosen relative to the thing it hides is derived from that thing, and therefore leaks
+it.** A 3 KB block around a 2.9 KB secret says a great deal; so does a 32-byte one. Sizing per-cut
+makes every block's length a function of its own content.
+
+A **fixed global ladder** — 64 / 256 / 1 KB / 4 KB / … , the same for every redaction in every piece
+— leaks strictly less: only *which bucket*, which is coarse by construction and identical across
+unrelated cuts. Worst case costs under 2× the sealed bytes, and "something lining up on the same
+grid" stops being a hazard because **everything is on the same grid on purpose.**
+
+### Continuity is a Merkle problem, not a padding problem
+
+Padding hides length. It says nothing about adjacency — and adjacency is the claim actually worth
+proving.
+
+Commit to the **ordered sequence of segments**: hash each one, build a Merkle tree over them, sign
+the root once. Then:
+
+- A **revealed** segment is handed over as plaintext plus its opening (the sibling path).
+- A **withheld** segment is still present in the tree as a bare commitment.
+
+A reader verifies that segment *i* (revealed), segment *i+1* (withheld), and segment *i+2*
+(revealed) are **consecutive indices under the signed root**. That proves the two ends are continuous
+with the hidden middle: nothing removed, nothing inserted, order intact — **without the withheld
+plaintext, and without its true length** once the block is bucketed.
+
+**No new cryptography** (invariant #8): `sha256`, a Merkle path, and the signature already in use. It
+is structurally the same manifest E1 keeps over its audio chunks, which is a good sign — the media
+and prose halves stay one mechanism rather than two.
+
+### Multiple redactions compose because the manifest is fixed
+
+*"You reveal everything except for it… you have to use a composite of all of them; doing multiple
+passes is what reveals this behavior."* Exactly — and the manifest is what makes it tractable.
+
+**A disclosure is a set of openings against a fixed signed manifest**, never a re-cutting of the
+object. So: several redactions in one piece are several withheld indices; several renders over time
+are several disclosure sets; a later, more generous release is a superset of an earlier one. Nothing
+has to be re-sealed, and every past disclosure still verifies against the same root.
+
+That is also what lets a render "pick a different slice" freely — **the slice is which openings you
+hand over**, not a different cut of the piece.
+
+### Two rules that follow, and one is a trap
+
+- **The cut is fixed at seal time.** Re-cutting produces a different tree and invalidates every
+  opening ever issued. This is `granularity is unfixable` from above, restated as a mechanical fact
+  rather than a caution.
+- **A redaction is ONE bucketed segment, never a run of them.** A long secret spanning six
+  consecutive withheld segments discloses its length in segment count — the exact leak the bucketing
+  was for, reintroduced through the index list. Inflate to the next bucket up instead of continuing
+  into another segment.
+
+### What still leaks, named on purpose
+
+The **number of segments**, **which indices are withheld**, and **which bucket** each withheld block
+falls in. That is: *how many redactions, roughly where, and coarsely how big.*
+
+**"Roughly where" is wanted** — it is the whole attestation value from earlier in this document: a
+reader must be able to see that a redaction exists in order for withholding to be a checkable claim
+rather than a silent omission. **"Coarsely how big" is the residual cost**, and the ladder is the
+knob: fewer, wider buckets leak less and waste more.
+
 ## Key management, without new cryptography
 
 Publishing often means many reveals over time. That wants **derivation, not a keyring**: one root per
