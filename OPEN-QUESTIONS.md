@@ -1167,27 +1167,72 @@ someone who was not already following the author.
   civic-node#105), because an append-only tank that carries content cannot discard it: the only
   deletion primitive is D7's enumerate-and-destroy on the whole origin. Either hearsay snapshots do
   not belong in a pile, or "retention" means *destroy the pile*, not *trim it*.
-  **Blocks:** the honesty of any retention setting offered to an operator.
+  - **Answered: both, because they are two different piles.** A **published research pile** wants
+    append-only — the witnessed history *is* the value, and nothing should be trimmable. A
+    **private browsing cache** wants limits, and append-only is the defect. Same machinery, opposite
+    requirements, so a retention setting belongs only to the second and must never be offered on the
+    first.
 
-- **The private tier needs a name, and may not need a new primitive.** It is a profile spanning many
-  sites — research notes, cached snapshots, drafts, masks — from which pieces are later assembled.
-  That is D9's **dossier**, except a dossier is defined per-site and this is the union of them read
-  as one stream. So the thing missing may be a name for the *aggregate*, not a new object.
-  *Desk* is the current candidate: newsroom-native, pre-publication, personal, carries the
-  many-subjects-one-person sense, and collides with nothing already taken (pile, floor, bottle,
-  mask, keeper, glove, book, ledger). **Blocks:** nothing mechanical; blocks writing about it
-  consistently, which is how two homes for one fact start.
+- **The private tier is a GIT REPOSITORY behind a mask, and that settles the shape if not the name.**
+  A profile mask is now explicitly backed by a repository: one mask applied across many sites, notes
+  kept per site, the whole thing compressing into the one piece eventually written. That makes the
+  tier an ordinary repo with ordinary history — not a bottle, since *a bottle is the QR distribution
+  form of a space whose root happened to be git*, and the git history is already tracking itself
+  inside it. Bottling is a thing you may later do **to** it.
+
+  The name is still open. *Desk* remains the candidate: newsroom-native, pre-publication, personal,
+  carries the many-subjects-one-person sense, collides with nothing taken. **Blocks:** nothing
+  mechanical; blocks writing about it consistently, which is how two homes for one fact start.
+
+- **The three tiers, and where encryption actually enters.** Settled shape for the input/output
+  problem, and it is not the same answer as E3's:
+  1. **The dossier** — original writings, clippings, private sources. A plain repository. **Not
+     encrypted, and does not need to be**: it is private by not being published, not by being sealed.
+  2. **The pile** — what you *selected* out of the dossier while preparing an exhibit. A deliberate
+     act, never a compelled dump of everything upstream. **Encryption enters here, and its job is
+     proving you had it, not hiding it.**
+  3. **The journal output** — manifested from the pile, redacted or not, into the piece's own folder.
+  So the pile expecting that folder to be an output was right all along; what was wrong was asking
+  the same location to hold tier 1.
+
+- **"It predates the pile" is a claim, not a proof, until something witnessed it.** The dossier
+  existing before anything was sealed is worth being able to show — but git authorship dates are
+  author-controlled, so a private repo can assert any history it likes. If that property is meant to
+  carry weight, the dossier needs its own witness: its own pile, a published bottle, or a
+  content-id fixed at a known time by someone else (D13's split — the date is testimony, the
+  content-id is identity). **Blocks:** any claim of the form "I had this before I sealed it."
+
+- **`you` is not mounted. Nothing exists but the decisions.** Checked against `origin/main`: `you`
+  appears nowhere in `config/san-list.txt` or `config/sites.txt`, and the only file in
+  anecdote.channel mentioning `you.anecdote.channel` at all is `docs/decisions.md` — that is, D9 and
+  D12 describing it. No cert coverage, no listing, no keeper, no code.
+  - **The price is one line.** `you.anecdote.channel` is already covered by the existing
+    `*.anecdote.channel`. Masks at `<mask>.you.anecdote.channel` are one label deeper and need
+    `*.you.anecdote.channel` — a single legal single-label wildcard, in a pack currently holding
+    **12 of its 50** entries. Mounting is cheap; it simply has not been done.
+  - **D12's keeper relocation is decided and unperformed.** Nothing has moved to `you.<apex>`, and
+    PRF remains a note in `composer/gesture.mjs`. A session reading D12 could reasonably assume
+    otherwise.
 
 - **What the folders inside it are named is open.** Encoding the target URL as the folder name was
   considered and deliberately walked back: researching one piece touches many links, so the tier is
   a *stream* rather than a folder per target, and a piece is assembled from it afterwards. A piece
   has no name when the research starts. **Blocks:** the manifestation output layout, above.
 
-- **Whether the notebook is itself followable.** If it lives in a bottle it can be published like
-  anything else, and someone may want the research and not the pieces — or may want several
-  people's research and to write their own journalism from it. That is a publication tier *below*
-  the piece which nothing currently describes. **Blocks:** whether the tier gets its own cadence and
-  ejection path, or is private-only by construction.
+- **~~Whether the notebook is itself followable.~~** *Answered: yes, and publishing is what makes it
+  so.* Either shape works — a research bundle about a single piece, or one long comprehensive
+  notebook that pieces are cut from over time. Making it public makes it followable, and the
+  mechanism is already there: as the notebook changes the pile writes **diffs**, so it witnesses the
+  repository's own history *even when that repository rewrites its own*. A squash or a force-push
+  does not vanish; it appears as a rewrite.
+  - **The bound, which belongs next to the claim:** the witness is **sampled, not continuous** — it
+    only sees what a snapshot catches. A rewrite that happens entirely between two snapshots is
+    invisible. "Witnessed history" must not be read as "complete history."
+
+- **Whether an ejected piece carries its own research. Deferred on purpose.** Research could hang off
+  the root journal, or off each ejected piece — the latter would make an ejected piece standalone and
+  oblige it to support its own exhibit reveal. **Not that way yet**; the root journal case is the one
+  being built. Recorded so it is not re-litigated as though undecided.
 
 - **Atlas has no ingestion, and that is the actual blocker for all of it.** Tell manifests anecdotes
   out of a data pile and posts them in the clear; Atlas has to ingest those and bake them into its
