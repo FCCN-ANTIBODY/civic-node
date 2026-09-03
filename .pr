@@ -1,32 +1,29 @@
-OPEN-QUESTIONS §T: one item answered by E3, two seams opened
+A submodule pin can move by accident, and nothing will tell you
 
-Reconciling §T against the constellation work handed over from the other session. E3 closes one item outright; composing E3 against the pile's own contract opens two that were not visible from either side alone.
+One gotcha added to `AGENTS.md`, from a real regression in this repo rather than a hypothetical.
 
-## Answered — and better than §T's answer was
+## What happened
 
-§T argued the unredacted input needed a **repository/bottle boundary** because a journal repo is public and path separation leaks. **E3 removes the need for a boundary at all:** the draft lives in the pile encrypted, publishing is key release, and *an ejected piece is a disclosure state, not a structural difference*. No plaintext in the public repo, no second public version to keep in step.
+A stale submodule checkout shows in `git status` as a modified path. So any broad `git add -A` or `git commit -a` sweeps the **checkout** into the commit as a new pin — inside a commit about something else.
 
-Struck rather than deleted, because "public repo, therefore separate location" is exactly the reasoning someone re-derives.
+`803812b`, a commit recording a proto-issue, silently rolled `journal/autumn-ryan` **backwards** three commits. That reverted #104 and un-published the correction to a named third party's quote which had already been merged upstream. Restored in #118.
 
-## Opened — the disclosure geometries have never been composed
+**Nothing failed and no test caught it**, because a moved pin is a perfectly valid commit. That is what makes it worth a written warning rather than a fix.
 
-This is the one worth your attention, because it is cheap now and unfixable later by E3's own account.
+## The reading trap underneath it
 
-- **E3 seals prose with HKDF fan-out:** one root per piece, per-span keys derived from it. Releasing span 5 says nothing about span 6, so selective redaction works.
-- **A data-pile seals with a forward hash ratchet:** `K_{seq+1} = sha256("ratchet:" || K_seq)`, and per `data-pile/CONTRACT.md`, "revealing `K_n` discloses blocks `seq >= n` and **never** the blocks before it" — a suffix, never a selection.
+Three sources give three different answers to "what is the pin", and picking the wrong one is how this stayed invisible for a day:
 
-Both correct for their own job. Nothing states how they nest.
+| you ask | you get |
+| --- | --- |
+| `git submodule status` | the **checked-out** SHA; a leading `+` means it disagrees with the pin |
+| `git ls-tree HEAD <path>` | the pin **as your local branch records it** — wrong if you are behind |
+| `git ls-tree origin/main <path>` | the pin **as published**. This is the one that matters |
 
-**The deciding question: is a piece's E3 root ever delivered as a pile block?** If it is, the ratchet subsumes the fan-out — revealing that block's key yields the root, the root derives every span key, and per-span redaction silently stops working *while still appearing to*. It would also disclose every later pile block, so publishing one early piece pre-opens everything filed after it.
+A sibling session's handover reported this repo's engine as un-adopted and gating the calendar work, because it read the printed SHA from `submodule status` as the pin. It wasn't — `.journal-engine` records current engine main on `origin/main` and nothing is gated. Same misreading, opposite direction, on the same day.
 
-E3 leans the right way already ("the keeper vends the capability, never the root"), which puts the root outside the ratchet. That is probably the answer — but it is an implication rather than a statement, and E3's own warning is that granularity cannot be re-chosen once plaintext is out.
+## Scope
 
-## Opened — append-only and retention want opposite things
+Docs only, one bullet plus two sub-points, in the existing "Where intuition goes wrong here" section. No behaviour change.
 
-D13 records that a mask's cache vault may be squashed or purged on a cadence, per-TLD. That holds while a pile stores **digests**. It stops holding if piles ingest the **payload diff** (the fast-forward-bottles direction, #105), because an append-only tank carrying content cannot discard it — the only deletion primitive is D7's enumerate-and-destroy on the whole origin.
-
-So either hearsay snapshots do not belong in a pile, or "retention" means *destroy the pile*, not *trim it*. Worth settling before an operator is offered a retention setting that cannot do what it says.
-
-## Note
-
-Also: #116 (redaction geometry) is on `main` as `e75ba5b`, though the handoff listed it as open. Nothing depends on that here.
+Verified across `~/Project`: exactly two drifted checkouts exist, both in this repo, none elsewhere — so this is a real class of bug but not currently a spreading one.
