@@ -138,6 +138,55 @@ categorization stays a finding produced by the commons, and **a piece still neve
 
 Both objects are wanted. They should not be stored as one field.
 
+## What a pile holds is a commit stream, not a snapshot
+
+A piece bottle **changes over time**, and a pile is **append-only** — write-once, nothing scratched
+out afterwards. So "the object in the pile" and "the object as it is now" drift apart the first time
+anything is edited, and **removing a previously placed item has no answer.**
+
+**It does not need one. Version the payload and ingest the diff.**
+
+Load the diffs into the pile; a holder of *any* earlier snapshot then knows how to **fast-forward**
+to current. Deletion, renaming, restructuring — all of it becomes expressible, because the payload is
+git, and **git already expresses mutation inside an append-only object store.** The pile never has to
+learn shadowing, tombstones, or a file-system's notion of replacement; it stays a dumb tank of
+append-only blocks and the payload carries its own history.
+
+**This is `fast-forward-bottles.md` arriving from the opposite direction.** That document asks how a
+*recipient* knows whether a range applies to them; this asks how a *producer* keeps an evolving
+object in a tank that cannot forget. Same mechanism, reached twice from opposite ends — which raises
+its three open questions from "useful for third-party carriers" to **load-bearing for the journal
+itself**: what a range declares, how wide is worth carrying, and whether re-minting is one act or two.
+
+**A bottle inside a pile** is a presentation nothing has used before, and it is native here rather
+than strange: an outbox's job is to *produce artifacts*, so it holds bottles; a receiving pile holds
+records sealed to it. Same machinery, different contents — a property of **the pile's job, not a new
+kind of pile.**
+
+### The line this must not cross
+
+**The diff is a transport and storage fact. It is not an inheritance channel.**
+
+- **At the pile layer** the object is one git history and nothing is mutated — which is exactly
+  `supersession.md`'s "the old object is not mutated," satisfied by construction rather than by rule.
+- **At the board layer** a release is still a **new object that keeps no derived property.**
+  Fast-forwarding is how the bytes arrive cheaply. It is never an argument that the labels, the
+  placement, or the tags should come along with them.
+
+Without that line stated, someone will reasonably conclude *"it is the same object, fast-forwarded,
+so keep its classification"* — and that is precisely the vector `supersession.md` exists to close.
+
+### Removal has an answer inside, and deliberately none outside
+
+- **Inside the payload:** expressible. A commit deletes a file; the diff carries the deletion; a
+  fast-forwarded holder ends up without it.
+- **Already released:** not expressible, and it must not pretend to be. You mark, you do not erase
+  (**§N** — a public record is permanent because it is signed and public; anyone may already hold a
+  copy that still verifies).
+
+So the instinct is right: there **is** an answer for the payload and **deliberately none** for what
+is already out. Those are different questions that look like one.
+
 ## Also open
 
 - **Where the outbox branch renders**, if at all — the same question `branch-addressable-piles`
