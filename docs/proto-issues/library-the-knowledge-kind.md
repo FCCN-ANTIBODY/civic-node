@@ -31,9 +31,23 @@ Two positions, and they are different:
 2. **A role** — a service a node actually runs, i.e. a new entry in `directory.mjs`'s
    `ROLE_ORDER` beside `journal`, `tell`, `atlas`, `antidote`. That is the part that has to be built.
 
-And an engine repo, **`library.anecdote.channel`**, in the journal-engine mold: it publishes
-directories, it may publish machine-generated material, and it declares what service it offers. It is
-expected to mount `.journal-engine` (it has to publish), `.you-engine` (so a person can authorize
+### A category is not an engine, and `library` being both is a coincidence
+
+Worth stating before it hardens into a pattern. **A trade site does not need a trade engine.** Most
+categories are served perfectly well by the engines that already exist — a category names what a
+level of the hostname *means*, an engine is machinery a site *mounts*. The two axes are independent
+and usually do not share a word.
+
+`bottles` is the case where they do coincide (a bottles engine powering a bottles thing), and
+`library` is the second. That is a coincidence of vocabulary, not evidence of a rule: **do not go
+looking for the engine that matches a category name.** Other words were tried for this one —
+*knowledge*, *experience* — and `library` won on being the plainest word a stranger already
+understands, not on having an engine behind it.
+
+So `library.anecdote.channel` exists as a repo because this particular category needs machinery
+(enumeration, admission, the clerk), not because categories get engines. It is in the journal-engine
+mold: it publishes directories, may publish machine-generated material, and declares what service it
+offers. It mounts `.journal-engine` (it has to publish), `.you-engine` (so a person can authorize
 against it), and `.advocate-engine` (it has seats).
 
 ## What makes it not just an Atlas directory
@@ -95,6 +109,61 @@ spending its tokens rediscovering an earlier one's lesson is not. An advocate's 
 *when motion occurs*, not daily — chronicle, not telemetry — so what a library holds is **processed
 knowledge**: episodes someone can read.
 
+## No library card — the borrowing system is the bottle spec, and nothing else
+
+**This is the load-bearing property, and it is easy to lose by accident.** Everything in
+`OPEN-QUESTIONS.md` §AA about checking a data-bottle out, writing to it, and putting it back
+**requires nothing from the library at all.** The bottle carries its own manifest and its own rule
+for how a diff may be applied to a frozen capsule; the editability, and more importantly the
+*validation afterwards that a change came from who it claims*, fall out of the bottle spec working
+by itself. There is no credential to issue and no service to be up.
+
+Consequences worth writing down, because each one is a thing not to build:
+
+- **No front desk.** Nothing central decides whether a change is allowed. It is allowed implicitly by
+  what the artifact says, or it is not allowed. A library that adjudicates is a library that has to
+  be online, trusted, and correct — all three of which this design already refused.
+- **An owner updating their own bottle uses the identical mechanism as a borrower returning an
+  edited one.** Same permission mechanics, same act. If those two ever need different code paths,
+  something has gone wrong upstream.
+- **Stocking is self-service too.** There is no management layer for the people putting things *in*,
+  any more than for the people taking things out.
+- **The only real reason to talk to the library** is to ask for a specific checkout — practically,
+  *"put my name on the signers, with an expiration."* That is a request to have a list amended, not
+  an authentication. It is also optional: a bottle may arrive with its signers already set.
+- **A library card is an establishment's local concern**, for metrics or whatever else that
+  particular building cares about. It is legitimate and it is *theirs*. It must never become a
+  prerequisite in the mechanism, because "walk up and read the thing without infrastructure" is the
+  kind of library this is for.
+
+**The autonomously-updating borrowing list.** The likely shape: an Atlas cooks its bottles so a
+contributors list always rides inside, and whoever stocked the bottle manages that list by whatever
+means they already have — *"these six people who came to the meeting last time are allowed."* The
+library never learns who those people are and never needs to. That is what makes it self-service
+rather than administered.
+
+**If a library does want identity**, it wants the one a person already carries: the `you`-engine
+passkey, masked if they like, valued for being *stable* rather than for being disclosed. A voucher
+on that is a different and much smaller ask than a bespoke credential, and it starts from the
+assumption that identification is private.
+
+## Checking out is a trade behaviour, and that is fine
+
+Noted because it explains an otherwise odd overlap. The *knowledge* is the library category; the act
+of **lending, holding, returning, and late-fee-ing** is closer to **trade**, which is why a physical
+library feels like both at once. The design does not need to resolve this: the library holds and
+enumerates, the loan mechanics are the bottle's, and a node that wants to run the transactional side
+harder is running a trade behaviour on library contents. The co-op/stewardship case — take a project
+on for a while, nominal pay-what-you-want — is the same gesture in different clothes.
+
+## Real libraries exist, and the redundancy is not a problem
+
+There are literal libraries, and they will register under this category. Two buildings across a city
+both listing a book is **redundancy, not conflict** — it is the useful fact that the thing is
+available in more than one place. The category does not need to deduplicate the world, and nothing
+inside a library node needs to be prevented from also existing in another one. **Being forced to be
+one category is what makes it canonical**; being forced to be one *collection* would not.
+
 ## Two things it must not become
 
 - **A second home for facts that belong in a repository.** The triage ground's own rule — two homes
@@ -113,9 +182,9 @@ knowledge**: episodes someone can read.
   ladder — cold storage, then publishing the key at rest, then breaking the key and letting it go
   loose. **A library is the alternative to that last step** and probably a better one, but the two
   have not been reconciled.
-- **Loaning.** A library that holds data-bottles can lend them; the mechanics are `OPEN-QUESTIONS.md`
-  §AA, and the co-op/stewardship case (take ownership of a project for a while, nominal pay-what-you-want)
-  is the same gesture wearing different clothes.
+- **The signers-list amendment request.** The one message a borrower may need to send the library
+  ("add me, with an expiration") has no shape yet. It should be the smallest thing that works, and it
+  must stay optional.
 
 ---
 
