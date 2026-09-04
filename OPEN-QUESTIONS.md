@@ -1378,3 +1378,209 @@ designed and has never been exercised.
   granularity. One anecdote per block makes per-item disclosure possible and makes the block count
   the anecdote count, which leaks cadence. Neither is obviously correct; the choice is currently
   being made by a batching convenience rather than by an argument.
+
+---
+
+## X. Two things are called a data-pile, and nothing bridges them
+
+**Tier: tell (the floor) · pile (the repo) · anecdote (the keeper between them).** This is the one
+that keeps swallowing every other thread, so it is stated as a fact about the code rather than a
+worry.
+
+**The FLOOR's pile.** `floor/floor.mjs`: *"The name is a KEY, not an address. Every
+`<name>.tell.anecdote.channel` serves this same page… typing a made-up name MINTS one… a data-pile
+is a PRIVATE repo, never deployed, never addressable — its questions arrive in the vault only by the
+owner's own gesture (pasted in from cold storage, **or created right here**)."* It exists the moment
+someone types a name, lives in that hostname's same-origin vault, fetches nothing, and holds no
+credential. It is fabricated by *use*.
+
+**The REPO pile.** A fork of the `data-pile` template with `pile.yml`, an age recipient, a
+`PILE_AGE_IDENTITY`, a forward ratchet, and blocks a Tell seals to `piles/<id>/feed/*`. It exists
+when `bin/pile-new` makes it, and it is provisioned, addressable and CI-bearing.
+
+**They share a slug convention and nothing else.** `pile-new` knows the id "doubles as the pile's
+Floor hostname" — that is the entire coupling: a naming rule, in a comment. There is no export from
+the vault to a repo, no import from a repo into the vault, and neither side can produce the other.
+
+- **The floor fabricates a pile and cannot authorize one.** Which is correct by D8 — the room is
+  "the least-trusted code in the system, a wildcard-served dumb shell" and must hold no credential.
+  But it means the surface where a person actually *meets* their pile is structurally incapable of
+  granting them anything, and the surface that can grant (the keeper) has no pile-shaped thing to
+  grant against. **Blocks:** every route attempted so far. Authorizing the journal's pile, giving a
+  contributor access without GitHub, arming an unarmed role — each ends at this seam.
+
+- **The question is which one is the pile.** If the vault pile is the real one, the repo is a
+  durability mirror and the ratchet is the wrong disclosure model (§W). If the repo pile is the real
+  one, the floor is a viewer and "typing a name mints one" is a fiction the vault maintains. Both
+  readings are supported by something already written down, which is how it stayed unresolved.
+
+- **THE FLOOR IS ALREADY A BOTTLE, IN THE CODE, TODAY.** `composer/bottle-uri.mjs` treats `tell` as a
+  `<storage>` value exactly like `bottles`: *"the subdomain — `tell` for data-piles, `bottles` for
+  arbitrary cubbies"*, one grammar `<label>.<storage>.<apex>`, one wildcard on the sub-sub-domain,
+  the same `/storage/.<adapter>` facet. D4 lists them as two bullets of one decision. So a floor is
+  not a different kind of thing from a bottle — it is a bottle under Tell's storage subdomain, and
+  the addressing layer has never believed otherwise. "The floor is not real, provisioning it is
+  real" is a correct reading of the code as it stands.
+  - Which makes the ephemerality complaint answerable with what exists: **loading an existing pile
+    is loading a bottle, and persisting one is evicting to a bottle** — D7's book remembers it,
+    D11's capsule distributes it. The floor needed a saveability story; the bottle already is one.
+
+- **So what does `*.tell` actually encode? Vouching, and only vouching.** D4's sole distinction
+  between the two is whose office it is — *"Tell's subdomain; Tell's office is collection"* against
+  *"Not Tell's to vouch for."* That is a real claim, not a naming preference. But D7 then introduced
+  a **signed** `kind` at inception, carried in `bottle-attest`, precisely so a picker can trust what
+  a bottle is *before connecting* — vouching by signature rather than by hostname. **A wildcard
+  subdomain and a signed attestation are two mechanisms for one claim**, and D7 already chose the
+  signed one everywhere else.
+  **Blocks:** deciding whether `*.tell.<apex>` is load-bearing or is DNS doing a job a signature
+  does better. Not urgent, and cheaper to answer before more names exist than after.
+
+- **The iframe direction is a constraint, not a preference — and inverting it fights D8.** Today
+  `floor/floor.mjs` says its one outward surface *"points at vanilla Tell"*: the dumb, wildcard-served
+  room embeds the capable thing. That is D8's posture exactly — the room is "the least-trusted code
+  in the system" and the keeper is "the capable child" it invites in. **Tell iframing a bottle
+  inverts that**: the capable, vouching service would embed content it does not control, taking on
+  exactly the exposure the shell pattern exists to keep out of it. If the inversion is wanted, it
+  needs an argument against D8's direction rather than alongside it.
+
+- **"There is only one clean room" is already true, and it is not a wildcard.** It is the
+  **`data:` chamber** — `docs/origin.md`'s "offline-first shipyard of data:chambers": a
+  `data:text/html` tab whose origin is **null**, which never uses a service worker, retains nothing,
+  and is trusted purely by a transferred MessagePort over the probe line. So the three isolation
+  mechanisms in this system are doing three different jobs and have been read as competing:
+
+  | mechanism | what it grants | what it cannot do |
+  | --- | --- | --- |
+  | wildcard sub-sub-domain (floor / bottle) | a **persistent hermetic origin** — storage that survives | be cheap; each storage subdomain is a real cert and a real name |
+  | `data:` chamber | **powerlessness** — null origin, nothing retained, capability only | hold anything, or act without a capable parent |
+  | iframe + probe line | **capability transfer** without trusting code | exist without something capable on the other end |
+
+  A bottle is where you **keep**; the chamber is where you **work**. They are complementary, and
+  both are built. "You cannot load a bottle without the clean room" is a coherent rule and costs
+  nothing new.
+
+- **The polling spec and the floors are not two designs for one thing. They are ephemeral relay and
+  durable room, and the difference is WHO KEEPS SOMETHING.** The QR-to-Tell path makes Tell a
+  springboard: parameters carry the destination, the answer submits, and the respondent leaves
+  **nothing behind** — which for a stranger answering one poll is the correct and kind outcome.
+  A floor does the opposite on purpose: the label is a key into a vault that persists forever.
+  - So the sorting question is not floor-versus-bottle, it is **does this participant keep
+    anything?** A poll respondent: no — springboard plus chamber, no origin minted in their browser.
+    A pile owner: yes — a bottle to keep in, a chamber to work in.
+  - Read that way §X's "which one is the pile" softens: the vault is the **owner's** view, the
+    springboard is the **respondent's** path, and the repo is the **durability and publication**
+    form. Three roles of one thing rather than three competing claims — which still leaves the
+    ownership act unanswered, but stops it being a contradiction.
+
+- **Worth a research turn, and worth scoping first.** The subject is not "how do piles work" but the
+  narrower: *what act makes a person the owner of a pile, and which artifact records it?* Everything
+  else here — the control node, the passkey, the age recipient minted on the device, the keeper's
+  origin-bound vend — are candidate answers to that one question, and none of them is currently
+  connected to the others.
+
+---
+
+## Y. The springboard inside the carrier — where the DNS pointer rides in a QR that is not for cameras
+
+**Tier: anecdote (gravel) · tell (the poll QR) · research.**
+
+The poll QR carried a plain URL because that is the one thing a vanilla camera does: it opens
+links. A gravel frame (`AC1|d|…`, `composer/carrier.mjs`) is not a URL, so a phone that does not
+already have the app gets nothing from it — and after D14/D15 the frame is the thing being shown.
+Onboarding therefore needs a **springboard code** somewhere in the picture: the smallest possible
+pointer, DNS-routable, that a camera notices first — ideally large enough to be *the* thing it sees
+even with a video running behind it. DNS is the one pointer the world's cameras already unpack;
+what the others would be is unknown.
+
+- **The instinct: eat into the QR's redundancy.** A QR survives up to ~7/15/25/30% module loss at
+  L/M/Q/H, and the usual logo-in-the-middle trick spends that budget on artwork. The idea is to
+  spend it on a *second, tiny QR* — the springboard — stamped over every frame of the video. Cap:
+  at H the stamp can cover no more than ~30% of the outer code *minus whatever the camera is already
+  costing*, and every frame pays it. Whether a phone camera, shown a big code with a small code
+  inside it, reliably reports the small one is not known and would have to be measured per OS.
+- **The fountain makes the cost different from what it looks like.** The rateless stream is the
+  redundancy; per-frame error correction is only dent detection. A frame that fails to decode is
+  one more droplet the camera has to catch, not a lost byte — so "eating into" the outer code is
+  cheap on the gravel side and expensive only for the vanilla camera that needs the outer code to
+  be *ignored*. That is the opposite of what the overlay wants.
+- **A cheaper shape to test first: the frame *is* a URL.** Prefix every frame with the springboard —
+  `https://<bottle host>/#AC1|d|…` — so any single frame a vanilla camera reads opens the bottle's
+  host with a droplet already in the fragment, and our own decoder just strips the prefix. Cost is
+  ~30 bytes per frame against a 256-byte block. Nothing is overlaid, nothing is stylised, every
+  frame is a springboard, and the fragment never leaves the device (it is not sent to the server), so
+  the first-contact page receives the pointer without the network learning anything about the
+  payload. The layout tile prefixed the same way carries the signed manifest to the landing page on
+  the first scan. This is a proposal to measure, not a decision: it needs a camera test on iOS and
+  Android for (a) a bare host vs a scheme-prefixed URL, (b) fragment length tolerance, and (c) how
+  the OS treats a code that changes 10× a second.
+- **Where it points is now well-defined.** A poll's springboard points at the Tell; anything else
+  is a bottle and points at the bottle's own host (D15: the bottle subdomain is an onboarding
+  surface). There is no third destination.
+- **What the pointer is *for* also moved.** The public QR was a pointer to the transit of a pile's
+  data — the collection — not to the thing itself. A springboard on a bottle points at the thing.
+  The two should not share a vocabulary by accident.
+
+---
+
+## Z. The bottle lands — what the catcher accepts, streams in one pile, and the reply that is not yet a reply
+
+**Tier: anecdote (the catcher and the shell) · pile (streams and attachments) · tell (the online case).**
+
+D15 says only bottles are caught and D16 says the hand-off buys an address. This is what those two
+leave open, kept in one place so the reconciliation does not scatter again.
+
+- **The gravel-catcher is the onboarding surface.** `docs/gravel-whale.md` names it as unbuilt. It
+  is not needed for a consumer you already know will eat the payload; it is the entry point for
+  *anyone who finds a bottle and can read it*. Scope: catch droplets, reassemble, verify the
+  capsule's signature and kind, open in the chamber, keep the seed, offer persist. Every side of it
+  exists (`fountain`, `carrier`, `transfer`, the chamber, `bottle-book`); the catcher is the
+  composition.
+- **Two roll calls.** The service worker's `FALLBACK_SHELL` is a hand-kept list of what the app
+  needs offline; `composer/install.mjs` is a signed manifest of pinned blobs with one entry. "Call
+  one thing up and provision yourself" is the install manifest's job — the firmware is an HTML file
+  that lights everything up, and it is testable once we serve our own views. Either the shell list is
+  derived from the manifest or it is retired into it; two lists will drift.
+- **Every repository gives its own UI.** When a bottle opens, something must be seen, and the
+  bottle's own filesystem supplies it (a UI on a separate branch is one option, so it never competes
+  with root-level files). XSL over an XML feed is attractive because it keeps the machine-readable
+  form as the backbone — but Chromium announced its intent to remove XSLT from the browser (2025,
+  with WebKit and Gecko signalling the same), so a UI that *depends* on it is building on a
+  deprecated floor. Take the principle (the feed is canonical, the view is a stylesheet over it) and
+  pick a rendering path that will still exist. Also: the chamber has no WebCrypto — a bottle's UI
+  cannot verify anything for itself, by design; verification happened before it was opened.
+- **Two bottles in one pile.** A pile holding two pieces of journalism holds two bottles, and their
+  diffs may arrive in alternation. The feed today is one ratchet, one block per window, with no
+  notion of *which attached bottle* a block extends. Either a block names its bottle, or the feed is
+  per-attachment (`feed/<bottle>/<seq>`), or the stream is interleaved and the reader demultiplexes
+  by content-id (invariant #7). The wrong answer is the one that lets two streams compute into each
+  other. Related: §W's disclosure granularity — a per-bottle stream changes what "reveal from N"
+  discloses.
+- **The most minified bottle as the pile's native artifact.** The aside worth keeping: if the pile
+  kept the smallest serialization of each attached bottle (the zero-time animated track, or whatever
+  is smallest), the artifact stored and the artifact shown would be the same bytes. It is opaque from
+  the pile's side — bytes changing — and that is fine. The confusion to avoid is D15's "diff of the
+  QR": frames are derived, diffs are of bytes.
+- **The diff-type bottle needs a base rule.** A patch applies to something. A diff bottle must name
+  the content-id of its base, and a catcher that does not hold the base must say so rather than
+  produce a corrupt fast-forward. Whether an attached bottle on a pile admits *only* diffs to itself
+  (D15 §7) is the same rule seen from the pile.
+- **Replies are hydratable, not native.** `composer/answered.mjs` keeps the exact submission block
+  per (pile, poll, round) — the principal data Antidote aggregates. A reply anecdote must be
+  constructible from it (D15 proposes a `ref` part naming the poll's content-id; no schema change),
+  but the bottled per-anecdote form (`<bottle>-1`, `-2`, …) is a distribution serialization and a
+  poor receipt. Keep what is needed to reconstitute; do not keep every box.
+- **"What if I share this QR online?"** D16 covers the in-person hand-off, where the back-broadcast
+  buys an address. A QR posted to the internet reaches people who were never met, will never
+  broadcast back, and have no registration. That is the old external channel, and it is still worth
+  having; it needs its own answer that is neither the retired springboard nor a worker with a
+  credential (D14). Candidate: the unregistered reply lands in the Tell's mailbox under the poll's
+  own token (the built half of `tell docs/qr-provenance.md`), publicly, as it always did — with the
+  privacy caveat stated rather than papered over.
+- **The constitution as the anti-spam line.** A registered respondent may follow up on the Tell;
+  the per-Tell constitution is what keeps a polling-respondent Tell from becoming a spam channel,
+  and what would let a strong answer be offered onward with consent already in hand (Antidote's
+  recontacting power, the polling group they were in). Not designed; the judging engine is the
+  dependency.
+- **An onboarding message does not exist.** Every path above lands a person somewhere and shows
+  them something; none of them says *what this is*. The message is a product deliverable, not a
+  doc.
