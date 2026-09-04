@@ -1646,6 +1646,64 @@ collaboration is where "valid" stops being obvious:
 require a party to be online, and nothing should require agreement between the parties beyond what
 the starting state already said.
 
+### The two layers of hooks — and the one that was being missed
+
+The framing above assumed one set of rules, inside the project bottle: *who may write this project.*
+There are **two**, and conflating them is why authorization kept looking harder than it is.
+
+| layer | governs | held by |
+| --- | --- | --- |
+| hooks **inside the project bottle** | who may advance the project's own history | the project's owner |
+| hooks **on the data-pile that holds it** | who may deliver a diff *into the pile* | whoever operates the pile |
+
+A courier bringing an update **does not crack the project bottle open.** That bottle was received; it
+is immutable in their hands. They come to write into the **pile**, and the pile's own hooks decide
+whether their signature is allowed to. So "can I contribute" is answered one level out from where it
+was being asked, and the inner bottle never needs to be modified to accept a contribution.
+
+This also defuses the concern that holding the pile is master control over its contents. It is —
+unless the outer layer carries the same kind of guarantee, at which point "only the owner may write"
+is enforced at both depths for two different meanings of owner.
+
+### Loaning — a checkout is a grant of WRITE, not of read
+
+The library case makes this concrete, and it is the cleanest statement of the whole idea:
+
+> You do not take the slip out of the front and write your name on it. **The library writes the
+> commit hooks into the data-pile inside the bottle**, and what it writes is: *this signature may
+> write here.*
+
+Several things follow, and they are the argument that this shape is right:
+
+- **Nothing secret is being protected.** A borrower is not checking the bottle out for read access —
+  the contents were never hidden. They are checking out **the right to have their changes count.**
+  That is why the goblin does not need to keep a secret, and why "you could just edit it" was never
+  the objection it looked like.
+- **No tokens travel.** Permission is written *on the artifact*, in the artifact's own terms.
+  "Obeying the signs" rather than presenting a credential — which is what makes it work with no
+  network, no issuer to call, and no revocation endpoint.
+- **A grant can expire, and the bottle can carry its own checkout history** — loans, returns,
+  renewals — because the pile is already an append-only log of what it witnessed.
+- **Returning is re-serialising.** The bytes changed, so the QR video changed; the borrower signs the
+  new capsule as its packager. Their signature on the outside and the owner's grant on the inside are
+  both true and say different things — which is D10 §3's distributor-versus-author distinction
+  arriving exactly where it is needed. **Repackaging with no changes is pointless and nobody should
+  do it**; repackaging *because you changed something* is the entire gesture.
+- **Two borrowers at once is a feature.** Hand it to two people, ask for different work, take both
+  back as **branches** — a pull-request gesture the constellation already has. They conflict, and
+  the conflict is information.
+- **The owner's remedy is a later version, not a revocation.** Issue a new one that sidelines the
+  rogue work; wherever the mesh carries it, a newer owner-signed state beats an older borrower-signed
+  one. Nothing is revoked, because nothing can be; something better simply arrives. Whether that is
+  sufficient depends on the caching behaviour of the mesh, which is its own question.
+- **Not returning is allowed.** A student who checks something out to study, or to exercise it as a
+  sandbox, owes nothing back. The worst outcome is a wasted loan, which costs the lender nothing.
+
+**What this adds to the open list above:** authorization to the *pile* (as distinct from the project)
+is now the load-bearing unknown. The likely shape is D8's — the keeper **vends the capability, never
+the secret**, origin-scoped the way a passkey is scoped by DNS name — but a loaned bottle has no DNS
+name to scope against while it is in transit, and that gap is exactly the interesting part.
+
 **Where it came from.** Ideated 2026-09-03 in the session that produced D17, from the observation
 that "writable bottle" had been said many times without anyone asking what *valid* meant. The name is
 the ideator's own Freudian shorthand — *a goblin in the data bottle* — and it stays because it names
