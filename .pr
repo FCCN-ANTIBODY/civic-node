@@ -1,0 +1,17 @@
+OPEN-QUESTIONS §AA: the goblin in the data bottle — what makes a change to a released bottle valid
+
+D17 (anecdote.channel#229) rules that a data bottle is writable and that only its owner may authoritatively fast-forward it. That settles *who*. This records the half it deliberately did not settle: **how a bottle enforces that from inside itself**, and what "a valid change" even means once collaborators exist.
+
+The idea, kept as an open question rather than a decision because it is not one yet: a bottle arrives as signed bytes containing a git repository, and a repository can be *configured to behave*. The claim is not that its arrangement cannot be stripped — you hold the bytes, obviously it can. The claim is narrower: the starting state was signed, so **you can prove your result was reached from that state under the rule that state declared**, and if the execution is attested as having run in a clean room, the proof survives without trusting the carrier.
+
+Five open questions in the order they block each other:
+
+1. What an attested execution actually asserts — *these inputs, this declared rule, this clean room, this output* — which is a materially different claim from "this artifact is signed" and must not be conflated with it.
+2. Where the rule lives so it travels with the bottle. Hooks are the obvious answer and the suspicious one: D2/D3's posture is that code arrives as signed glove, never as ambient repository contents. A rule that is *data the runtime interprets* is likely better than a rule that is *a script the runtime runs*.
+3. What a refusal looks like — `fast-forward-bottles.md` already requires that not-applying be ordinary rather than an error, and "refused because unauthorized" is a different refusal a person should be able to tell apart.
+4. Whether the rule binds a fork (almost certainly not — what it buys is that divergence is *legible* as divergence, which is D10 §3 one layer down).
+5. Whether any of it needs new cryptography. It must not (invariant #8), and this is the likeliest place for that constraint to get quietly violated.
+
+Appended as §AA after §Z, same as the previous sections. No other file touched.
+
+The name is the ideator's own — *a goblin in the data bottle* — and I kept it, because it names something the existing vocabulary has no word for: a small resident arrangement that came with the container.

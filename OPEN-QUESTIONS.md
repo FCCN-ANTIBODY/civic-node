@@ -1584,3 +1584,70 @@ leave open, kept in one place so the reconciliation does not scatter again.
 - **An onboarding message does not exist.** Every path above lands a person somewhere and shows
   them something; none of them says *what this is*. The message is a product deliverable, not a
   doc.
+
+---
+
+## AA. The goblin in the data bottle — what makes a change to a released bottle *valid*
+
+D17 (anecdote.channel) rules that a **data bottle** — a bottle holding a data pile — is writable, and
+that **nobody may authoritatively fast-forward one without being its owner.** That settles who. It
+does not settle *how a bottle enforces that from inside itself*, which is the harder half, and the
+one deliberately left open.
+
+**The shape of the idea.** A bottle arrives as a specific set of bytes, signed. Inside it is a git
+repository, and a git repository can be **configured to behave** — hooks, and whatever else the
+starting state chose to cook in. Call that the goblin: not a daemon and not a server, just the
+repository's own arrangement, arriving with it. The claim is not that the goblin cannot be removed.
+Obviously it can; you hold the bytes. The claim is narrower and stranger:
+
+> The starting state was distributed and signed. However esoteric its rule — a signer check, a
+> CODEOWNERS-shaped range, even a literal riddle it prompts for and only the owner knows the answer
+> to — **you can prove that your result was reached from that state by that rule.** If the execution
+> can be attested as having run in a clean room, the proof survives without anyone trusting the
+> carrier.
+
+The clean room already exists (`composer/probe-line.mjs`'s `data:` chamber). The attestation
+machinery already exists (D10, `bottle-attest.mjs`). What is missing is the notion of *an execution
+observed and attested from a signed starting state* — which is a substantially different claim than
+"this artifact is signed," and should not be conflated with it.
+
+**Why this is not just an access-control question.** The interesting case is collaboration, and
+collaboration is where "valid" stops being obvious:
+
+- There is **no reason a commit in a released bottle cannot be attributed to someone else** — git has
+  always allowed that. There is simply **no policy** saying when that attribution should be believed.
+- A two-party bottle ("you and I may both write here") is expressible today with nothing new, and
+  becomes meaningful the moment "applies cleanly from the attested starting state, under the rule the
+  starting state declared" is checkable.
+- Setting a repository loose **on the merits of its hooks alone** is the interesting and slightly
+  alarming end of this. Worth reaching deliberately rather than by accident.
+
+**The open questions, in the order they block each other.**
+
+1. **What does an attested execution assert, exactly?** Not "this is signed" — something like *these
+   inputs, this declared rule, this clean room, this output.* Until that sentence is written, none of
+   the rest can be specified.
+2. **Where does the rule live so it travels with the bottle?** Hooks are the obvious answer and the
+   suspicious one: they are code, and D2/D3's whole posture is that code arrives as signed glove,
+   never as ambient repository contents. A rule that is *data interpreted by the runtime* is a
+   different and probably better answer than a rule that is *a script the runtime runs*.
+3. **What happens on a refusal?** Per `docs/proto-issues/fast-forward-bottles.md`, a bottle that does
+   not apply must be **ordinary, not an error** — most bottles a person catches will not apply to
+   them. A bottle that refuses an *unauthorized* advance is a different refusal from one that simply
+   does not fast-forward, and a person should be able to tell them apart.
+4. **Does the owner's rule bind a fork?** Almost certainly not — you hold the bytes, you may do
+   anything, and the design must not pretend otherwise. What the rule buys is that a **divergent copy
+   is legible as divergent**, which is D10 §3's distributor-versus-author distinction one layer down.
+5. **Does any of this need new cryptography?** It must not (invariant #8). Attested execution is the
+   place where that constraint is most likely to be quietly violated, so it is worth checking
+   deliberately rather than assuming.
+
+**Not this.** Not a permissions system, not a server, not a consensus mechanism. Nothing here should
+require a party to be online, and nothing should require agreement between the parties beyond what
+the starting state already said.
+
+**Where it came from.** Ideated 2026-09-03 in the session that produced D17, from the observation
+that "writable bottle" had been said many times without anyone asking what *valid* meant. The name is
+the ideator's own Freudian shorthand — *a goblin in the data bottle* — and it stays because it names
+a thing nothing else in the vocabulary names: a small resident arrangement that came with the
+container.
