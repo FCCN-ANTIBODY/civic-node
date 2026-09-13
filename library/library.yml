@@ -1,0 +1,31 @@
+# library.yml -- what this library is willing to put into a build.
+#
+# ONE BOOLEAN AND ITS EXCEPTIONS. `except:` always means the other way from `public:`.
+# There is no second list, no ordering, and no way to write a rule that contradicts
+# another rule -- so you cannot express an exception to an exception, and that is the
+# intended cost. Nobody should be fighting an include/exclude system.
+#
+# Reasoning and the full vocabulary: .library-engine/SHELVES.md.
+#
+# This file lives with the library rather than in .library-engine/residency.yml on
+# purpose. `provides:` in that file says what the ENGINE offers a host and is identical
+# in every library; publicity is a fact about THIS instance, decided by whoever runs it.
+# A per-instance fact in a per-engine file is a second surface that can disagree.
+
+version: 1
+
+# This node is a public body and its library is the public record. The personal node
+# that also runs one keeps it private; same software, one line different.
+public: true
+
+# The exceptions to `public: true` -- things held here that are NOT put forward.
+#
+# Entries are addresses in THIS library's store, and they are opaque to the engine.
+# `store: filesystem` is what this one runs, so an entry is a path and a trailing
+# slash means "and everything under it". A library on another store supplies its own
+# addressing, and a store that cannot interpret an entry must REFUSE THE BUILD rather
+# than publish on a guess.
+except:
+  # Intermediates. Regenerable in principle, deterministic by path, and nobody else's
+  # business -- a build cache is working material, not a statement.
+  - build/

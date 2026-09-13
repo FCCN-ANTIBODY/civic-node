@@ -3,8 +3,8 @@
 This repository is one **Civic Node**: a single installation meant to be copied — the workspace
 that self-hosts all three roles (its own Atlas, its own Tell, publishing through Journal) and
 fronts data-piles, coordinating the engines as hidden submodules (`.atlas-engine/`,
-`.tell-engine/`, `.journal-engine/`, `.antidote-engine/`). It is also the constellation's
-documentation home: the vision, the open questions, and the pipeline walk live here.
+`.tell-engine/`, `.journal-engine/`, `.antidote-engine/`, `.library-engine/`). It is also the
+constellation's documentation home: the vision, the open questions, and the pipeline walk live here.
 
 ## Where the truth is, in reading order
 
@@ -26,6 +26,26 @@ documentation home: the vision, the open questions, and the pipeline walk live h
    once; [`docs/PIPELINE.md`](docs/PIPELINE.md) walks the poll lifecycle literally, naming the
    file behind each step; `CONSTITUTION.md` is the binding law; `docs/TENANCY.md` is the hosted
    direction.
+
+## The library, at `library/`
+
+This node runs a **public** library — `.library-engine/` is the residency claim, `library/` is the
+canonical prefix, and [`library/library.yml`](library/library.yml) is the one line that says
+public. Its door is [`library/README.md`](library/README.md), which **is** the page served at
+`/library/`: front matter with `permalink:`, no separate index, no redirect. That is the scheme in
+[`.library-engine/EXHIBIT.md`](https://github.com/FCCN-ANTIBODY/library.anecdote.channel/blob/main/EXHIBIT.md),
+and this node is its first live instance.
+
+Three things not to get wrong inside it:
+
+- **`share/` and `build/` are shelves, not categories.** A shelf is a library's own working prefix;
+  a category is a reserved word with a constellation-wide meaning. Both are registered in the
+  engine's `CATEGORIES.md` so they cannot be promoted by accident.
+- **Moniker groups live under `share/`**, never at the library's top level. `share/FCCN-ANTIBODY/`
+  is the org, and it **enumerates rather than holds** — no submodules under `library/` yet, which
+  means no custody claim is being made. That is a decision, not an oversight.
+- **`library/` is built by this node's Jekyll**, unlike `atlas/`, `tell/` and `antidote/`, which
+  are pass-through prefixes produced by their own engines. The library engine ships no build.
 
 ## The offline origin is the destination
 
