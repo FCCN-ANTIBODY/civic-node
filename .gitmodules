@@ -13,3 +13,6 @@
 [submodule ".antidote-engine"]
 	path = .antidote-engine
 	url = https://github.com/fccn-antibody/antidote
+[submodule ".library-engine"]
+	path = .library-engine
+	url = https://github.com/FCCN-ANTIBODY/library.anecdote.channel

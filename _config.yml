@@ -27,6 +27,7 @@ exclude:
   - .atlas-engine/
   - .tell-engine/
   - .antidote-engine/
+  - .library-engine/
   - atlas/
   - tell/
   - antidote/
