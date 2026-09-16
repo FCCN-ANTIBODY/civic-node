@@ -57,6 +57,45 @@ them apart will eventually be used to do the third while believing it is doing t
 keeps that visible. See *Provenance and consent*, below, which is the one part that must not be
 bolted on later.
 
+## The word is already canon, and it was not mine to coin
+
+**Amended 2026-09-15.** The sections above reasoned their way to `dossier` from first principles
+without checking, and the check was owed. The word is **already accepted vocabulary in this
+constellation**, in `anecdote.channel/docs/decisions.md` **D9 · The you namespace — masks, and the
+dossier a user keeps about the web**, accepted 2026-08-31:
+
+> *A label that is a registrable domain, kept intact left-to-right (`example.com.you.<apex>`), is the
+> user's **DOSSIER about that site**: notes, drafts, cached finds, unreleased posts — out of band, on
+> an address that never pings the subject.*
+
+**That is the keystone of this document, already ruled, three weeks earlier.** *An address that never
+pings the subject* and *"profiles that cannot be hidden from their owner or discovered by their
+subject"* are D9 saying *a dossier is about a subject and is not the subject*, in its own terms.
+
+**And `persona` is canon too, as the opposite thing:** *"A single invented label is a MASK — a persona
+surface the user curates and can switch at will."* So the operator's instinct — that persona names
+something you put on and switch, while dossier names a record about a subject — is not a preference
+arrived at in conversation. **It is the distinction this constellation already made and wrote down.**
+
+### What is left for this document to add, which is narrower than it was
+
+D9's dossier is one instance: **subject = a website, compiler = the user whose `you` space it is.**
+This document generalizes exactly one axis — **the subject need not be a site.** A person, a brand, a
+character, a lore set, a band. Everything else D9 already decided and should be cited rather than
+restated.
+
+Two things fall straight out of the reconciliation:
+
+- **D9 encodes the subject in the address** (the registrable domain, left-to-right, *"the familiar
+  reading order is the point"*), and the compiler is implicit in whose space it is. That is
+  `subject × compiler` with the pair spelled in DNS. For subjects that are not domains the address
+  trick has nothing to bite on, **which is why a non-site dossier needs an explicit subject id and a
+  site dossier does not.** That partly answers §*Not decided*'s first question: for site subjects, the
+  subject is already a reference rather than a string.
+- **D9's depth rule binds.** *"Depth stops at the registrable domain… anything deeper is a path inside
+  the dossier origin, never more DNS."* A dossier library that wanted a DNS name per member of a band
+  would hit the same wildcard-per-subject cost D9 rejected. **Members are paths, not labels.**
+
 ## What it keeps
 
 Six parts. **Every one is optional**, every one is separately addressable, and that is not a
@@ -165,24 +204,25 @@ dossier must still be obtainable by cloning the repository. If it is not, a fron
 deliver the log if that's how they wanted to play it."* That is `data-pile`, maturity `running`,
 *fork it, one per pile.* They hold their own; delivery is a copy, not an export path to build.
 
-### One concrete trap in the satellite-page plan
+### Deployment: do not raise the Public Suffix List here
 
-*"The grant system gets you a satellite page on the outside that's authorized to do a thing, and we
-can do that with passkey or whatever."*
+**A previous revision of this document raised the PSL/`github.io` constraint against the satellite-page
+plan. That was wrong and it is retracted.** The facts were accurate and the framing did not reach this
+constellation, which does not deploy on GitHub Pages and owns the domain the question is about.
 
-A WebAuthn credential is usable only from an origin the **RP ID is a registrable suffix of**, the RP
-ID is fixed at registration, and it is not re-scopable afterward. So:
+The strategy is **flooring** — `anecdote.channel/docs/flooring.md`, implemented as the Floor in
+`tell/docs/floor.md`: one identical page served at every label under a Cloudflare wildcard, nothing
+provisioned ever, the label chosen rather than allocated. A satellite page **is** a floor, and the
+operator's *"the grant system gets you a satellite page on the outside that's authorized to do a
+thing"* is the springboard clause exactly: a floor's job ends when the grant is held.
 
-- A satellite page at `satellite.<your-domain>` can use a credential registered at `<your-domain>`.
-- A satellite page at **any other domain cannot**, ever, by any later decision.
-- **An RP ID may not be a public suffix.** `github.io` is on the Public Suffix List, so two GitHub
-  Pages projects under one account **cannot share a passkey** — each is stuck with
-  `<user>.github.io`.
+Two consequences that do bear on dossiers, and neither is an obstacle:
 
-`GRANTS.md` already flags the third against the first worked fitting. The consequence for this plan:
-**if satellite pages are meant to span properties, the whole thing needs a real domain under it, and
-that decision has to be made before the first credential is registered, not after.** It is the
-cheapest possible moment to know this and the most expensive possible thing to discover late.
+- **One-key-one-service is the goal.** A credential scoped so it cannot wander is what a dossier
+  consumer should want: a grant on *this* dossier, not on everything the compiler holds.
+- **A label is a rendezvous, never a capability.** Anyone who types it gets the same tile. **So a
+  dossier must never be protected by its address being hard to guess** — the privilege lives in the
+  encryption, exactly as `GRANTS.md` already rules, and a floor is not a place a secret is kept.
 
 ## Where it lands, mechanically
 
@@ -333,12 +373,12 @@ users' problem while looking more convenient.
 
 ## Not decided here
 
-- **Whether `subject` is a reference or a string.** A subject id that resolves to something (a
-  person's `you` mount, a brand's node) is far more useful than an opaque string, and it drags in
-  the `you` engine, which does not exist. The cheap version — an opaque id two dossiers can agree
-  on — is not wrong, it is just less. Nobody has costed the difference. **Citation sharpens this:**
-  a carried member is identified by pin, which is precise but says nothing about *who* they are
-  across two bands that both cite them.
+- **Whether `subject` is a reference or a string — now half answered.** D9 settles the site case:
+  the subject *is* a reference, spelled as the registrable domain in the address. What is open is
+  the rest — a person, a brand, a character have no equivalent canonical address, and the `you`
+  engine that would give a person one does not exist. **Citation sharpens it further:** a carried
+  member is identified by pin, which is precise about *which bytes* and silent about *who*, so two
+  bands citing the same session player still cannot tell they did.
 - **Consent, as a mechanism rather than a word.** This document says a dossier on a living person is
   a different object and must say what the subject agreed to. It does not say what that record looks
   like, whether it is revocable, or what a resolver does when it is absent. **That is the gap most
