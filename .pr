@@ -1,0 +1,68 @@
+Proto-issue: dossiers — the artifact a voice is served from
+
+Adds `docs/proto-issues/dossiers-the-agentic-kind.md`. **Nothing is built and nothing has
+moved.** This is design writing, filed where this repository keeps design writing, following
+the precedent of `library-the-knowledge-kind.md` — which is how the library engine itself
+started.
+
+## Why it exists
+
+Raised 2026-09-15 as an explicitly unbound idea: a git-held, browser-ready representation of
+personas, mountable on a station node, servable behind an API or MCP, with public and private
+(grant-gated) cases. The operator's own framing was *"the binding is a lot less clear so far
+than what I wanna do"* — so this captures the reasoning at the point where changing it is
+still free, rather than after something is standing on it.
+
+## What it actually decides
+
+**One thing, and everything else follows from it:** a dossier is *about* a subject and is not
+the subject. That is what makes `dossier` the better word than `persona`, and it is structural
+rather than stylistic — it dissolves the fork-naming problem (two dossiers about one subject
+are two opinions, not rival claims to a name), it makes `subject × compiler` the identity
+instead of the folder name, and it forces the consent question that a persona library would
+never have been made to ask.
+
+Six parts (identity, register, timbre, stance, reference, continuity), all optional, all
+separately addressable. The engine's job is **resolution with per-part provenance** — because
+an answer without a citation is a claim the engine made on its own authority, and this engine
+has no authority. Three calls: `list`, `resolve`, `part`.
+
+## What it deliberately does not do
+
+- **Does not take a category word.** `CATEGORIES.md` says taking a seventh word locally is the
+  one irreversible act, and a dossier probably wants to be filed under its *subject* anyway.
+  Proposed, as `land` was proposed. Not taken.
+- **Does not create a repository.** The library's own rule — folders until one earns it, and
+  `git subtree split` makes the deferral free.
+- **Does not design what is already built.** The private-dossier case is `GRANTS.md` verbatim
+  (branch = isolation, encryption = privilege, grant = key); the consumer-log case is
+  `data-pile`, already `running`. Naming those was more useful than redesigning them.
+
+## The one finding worth reading if you read nothing else
+
+The satellite-page plan has a constraint it cannot negotiate. **A WebAuthn RP ID is fixed at
+registration and a credential only works on origins it is a registrable suffix of** — so
+satellite pages meant to span properties need a real domain under them, decided *before the
+first credential is registered*. `GRANTS.md` already found the sharp edge of this (`github.io`
+is a public suffix, so two Pages projects under one account can never share a passkey). It is
+restated here because it lands directly on a stated plan.
+
+## What was verified
+
+- Read against the current `library.anecdote.channel` main (`a0424b4`), not the station-node
+  pin — which is stale and does not contain `GRANTS.md`, `SHELVES.md` or `EXHIBIT.md` at all.
+  Escalation `485e` already reports that pin lag; this PR does not touch it.
+- Checked that `dossier`/`persona` are unclaimed vocabulary in the constellation. `antidote`'s
+  `docs/faces.md` uses "faces" for something unrelated (three front doors of one product);
+  `SEATS.md` uses "personas" colloquially for a seat taking on its workers' roles. No conflict.
+- Worked in a fresh worktree off `origin/main`: `~/Project/FCCN-ANTIBODY/civic-node` had
+  another session's uncommitted `bin/exhibit*` and `bin/discord-*` in it, left alone.
+
+## Left undone, on purpose
+
+Four open questions are named in the document rather than answered: whether `subject` resolves
+to something or is opaque, **what a consent record actually looks like** (flagged as the gap
+most likely to be papered over), whether a dossier is a bottle, and what a resolver does with
+a dangling part reference.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
