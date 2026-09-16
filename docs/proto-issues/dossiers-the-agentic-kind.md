@@ -203,19 +203,153 @@ Three positions, and only one of them should be taken now.
    yet. `git subtree split` preserves the history whenever that changes, so staying a folder is free
    and reversible, which is exactly the asymmetry the library keeps citing.
 
+## Citation is the composition mechanism, and the contract is already written
+
+Amended 2026-09-15, from the operator's worked case:
+
+> *"Say it's a band. I have a dossier that wants to cover each of the individuals, but there really
+> would be a dedicated one somewhere else… it's a crossover and they were in a band. But it's not
+> the canonical way you'd look them up. I would expect the group dossier to be capable of doing
+> citations."*
+
+This corrects §*Composition* above, which said **reference** where it should have said **citation**,
+and treated the distinction as cosmetic. It is not. A reference is a pointer that resolves at read
+time. A citation is *a claim about a source, at a version, carried with the thing that cites it* —
+and the second one is what a band dossier needs, because the whole point is that it works when the
+member's own dossier is somewhere else, private, moved, or gone.
+
+**The contract for this exists, is running, and was written for exactly this hazard.** The journal
+engine's `bin/build-intermediates` is *"the portable form of what a journal has cut — arrangement
+and recorded pins, never prose."* Every property the band case needs is already a decided rule
+there, with its reasoning attached:
+
+| journal | dossier | the property |
+| --- | --- | --- |
+| an issue | the group dossier (the band) | the arrangement |
+| a cited piece, carried beside it | a member dossier, carried reduced | *"the tier above bakes the issues and has to see the letters"* |
+| the recorded pin | which version of that member this band asserts | *"the pin is the point"* |
+| dropped `permalink` / `redirect_*` | **the carried member is not the lookup** | see below |
+| refused piece named, skipped, issue ships | a member that can't be carried doesn't sink the band | `--strict` for callers who'd rather stop |
+
+### The reduction rule *is* "not the canonical way you'd look them up"
+
+This is the sentence to read twice, because it means the operator's requirement is not something to
+design — it is a property that already falls out:
+
+> *What travels is the piece reduced: its OWN front matter (title, author, date, tags — the keys
+> that describe the piece and travel with it anywhere) and its body. What is dropped are the CLAIMS
+> ON A URL SPACE — `redirect_from`, `redirect_to`, `permalink` — which belong to whichever site first
+> published the piece and are meaningless anywhere else.*
+
+Applied to dossiers: **the descriptive keys travel and the address does not.** The band's carried
+copy of a member has no permalink, so nothing can route to it and it cannot be mistaken for the
+canonical dossier — which keeps its own address, wherever it lives. *"The layout goes too — a piece
+must not have to know who is publishing it"* is the same rule again: a member dossier must not have
+to know it is being cited by a band.
+
+And the reasoning given for the rule is the crossover case in its general form: *"two journals citing
+the same piece would both claim the same ones."* Two bands citing the same session player, and
+neither gets to own them. **The property is enforced by construction rather than by convention**,
+which is the difference between a rule and a hope.
+
+### The pin closes an open question this document had
+
+§*Not decided* previously asked what a resolver does when a referenced part disappears. Citation
+answers it, and the answer is better than the question deserved. The pin *"says which exact words
+ran, so a third party's rendering is checkable against ours; it makes staleness visible when an
+outer build picks up an intermediate older than its source; and it is the same pin that makes
+publishing, editing, and withdrawal one mechanism rather than three."*
+
+So: a band dossier holds the member **at a pin**, the bytes are carried, and the member's dossier
+vanishing does not break the band — it makes the band's copy *visibly* the version it cited. **A
+withdrawn member dossier is handled by the same mechanism as an edited one**, which is the third job
+and the one nobody would have designed on purpose.
+
+### Where they go, and why the journal need not be installed
+
+`build/`, per [`SHELVES.md`](https://github.com/FCCN-ANTIBODY/library.anecdote.channel/blob/main/SHELVES.md),
+which was written for this exact failure: a pin is a promise something is retrievable, `build/` holds
+the retrieved thing, and it is *"deterministic by path, not merely present — the path is part of the
+artifact,"* so two builds cannot end up sharing one artifact with nobody able to say which produced
+it.
+
+**The operator's framing — *"not because the journal has to be installed"* — is the load-bearing
+part, and the intermediates contract already honours it.** What `build-intermediates` emits is
+INERT: front matter plus plain markdown, no template syntax, *"so a consumer needs to trust nothing
+to render it."* The dependency is on **the artifact shape, not the producer.** A site with the
+journal builds these; a site without it reads them; a thin carrier holding the bytes and running
+none of the services still works. That is the same argument `_fragments/README.md` makes for
+committing prebuilt fragments — *"a clone that had to build these would be a node that cannot say
+what it is."*
+
+## Two hazards citation introduces, and only one of them is already solved
+
+### The group dossier is the leak vector
+
+**Citation composes. Privacy does not compose with it, and nothing catches that by default.**
+
+A public band dossier that carries a reduced copy of a member's *private* dossier has published it.
+The grant machinery is untouched and correct — the member's own dossier is still ciphertext on its
+own branch — and it does not help at all, because the leak is a plaintext copy sitting in `build/`
+that nobody had to decrypt.
+
+This is not a new class of problem here and the answer already has a shape. `_fragments` has a verb
+for precisely this question — `bin/fragments audit` — *"did anything marked private get in?"* And
+the enforcement doctrine is stated in the same file and should be copied verbatim rather than
+reinvented:
+
+> *`library/` is never a publisher's input. **Not filtered — absent.** That is the whole safety
+> property, and it is enforced here, once, at generation time, rather than by every template
+> remembering to.*
+
+So: **a dossier build refuses to carry a part whose grant is not satisfied by the audience of the
+build**, decided once where the artifact is generated, and never by whatever renders it. A band
+whose member is private ships the band with the member *named and absent* — which the refusal path
+already supports, because a refused piece is named, skipped and reported while its siblings ship.
+
+### The ejection gate has an agentic twin that the same check does not catch
+
+`write_piece` refuses a carried piece containing template syntax, and the reasoning is exact:
+
+> *A mounting site builds what it is handed, and a piece's `{% include %}` is evaluated in THAT
+> site's build, against ITS includes, ITS plugins, ITS filesystem. A contributor writes the letter;
+> they do not get to run a step in the newsroom's build.*
+
+**A dossier is consumed by a model, and the same sentence holds with "build" replaced by "run."** A
+carried `stance` or `register` is text that reaches an agent — that is the entire purpose — and text
+that reaches an agent can attempt to reach its instruction channel. Scanning for `{% %}` does not
+see this, and no scan reliably does.
+
+The constellation's existing answer is the right one and it is a posture rather than a filter:
+`station-node/library/INERT.md` —
+*instruction files inside held projects are never consulted, not followed and not read in order to
+judge.* **A carried dossier is data, never instruction**, and the engine that resolves one must hand
+it to a consumer as quoted material with its provenance attached, never as something merged into a
+system prompt.
+
+This is the sharpest reason the three calls in §*The surface* return **parts with provenance** rather
+than an assembled prompt. An engine that returned the latter would have made this hazard its
+users' problem while looking more convenient.
+
 ## Not decided here
 
 - **Whether `subject` is a reference or a string.** A subject id that resolves to something (a
   person's `you` mount, a brand's node) is far more useful than an opaque string, and it drags in
   the `you` engine, which does not exist. The cheap version — an opaque id two dossiers can agree
-  on — is not wrong, it is just less. Nobody has costed the difference.
+  on — is not wrong, it is just less. Nobody has costed the difference. **Citation sharpens this:**
+  a carried member is identified by pin, which is precise but says nothing about *who* they are
+  across two bands that both cite them.
 - **Consent, as a mechanism rather than a word.** This document says a dossier on a living person is
   a different object and must say what the subject agreed to. It does not say what that record looks
   like, whether it is revocable, or what a resolver does when it is absent. **That is the gap most
-  likely to be papered over by whoever builds first**, and it should be the next thing written.
+  likely to be papered over by whoever builds first**, and it should be the next thing written. It
+  is now also more urgent: a group dossier compiles a citation about a person into somebody else's
+  build wing, and consent to be *in a dossier* is not obviously consent to be *carried*.
 - **Whether a dossier is a bottle.** It has custody, provenance and a signer list, which is the
   bottle shape exactly. If it is, transit is solved and this document has been describing a bottle
   schema without saying so. Nobody has checked.
-- **What happens to a resolved dossier when a referenced part disappears.** Composition by reference
-  buys reuse and buys dangling references with it, and a branding kit that silently loses its
-  `stance` is worse than one that never had it.
+- **What the audience of a build is, mechanically.** The refusal rule above is stated as *a part
+  whose grant is not satisfied by the audience of the build*, and nothing anywhere defines that
+  audience. It is probably a `disposition:`-shaped label, since
+  [`residency.yml`](https://github.com/FCCN-ANTIBODY/library.anecdote.channel/blob/main/residency.yml)
+  already separates *held to be handed on* from *served to anyone*. Probably is not a design.
