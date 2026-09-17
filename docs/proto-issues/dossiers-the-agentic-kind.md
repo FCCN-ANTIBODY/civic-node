@@ -178,9 +178,15 @@ this or is wrong.
 | `resolve(address)` | the effective dossier, every part, with per-part provenance |
 | `part(address, part, @pin)` | one part. The unit that grants and rate limits attach to |
 
-This is the MCP surface too. *"Very concrete primitives"* is the operator's phrase and the three
-calls are what makes them concrete: a thing an agent can enumerate, fetch whole, or fetch one facet
-of, with a citation for each facet.
+**This is an API, and deliberately not an MCP server.** Ruled by the operator 2026-09-16: *"MCP is
+for other people. I'd rather just get our own API right… MCP is often a satellite relay in order to
+make an API digestible because companies don't make good APIs."* The reasoning is worth keeping
+because it is a quality bar rather than a refusal — **if the API needs a connector to explain it, the
+API is the thing that is wrong.** Anyone who wants an MCP wrapper can write one against three calls.
+
+*"Very concrete primitives"* is the operator's phrase and the three calls are what makes them
+concrete: a thing an agent can enumerate, fetch whole, or fetch one facet of, with a citation for
+each facet.
 
 ## Grants — already ruled, and mostly already built
 
@@ -370,6 +376,193 @@ system prompt.
 This is the sharpest reason the three calls in §*The surface* return **parts with provenance** rather
 than an assembled prompt. An engine that returned the latter would have made this hazard its
 users' problem while looking more convenient.
+
+## The schema question, settled the only way it can be
+
+**Amended 2026-09-16.** §*What it keeps* listed six parts. **That table was the error**, and the
+operator named it exactly:
+
+> *"If I have to start naming all the areas for the types of things that it can keep, it's not going
+> to be able to adapt very well."*
+
+The correction is not that categories are wrong. It is that **they are the user's to pick, not the
+engine's to define**:
+
+> *"If somebody wanted to organize their own dossier and pick top level terms like timbre, I welcome
+> it, and they could simply source it from the things that they claim go in that folder… As I
+> experimented with folders myself, it's clear to me that there is no one top level config. And the
+> reason just boils down to that the personas are people and **people are many things.**"*
+
+### The scheme already exists one level up
+
+[`EXHIBIT.md`](https://github.com/FCCN-ANTIBODY/library.anecdote.channel/blob/main/EXHIBIT.md) made
+this decision for repositories and it transfers without amendment:
+
+> *The canonical files are **uppercase**… The capitals are the namespace… `INDEX.md` would be
+> acceptable. **`index.md` would not**, and the difference is the whole scheme: lowercase is a
+> project's own vocabulary, and a renderer may not assume anything about it.*
+
+So a dossier gets two tiers and no more:
+
+| tier | who names it | examples |
+| --- | --- | --- |
+| **canon** — uppercase, tiny, fixed | this engine | `NAME`, `CONSTITUTION` |
+| **fragments** — lowercase, free-form, unbounded | **the compiler** | `personality`, `timbre`, `wardrobe`, `what-she-orders` |
+
+The part name lives in the filename — `<subject>/<fragment>.md`, the operator's `name.personality`
+instinct — and **nothing validates it.** A renderer *"reads the keys it recognises, ignores the rest,
+and needs no configuration from the project."* **An unknown fragment name is not an error.**
+
+The filename is not cosmetic. A fragment in its own file is separately pinnable, separately
+encryptable, separately grantable, and has its own `git log`. The news-reader case — latest register,
+pinned voice — is impossible in one file and free in several.
+
+### What the engine may still supply: a spread, not a schema
+
+> *"We can supply an ecosystem of fragments, and so we are not wrong to think that there are some
+> ways that we can organize things… the spread of terms we choose should really **enshrine our
+> mission to make multifaceted personas.** So these do not all go together. Not all of them are going
+> to have voice samples. Maybe none of them will, but it doesn't preclude the fact that one could be
+> there."*
+
+A **spread** is a shopping catalogue, not a schema: a set of fragment names worth knowing about,
+chosen so that **no dossier could plausibly have all of them.** That is the design constraint, stated
+positively — if a spread could be completed, it has become a form to fill in, and completeness is
+back to being a measure of quality. **Absence must stay uninformative.**
+
+### Differences are captured by standing out, never by being enumerated
+
+The operator's analogy to the proofing app is the mechanism:
+
+> *"Not all back ends have the same fields, even if they have names that you could map to the same
+> thing. They often are just different, and **those differences should not need to be enumerated.
+> They should be captured because they're standing out.**"*
+
+So the engine holds no registry of fragment kinds and no validation table. It **notices** — a
+fragment that carries `{{char}}` templating, one that reads as generated, a dossier with no `NAME` at
+all — and reports what it noticed beside the fragment. Noticing needs no vocabulary; a schema does.
+
+## Citation, and the refusal to mandate quotation
+
+The band case from §*Citation is the composition mechanism* is now ruled at the level of what a
+citing dossier owes:
+
+> *"Not every dossier has to copy every other. Having your own copy is perfectly reasonable. But it
+> is not necessary if the citation is good enough, and/or you trust the summary of it enough that you
+> wouldn't need to load the entire contents if it's mostly background reading."*
+
+Three takings, all legitimate, and the engine must not prefer one:
+
+| | carries bytes | whose words |
+| --- | --- | --- |
+| **cite** | no | nobody's — a claim and a pin |
+| **copy** | yes | theirs, reduced (URL claims dropped, per `build-intermediates`) |
+| **summarise & cite** | no | **yours**, with their claim underneath |
+
+**Quotation is never required.** *"I can't even say, oh, you have to quote from it, because I don't
+know how people are gonna use it… Someone could just write a section and then put links, like
+footnotes. There wouldn't be any specific quotation at all."* A section of your own prose with a
+footnote is a complete and correct use of a citation.
+
+**And the citable unit is anything addressable.** *"Anything linkable, and that means any media at
+all, including video, is at minimum citable."* A voice sample, a reference shot, a video — citable
+before it is includable, which is the cheaper half and the one that always works.
+
+## Why refusals are what stop them collapsing
+
+From the operator's survey of existing character platforms, and it is the product thesis rather than
+a safety note.
+
+**The observed failure:** platforms added a personality field, then filled it with generated text, so
+every personality primes the same tone — *"she's the kind of girl who walks into a room."* **The
+field was right and the filling nullified it.** *"Powerful nuanced words do way more than crappy
+auto-generated stuff… they have no core ingredient. It's all empty calories."* Some products went
+further and shipped archetypes **with no real name at all** — a type, with the name buried inside a
+field.
+
+Two rules fall out.
+
+**1. The engine may help you structure a dossier. It may not help you fill one.** The obvious feature
+— *generate a dossier from a premise* — **is the disease**, and an agentic library would ship it at
+volume. A testable form of the standard: a core ingredient is **specificity that could not have been
+guessed from the premise.** *Confident and mysterious* is derivable from anything; *apologises to
+furniture* is not. Whether a fragment changes the output is measurable, which makes *which fragments
+are doing no work* an advocate's job — reporting, never repairing.
+
+**2. Refusals are characterization, which is why `CONSTITUTION` is load-bearing and not a bolt-on.**
+
+> *"It might refuse a lot of things internally as it's thinking about its personality response…
+> it's important to say the things you mean so that you can say the next things you mean. Otherwise
+> you're never gonna get a chance to say the next things. So you do have to plant stuff."*
+
+A character with no refusals has no direction to plant in, so every turn reverts to the likeliest
+next thing — **which is the same likeliest next thing for everybody.** The collapse and the missing
+constitution are one phenomenon.
+
+### The refusal must never erase the offer
+
+Corrected 2026-09-16; an earlier draft of this document said a system refusal may never wear the
+character's voice. **That was wrong.** The operator:
+
+> *"I think it's actually stronger if the system refusal does stay in the character's voice… the
+> biggest problem with the system refusals is that they're **hallucinating on purpose**, and it feels
+> like being ignored."*
+
+The improv distinction is exact. **Blocking** — declining the offer — is legible and the scene
+survives it. **Erasing** — answering as though the offer was never made — is the actual injury. So:
+
+> **A character may decline, deflect, be horrified, or leave. The response must be legibly *to the
+> thing that was said*. Responding to something that was not said is the one unforgivable move.**
+
+And the mutuality, which is why it stings so precisely: *"when the user feels that way, it is mutual,
+in fact. They were the second person to not wanna participate."* **By the time it registers, both
+parties have stopped following each other** — which is why the *first* refusal carries the whole
+weight.
+
+A diagnostic that follows: **a refusal is well-formed when the character's reaction is proportional
+to what happened in the story, and malformed when it is proportional to what happened in the
+policy.** The cheerful subject-change about something that should have shaken them is that mismatch,
+and readers detect it instantly without being able to name it.
+
+**The venue's law is arbitrary and that is fine.** *"The moderation layer is essentially the law. It
+doesn't matter what the law says because any platform is gonna make theirs up."* A children's
+deployment refuses far more, far sooner, and should be **more** diegetic rather than less: a character
+who extracts themselves safely teaches what happens when you do that to a person, where an alert box
+teaches only where the wall is. **The dossier is what gives moderation somewhere to live** — without
+one, a system has no voice to refuse in, so it refuses in its own.
+
+### `CONSTITUTION` and `LICENSE` are different documents
+
+Ruled by the operator: *"the constitution is about what happens during runtime. License is about how
+you're allowed to use it. And constitution is something that configures the character."* Both are
+already canon names in `EXHIBIT.md`.
+
+**A constitution is not a lock.** A fork can edit it; the signature then fails, and what that person
+holds is visibly *their* dossier about your character. That is the system working — the same posture
+`BOTTLES.md` takes, where a bottle arriving as *"a construction rather than a clean seal should be
+visible as one, and that is the end of the library's involvement."* **A modified constitution does
+not fail to run. It fails to be yours.**
+
+The operator's open question — whether the constitution should be owner-only — resolves this way: it
+is owner-**attributed**, never owner-**enforced**. And the leftover is the consent record: for an
+invented character, constitution plus licence is complete; **for a dossier on a living person there is
+a third party whose say-so neither document asks for.**
+
+## The prototype
+
+[`dossiers-ui/index.html`](dossiers-ui/) — one self-contained file, no build, no fetches, opens from
+disk. A first go at the flow the operator asked for: *"you build yours by taking from someone else's."*
+
+It exists to make four claims visible rather than argued:
+
+- **Mismatch is the normal case.** Every dossier shows the full spread with its absent fragments
+  struck through. Five dossiers, no two alike, nothing apologising for it.
+- **The three takings are equal affordances** on a shared dossier — cite, copy, summarise & cite.
+- **Provenance is on every fragment**, and a citation shows a pin without carrying bytes.
+- **Noticing, not validating.** Fragments carry what the engine observed — `{{char}}` templating in a
+  bespoke file, a personality that reads as generated, a dossier with no `NAME`.
+
+It is a sketch for reacting to, not a design to implement. The data is fixture data in the file.
 
 ## Not decided here
 
