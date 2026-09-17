@@ -146,6 +146,101 @@ Two honest caveats, recorded so the choice is made with them rather than against
 - **Mounted at a station node**, which is what makes local execution meaningful at all. A hire engine
   with nothing under it is a form.
 
+## The grant model, and why most users never need one
+
+**Amended 2026-09-17.** The operator's framing, which is sharper than it first sounds:
+
+> *"Users doing custom things will almost never require such a thing because they're integrated to
+> their own offline origin. **They are their own second factor when they're on their phone**, which
+> might sound too pithy to be real. But the truth is that their act of bringing the phone somewhere
+> is a factor. Because in the offline case, no one's addressable. They have to bring themselves to
+> each other."*
+
+It is not pithy and it is worth stating rigorously, because the whole grant surface follows from it.
+
+**Presence is not standing in for identity here. It is the transport.** In an unaddressable network,
+being reachable is the scarce property, and the only way to be reached is to physically go. You
+cannot forge having shown up, because showing up is what delivered the bytes. That is a stronger
+guarantee than most remote factors, not a weaker one dressed up.
+
+Which yields the one-line form of the whole model:
+
+> **A grant is a way to act at a distance. The offline case has no distance, so it needs no grant.**
+
+### And that is exactly why holding crystallises services
+
+> *"It is the station node holding them that crystallises where services touch this at all. And that
+> is where we spend most of our effort tooling this."*
+
+**The node reintroduces distance.** A person with their phone is unaddressable; a station node is
+addressable by construction, because being reachable is what a node is for. So the node inherits the
+authorisation burden precisely and only because it is the party that can be reached — and the
+library's custody claim (*this library has it, and has had it since then*) is what makes it worth
+reaching in the first place.
+
+So the grant surface is **not** a general requirement of the design. It is the specific cost of
+having something held somewhere that answers.
+
+## Vendor scale: hand-rolling is a front desk wearing a different hat
+
+> *"Because we're doing it at the level of a vendor where we would offer this service, it is not
+> sufficient for us to just hand roll individual access requests. It makes total sense for testing.
+> But it's not good enough."*
+
+The commercial objection and the constitutional one are the same objection. A human deciding each
+access request **is** the front desk the library forbids — it has to be awake, trusted and correct,
+and it does not survive contact with volume.
+
+`GRANTS.md` already states the replacement: *the check is against the artifact, never against a
+service.* At vendor scale that stops being a principle and becomes a build requirement:
+
+> **A grant must be mintable by rule rather than by decision, and the rule has to live in the thing
+> being hired.**
+
+Which puts real weight on a document this project has so far treated as ordinary:
+
+- **`CONSTITUTION`** governs what happens at runtime.
+- **`LICENSE`** governs how you are allowed to use it — and **for vendor scale it must be
+  *evaluable*, not merely readable.** A licence written only for a human to interpret forces a human
+  into every issuance, which is the hand-rolled case that was just ruled insufficient.
+
+**That is the difference between testing and offering a service**, and it is a smaller gap than it
+looks: the terms already have to be written down. They have to be written down in a form something
+can act on.
+
+### Where the control point actually is
+
+> *"What we need is control points."*
+
+There is a tension worth naming rather than discovering. **Flooring is deliberately controlless** —
+every label is live before anyone thinks of it, nothing is provisioned, and there is no allocation
+step to intervene at. That is its whole value, and it means **DNS is not where a vendor exercises
+control.** Neither is read time, which the no-front-desk rule closes off.
+
+What is left is **admission**, and the operator already named the mechanism:
+
+> *"Our porting case may just look like someone was submitting a repository on GitHub, or me doing
+> it, and **through the mechanics of a pull request, I accept it.**"*
+
+**The control point is the pull request.** It is a decision made once, in advance, in the open, with
+a diff attached and a record that survives — rather than a decision made per-read by something that
+has to be online. It is also, usefully, the exact thing `library.anecdote.channel` already claims as
+its job: *enumeration, **admission**, and a clerk.*
+
+## Tracked, not ignored — and what that buys
+
+> *"All my other projects I'm doing get ignored wings of the library for containment but not
+> tracking. Here, we finally get to do a little bit of both, and it's because we expect this to be
+> persistent. These are items that are **committed to a repository. It's not just a working tree.**"*
+
+A change in how the library holds, and the consequence is the point: **once dossiers are tracked,
+the custody claim becomes checkable from the commit graph instead of asserted.** *Has had it since
+then* stops being a sentence the library says about itself and becomes something a stranger can
+verify from history they already have.
+
+That is the library's distinguishing claim finally doing work, and it only happens for holdings that
+are tracked rather than contained.
+
 ## Not decided here
 
 - **Whether `hire` is also a category word.** It is a function and probably not a level of a
