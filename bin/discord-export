@@ -1,0 +1,87 @@
+#!/bin/zsh
+# discord-export — pull a channel out of "At Least You Tried" into this repo.
+#
+#   bin/discord-export channels            list channels in the server
+#   bin/discord-export export <name> <id> [dir]  export channel to <dir>/<name>.html
+#                                          (dir defaults to the repo root, which IS served)
+#
+# The token is read from ~/.config/discord-export-token (chmod 600). It is
+# never passed on the command line, so it stays out of `ps` and out of shell
+# history.
+#
+# Note: exporting with a personal account token is against Discord's ToS.
+# This is used on the author's own writing in a server she is a member of.
+
+emulate -L zsh
+set -uo pipefail
+
+TOOL="/Volumes/Demosthenes/Files/Downloads/DiscordChatExporter.Cli.osx-x64/DiscordChatExporter.Cli"
+GUILD=113883966976688129           # At Least You Tried
+TOKEN_FILE=${DISCORD_TOKEN_FILE:-$HOME/.config/discord-export-token}
+REPO=${0:A:h:h}
+
+die() { print -u2 -- "discord-export: $*"; exit 1 }
+
+[[ -x $TOOL ]] || die "exporter not found at $TOOL (is Demosthenes mounted?)"
+[[ -f $TOKEN_FILE ]] || die "no token at $TOKEN_FILE
+  Create it with:
+    mkdir -p ~/.config
+    printf %s 'YOUR_TOKEN' > $TOKEN_FILE
+    chmod 600 $TOKEN_FILE
+  Get the token: open Discord in a browser, devtools -> Network, reload,
+  find a request starting with 'messages', copy the 'authorization' header."
+
+perms=$(stat -f "%Lp" "$TOKEN_FILE")
+[[ $perms == 600 ]] || print -u2 -- "warning: $TOKEN_FILE is mode $perms, want 600"
+
+export DISCORD_TOKEN="$(<"$TOKEN_FILE")"
+[[ -n $DISCORD_TOKEN ]] || die "token file is empty"
+
+case ${1:-} in
+  channels)
+    "$TOOL" channels -g "$GUILD"
+    ;;
+  export)
+    local name=${2:?usage: export <name> <channel-id> [outdir]} id=${3:?need channel id}
+    # Third arg holds the export outside the published repo until it is cleaned.
+    local dir=${4:-$REPO}/$name
+    mkdir -p "$dir"
+    print -- "exporting channel $id -> $dir/ (threads included)"
+    # --include-threads makes this a MULTI-channel export (parent + each thread),
+    # so the output path must be a directory with a trailing slash. A bare
+    # filename fails with "output path is neither a directory nor a template".
+    "$TOOL" export \
+      --channel "$id" \
+      --format HtmlDark \
+      --include-threads All \
+      --media false \
+      --output "$dir/" || die "export failed"
+
+    # Newest-first. v2.46 emits `.chatlog{padding:1rem 0;...}` with no flex
+    # properties at all, so there is nothing to substitute — the rule has to be
+    # APPENDED after the bundled stylesheet, where it wins on cascade order.
+    # (Autumn documented this exact fix in the channel itself.)
+    local f n=0
+    for f in "$dir"/*.html(N); do
+      if grep -q 'CCGROUP-REVERSE' "$f"; then (( n++ )); continue; fi
+      python3 - "$f" <<'PY2'
+import re,sys
+p=sys.argv[1]
+s=open(p,encoding='utf-8',errors='replace').read()
+rule = "\n/* CCGROUP-REVERSE: newest first */\n.chatlog{display:flex;flex-direction:column-reverse}\n"
+i = s.rfind("</style>")
+if i == -1:
+    sys.exit(1)
+open(p,"w",encoding='utf-8').write(s[:i] + rule + s[i:])
+PY2
+      if grep -q 'CCGROUP-REVERSE' "$f"; then (( n++ ))
+      else print -u2 -- "  WARNING: could not reverse ${f:t}"; fi
+    done
+    print -- "  reversed to newest-first: $n of $(ls -1 "$dir"/*.html | wc -l | tr -d ' ') file(s)"
+    print -- "wrote $dir ($(du -sh "$dir" | cut -f1))"
+    ls -1 "$dir" | sed 's/^/    /'
+    ;;
+  *)
+    sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'
+    ;;
+esac

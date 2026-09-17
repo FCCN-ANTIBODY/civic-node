@@ -1,0 +1,377 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Dossiers — first go</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{
+  --paper:#f7f4ed; --ink:#1e1b16; --rule:#ded7c8; --side:#efe9dc;
+  --muted:#7d7466; --stamp:#9b2c2c; --cite:#2f5d78; --take:#4a6b3f;
+  --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+  --sans:ui-sans-serif,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;display:flex;background:var(--paper);color:var(--ink);font-family:var(--serif)}
+
+/* ---- sidebar: narrow, but the type is large ---- */
+#side{width:224px;flex:0 0 224px;background:var(--side);border-right:1px solid var(--rule);
+      padding:22px 0 40px;overflow-y:auto}
+#side h1{font-family:var(--sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--muted);margin:0 0 14px;padding:0 18px;font-weight:600}
+.grp{font-family:var(--sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--muted);margin:26px 0 8px;padding:0 18px}
+.d{display:block;width:100%;text-align:left;background:none;border:0;cursor:pointer;
+   font-family:var(--serif);font-size:21px;line-height:1.22;padding:9px 18px;color:var(--ink)}
+.d:hover{background:#e6dfd0}
+.d[aria-current=true]{background:var(--paper);box-shadow:inset 3px 0 0 var(--stamp);font-weight:600}
+.d small{display:block;font-family:var(--sans);font-size:10.5px;color:var(--muted);
+   letter-spacing:.03em;margin-top:3px}
+
+/* ---- main ---- */
+#main{flex:1;overflow-y:auto;padding:34px 46px 120px;max-width:820px}
+header.doc{border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:6px}
+header.doc .kind{font-family:var(--sans);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--stamp);font-weight:700}
+header.doc h2{font-size:38px;margin:6px 0 4px;font-weight:600;letter-spacing:-.01em}
+header.doc .about{font-family:var(--sans);font-size:12.5px;color:var(--muted)}
+
+/* the spread — mismatch, made legible at a glance */
+#spread{display:flex;flex-wrap:wrap;gap:5px;margin:16px 0 30px}
+.chip{font-family:var(--mono);font-size:10.5px;padding:3px 8px;border:1px solid var(--rule);
+      border-radius:2px;color:var(--muted);background:#fff}
+.chip.canon{border-color:var(--ink);color:var(--ink);font-weight:600}
+.chip.absent{opacity:.4;border-style:dashed;text-decoration:line-through}
+
+/* ---- fragments ---- */
+.frag{border:1px solid var(--rule);background:#fffdf8;margin:0 0 16px;position:relative}
+.frag[draggable=true]{cursor:grab}
+.frag.drag{opacity:.35}
+.frag.over{border-color:var(--stamp);box-shadow:0 0 0 2px rgba(155,44,44,.14)}
+.fhead{display:flex;align-items:baseline;gap:10px;padding:10px 14px;border-bottom:1px solid var(--rule);background:#f4efe3}
+.fname{font-family:var(--mono);font-size:12.5px;font-weight:600}
+.fname.canon{text-transform:uppercase;color:var(--stamp)}
+.prov{font-family:var(--sans);font-size:10.5px;color:var(--muted);margin-left:auto;text-align:right}
+.prov b{font-weight:600;color:var(--cite)}
+.fbody{padding:15px 18px;font-size:16.5px;line-height:1.62}
+.fbody p{margin:0 0 .7em}
+.fbody:empty{display:none}
+.shots{display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px}
+.shot{width:74px;height:92px;border:1px solid var(--rule);background:
+   repeating-linear-gradient(45deg,#e9e2d4,#e9e2d4 7px,#f2ece0 7px,#f2ece0 14px);
+   display:flex;align-items:flex-end;justify-content:center;font-family:var(--mono);
+   font-size:9px;color:var(--muted);padding-bottom:4px}
+
+/* "noticed" — captured because it stands out, never enumerated in a schema */
+.noticed{margin:0;padding:8px 18px;border-top:1px dotted var(--rule);background:#fbf7ec;
+   font-family:var(--sans);font-size:11.5px;color:#8a6d3b}
+.noticed b{font-weight:600}
+
+/* ---- taking ---- */
+.take{display:flex;gap:6px;padding:9px 14px;border-top:1px solid var(--rule);background:#f4efe3}
+.take button{font-family:var(--sans);font-size:11.5px;padding:5px 11px;border:1px solid var(--rule);
+   background:#fff;border-radius:2px;cursor:pointer;color:var(--ink)}
+.take button:hover{border-color:var(--take);color:var(--take)}
+.take .why{font-family:var(--sans);font-size:11px;color:var(--muted);margin-left:auto;align-self:center;max-width:300px;text-align:right}
+
+#add{font-family:var(--mono);font-size:12.5px;padding:10px 14px;border:1px dashed var(--rule);
+   background:none;width:100%;cursor:pointer;color:var(--muted);text-align:left}
+#add:hover{border-color:var(--ink);color:var(--ink)}
+
+/* ---- footer: git underneath ---- */
+#foot{position:fixed;bottom:0;left:224px;right:0;background:#efe9dc;border-top:1px solid var(--rule);
+   font-family:var(--mono);font-size:11px;color:var(--muted);padding:7px 46px;display:flex;gap:18px}
+#foot b{color:var(--ink);font-weight:600}
+
+/* lifecycle */
+.state{font-family:var(--sans);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+  padding:2px 7px;border-radius:2px;vertical-align:middle;margin-left:10px;font-weight:600}
+.state.scratch{background:#e6dfd0;color:#7d7466}
+.state.organised{background:#dfe6d6;color:#4a6b3f}
+.state.standalone{background:var(--stamp);color:#fff}
+.sstate{font-family:var(--sans);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+/* what the NODE knows — deliberately not paper. Not authored, not a fragment. */
+.node{margin:36px 0 0;background:#211d18;color:#ece5d8;border:1px solid #211d18}
+.node h3{font-family:var(--sans);font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+  margin:0;padding:12px 18px;color:#b9ac95;border-bottom:1px solid #3a342b;font-weight:600}
+.node .sub{font-family:var(--sans);font-size:11.5px;color:#8d8272;padding:10px 18px 0}
+.row{display:flex;gap:14px;padding:11px 18px;border-bottom:1px solid #322c24;font-size:14px;align-items:baseline}
+.row:last-child{border-bottom:0}
+.row .k{font-family:var(--mono);font-size:11px;color:#c9a227;flex:0 0 132px}
+.row .v{flex:1;font-family:var(--sans);font-size:12.5px;line-height:1.5}
+.row .t{font-family:var(--mono);font-size:10.5px;color:#8d8272;margin-left:auto;white-space:nowrap}
+.live{display:inline-block;width:6px;height:6px;border-radius:50%;background:#7ac74f;margin-right:6px}
+.market{border:1px solid var(--rule);background:#fffdf8;padding:14px 18px;margin:16px 0 0}
+.market p{font-family:var(--sans);font-size:12.5px;color:var(--muted);margin:0 0 10px;line-height:1.5}
+.market button{font-family:var(--sans);font-size:12px;padding:7px 14px;border:1px solid var(--stamp);
+  background:#fff;color:var(--stamp);border-radius:2px;cursor:pointer}
+.note{font-family:var(--sans);font-size:12.5px;color:var(--muted);line-height:1.5;
+   border-left:2px solid var(--rule);padding-left:12px;margin:26px 0 0}
+</style>
+
+<nav id="side">
+  <h1>Library</h1>
+  <div id="mine"></div>
+  <div class="grp">Shared with you</div>
+  <div id="theirs"></div>
+</nav>
+<main id="main"></main>
+<div id="foot"></div>
+
+<script>
+// ---------------------------------------------------------------- the data
+// Deliberately mismatched. No dossier has the same spread as any other, and
+// nothing anywhere declares what a spread ought to be.
+const CANON = ["NAME","CONSTITUTION"];   // the only fixed words. Everything else is the user's.
+
+const DOSSIERS = {
+  rydona: { owner:"mine", kind:"Character", title:"Rydona", about:"compiled by autumn · pin 4c1f0ab",
+    state:"standalone", slug:"rydona-vass",
+    rooms:[{k:"tell floor",v:"harbour-lights · in scene, 3 present",t:"41 min", live:true},
+           {k:"a stranger's node",v:"cited by <b>Sundown Quartet</b> · members",t:"standing"}],
+    history:[{k:"2026-08-30",v:"voice sample auditioned — narration trial, declined",t:"their node"},
+             {k:"2026-09-04",v:"cast · reading generated harbour bulletins",t:"ongoing"},
+             {k:"2026-09-11",v:"cast · same voice, different venue",t:"ongoing"}],
+    parts:[
+      {n:"NAME", body:"Rydona Vass. Harbour-pilot, second generation. Answers to Ryd from almost nobody."},
+      {n:"personality", body:"Talks like she is still reading the water. Long pauses that are not hesitation — she is waiting for the tide to say something. Apologises to furniture. Will not be hurried by anyone who has not been on a boat.",
+       note:null},
+      {n:"greeting", body:"The rope goes slack in her hands. She does not look up. <em>“You are early. Nothing comes in for another hour, so you can either help or you can stand there.”</em>",
+       noticed:"Not a description — placeholder for turn one. A conversation can <b>show this without starting one.</b>"},
+      {n:"scenario", body:"{{char}} is closing up the pilot house at the end of a long shift when {{user}} arrives.",
+       noticed:"Uses <b>{{char}}/{{user}}</b> templating in a file that is otherwise bespoke. If nobody else mounts this, the variable is buying nothing."},
+      {n:"example", body:"&lt;START&gt;<br>{{user}}: Do you ever get bored out here?<br>{{char}}: “Bored.” She tests the word like a bad rope. “No.”",
+       noticed:"Examples are rare in the wild and <b>often cost more than they pay</b> — they prime a register that then overrides the personality fragment."},
+      {n:"reference", shots:["download.webp","download-1","download-3","download-7"]}
+    ]},
+
+  ainsley:{ owner:"mine", kind:"Character", title:"Ainsley", about:"compiled by autumn · scratch folder",
+    state:"scratch",
+    rooms:[], history:[],
+    parts:[
+      {n:"NAME", body:"Ainsley Roe."},
+      {n:"reference", shots:["download","copy 2","download-2","-3 copy","-5","-6","-8"]},
+      {n:"wardrobe", body:"Everything one size too big and worn like it was chosen. Three rings, none matching, all on the left hand."},
+      {n:"what-she-orders", body:"Whatever the person before her ordered. Has never once looked at a menu."}
+    ]},
+
+  quartet:{ owner:"mine", kind:"Collective", title:"The Sundown Quartet", about:"compiled by autumn · pin 22b8e01",
+    state:"organised",
+    rooms:[{k:"library/dossiers",v:"grouped here — a statement of organisation, not yet its own repo",t:"—"}],
+    history:[],
+    parts:[
+      {n:"NAME", body:"The Sundown Quartet. Four players, one of whom is always leaving."},
+      {n:"continuity", body:"Formed out of a dissolved wedding band in 1974. The line-up that matters is the third one."},
+      {n:"members", cites:[
+        {who:"Rydona", part:"personality", at:"4c1f0ab", mode:"cite"},
+        {who:"Ainsley", part:"wardrobe", at:"9de3c74", mode:"summary",
+         gist:"Oversized, deliberate, three mismatched rings."}]},
+      {n:"set-list", body:"Nothing written after 1979. Two covers a night, never the same two."}
+    ]},
+
+  dw:{ owner:"theirs", kind:"Brand", title:"Discovery Written", about:"compiled by the brand · pin 7a04e19 · shared",
+    state:"standalone", slug:"discovery-written",
+    parts:[
+      {n:"NAME", body:"Discovery Written — a studio that publishes what it learns while it learns it."},
+      {n:"CONSTITUTION", body:"Never implies a finished thing is finished. Never uses a customer's word back at them as if it were ours. Will say <em>we do not know yet</em> in public, on purpose, and will not soften it afterwards.",
+       noticed:"The <b>refusals</b> are the part with resale value, and the part almost nobody writes down."},
+      {n:"register", body:"Plain, declarative, slightly too honest. Short sentences when it matters. No exclamation marks, ever — the enthusiasm has to be carried by what is actually being said."}
+    ]},
+
+  molloy:{ owner:"theirs", kind:"Character", title:"Molloy", about:"compiled by a stranger · pin e5c11f2 · shared",
+    state:"standalone", slug:"molloy",
+    history:[{k:"2026-07-19",v:"cast · voice, 14 engagements",t:"emergent"}],
+    parts:[
+      {n:"personality", body:"She's the kind of girl who walks into a room and everyone notices. Confident, mysterious, with a playful streak that keeps you guessing.",
+       noticed:"Reads as <b>generated</b>: no detail here could not have been guessed from the premise. Nothing in it would change an answer."},
+      {n:"timbre", body:"voice-molloy-v3.wav · 44.1kHz · 0:41",
+       noticed:"The only voice sample in this library. <b>Most dossiers will never have one</b>, and that is not a gap."}
+    ]}
+};
+
+let openId = "rydona";
+const $ = s => document.querySelector(s);
+
+// ---------------------------------------------------------------- sidebar
+function sidebar(){
+  for (const [box,which] of [["#mine","mine"],["#theirs","theirs"]]){
+    $(box).innerHTML = "";
+    Object.entries(DOSSIERS).filter(([,d])=>d.owner===which).forEach(([id,d])=>{
+      const b = document.createElement("button");
+      b.className="d"; b.setAttribute("aria-current", id===openId);
+      b.innerHTML = d.title + "<small>"+d.kind+" · "+d.parts.length+" fragments &nbsp;<span class='sstate'>"+
+        (d.state||"scratch")+"</span></small>";
+      b.onclick = ()=>{ openId=id; render(); };
+      $(box).appendChild(b);
+    });
+  }
+}
+
+// ---------------------------------------------------------------- document
+function render(){
+  const d = DOSSIERS[openId], mine = d.owner==="mine";
+  sidebar();
+  const m = $("#main"); m.innerHTML = "";
+
+  m.insertAdjacentHTML("beforeend",
+    `<header class="doc"><div class="kind">${d.kind}${mine?"":" · window shopping"}</div>
+     <h2>${d.title}<span class="state ${d.state||"scratch"}">${d.state||"scratch"}</span></h2>
+     <div class="about">${d.about}</div></header>`);
+
+  // the spread. Every name that exists anywhere, so mismatch is the visible fact.
+  const all = [...new Set(Object.values(DOSSIERS).flatMap(x=>x.parts.map(p=>p.n)))];
+  const here = new Set(d.parts.map(p=>p.n));
+  m.insertAdjacentHTML("beforeend","<div id='spread'>"+ all.map(n=>{
+    const canon = CANON.includes(n);
+    return `<span class="chip ${canon?"canon":""} ${here.has(n)?"":"absent"}">${n}</span>`;
+  }).join("")+"</div>");
+
+  if (!here.has("NAME")) m.insertAdjacentHTML("beforeend",
+    `<p class="noticed" style="border:1px dotted var(--rule);margin:0 0 16px">
+     noticed — <b>no NAME fragment.</b> The subject is described but never named, which is how a
+     dossier collapses into an archetype. Absence is reported, never repaired.</p>`);
+  d.parts.forEach((p,i)=> m.appendChild(fragment(p,i,mine)));
+
+  if (mine) m.insertAdjacentHTML("beforeend",
+    `<button id="add">+ fragment &nbsp;<span style="opacity:.6">any name you like — nothing validates it</span></button>`);
+  if ($("#add")) $("#add").onclick = addFragment;
+
+  m.appendChild(nodePanel(d));
+
+  m.insertAdjacentHTML("beforeend", mine
+    ? `<p class="note">Drag a fragment to reorder. Renaming one keeps its history — git is underneath, so a
+       reorganisation is a move, not a migration, and it can be undone non-linearly.</p>`
+    : `<p class="note">This dossier is somebody else's. <b>Cite</b> records the claim and the pin without taking
+       the bytes. <b>Copy</b> takes them. <b>Summarise</b> keeps your own words and cites underneath.
+       Nothing here requires you to quote — a section of your own prose with a footnote is a legitimate use.</p>`);
+
+  const pin = (d.about.split("pin ")[1]||"").split(" ")[0];
+  $("#foot").innerHTML =
+    `<span>library/<b>dossiers</b>/${openId}/</span>`+
+    `<span>${pin ? "pin <b>"+pin+"</b>" : "<b>no pin</b> — scratch folder, nothing to cite"}</span>`+
+    `<span>${d.parts.length} fragments · ${CANON.filter(c=>here.has(c)).length}/2 canon</span>`+
+    `<span style="margin-left:auto">nothing validates a fragment name</span>`;
+}
+
+// What the STATION NODE knows — never a fragment, never authored, never cited.
+// Deliberately styled as telemetry so it cannot be mistaken for dossier content.
+function nodePanel(d){
+  const el = document.createElement("div");
+  const rooms = d.rooms||[], hist = d.history||[];
+  const row = r => `<div class="row"><span class="k">${r.live?'<span class="live"></span>':""}${r.k}</span>
+     <span class="v">${r.v}</span><span class="t">${r.t}</span></div>`;
+
+  let market = "";
+  if (d.state !== "standalone") market = `<div class="market">
+     <p><b>Not citable yet.</b> ${d.state==="scratch"
+        ? "This is a scratch folder — no repository, no slug, nothing anyone else can point at. That is a fine place to start and you have not committed to a name."
+        : "Grouped, which is a statement of organisation. Still nothing standing on its own."}</p>
+     <p>Making it standalone <b>is</b> the market signal — even as a private repository. The repo name
+        becomes the URL slug, so you pick it here, before anyone cites it.</p>
+     <button>Put it on the market →</button></div>`;
+
+  el.innerHTML = `<div class="node">
+    <h3>What this node knows</h3>
+    <div class="sub">Not part of the dossier. Not authored, not cited, not carried when someone takes from this —
+      it is what the station node observed. It would be empty on a node that only keeps notes.</div>
+    ${rooms.length ? `<div style="padding-top:8px">${rooms.map(row).join("")}</div>`
+      : `<div class="row"><span class="v" style="color:#8d8272">In no rooms. Nothing has mounted this.</span></div>`}
+    ${hist.length ? `<h3 style="border-top:1px solid #3a342b">Work history · emergent</h3>
+       <div class="sub">Nobody planned to collect this. It fell out of aggregation — and
+         <b>which voices get hired</b> is the research nobody asked for.</div>
+       <div style="padding-top:8px">${hist.map(row).join("")}</div>` : ""}
+  </div>${market}`;
+  return el;
+}
+
+function fragment(p,i,mine){
+  const el = document.createElement("section");
+  el.className="frag"; el.draggable = mine; el.dataset.i = i;
+  const canon = CANON.includes(p.n);
+
+  let prov = mine ? "yours" : "theirs — not yours to change";
+  if (p.from) prov = `${p.from.mode==="copy"?"copied":"cited"} from <b>${p.from.who}</b> @ ${p.from.at}`;
+
+  let body = "";
+  if (p.body)  body = `<div class="fbody">${p.body}</div>`;
+  if (p.shots) body = `<div class="shots">${p.shots.map(s=>`<div class="shot">${s}</div>`).join("")}</div>`;
+  if (p.cites) body = `<div class="fbody">` + p.cites.map(c=>
+      c.mode==="summary"
+        ? `<p>${c.gist}<br><span style="font-family:var(--sans);font-size:11.5px;color:var(--muted)">
+           — my summary of <b style="color:var(--cite)">${c.who} · ${c.part}</b> @ ${c.at}, not their words</span></p>`
+        : `<p><span style="font-family:var(--sans);font-size:11.5px;color:var(--cite)">
+           ↗ ${c.who} · ${c.part}</span> @ ${c.at}<br>
+           <span style="font-family:var(--sans);font-size:11.5px;color:var(--muted)">
+           cited, not carried — the bytes stay theirs</span></p>`).join("") + `</div>`;
+
+  el.innerHTML =
+    `<div class="fhead"><span class="fname ${canon?"canon":""}">${p.n}</span>
+       <span class="prov">${prov}</span></div>${body}` +
+    (p.noticed ? `<p class="noticed">noticed — ${p.noticed}</p>` : "") +
+    (!mine ? `<div class="take">
+        <button data-m="cite">Cite it</button>
+        <button data-m="copy">Copy it</button>
+        <button data-m="summary">Summarise &amp; cite</button>
+        <span class="why">a good citation is often enough; you do not need the bytes for background reading</span>
+      </div>` : "");
+
+  el.querySelectorAll(".take button").forEach(b=>
+    b.onclick = ()=> takeInto(p, b.dataset.m));
+
+  if (mine) dnd(el);
+  return el;
+}
+
+// ---------------------------------------------------------------- taking
+function takeInto(part, mode){
+  const src = DOSSIERS[openId];
+  const targets = Object.entries(DOSSIERS).filter(([,d])=>d.owner==="mine");
+  const into = prompt("Take “"+part.n+"” into which of yours?\n\n"+
+    targets.map(([id,d],n)=>(n+1)+". "+d.title).join("\n"), "1");
+  const pick = targets[(parseInt(into,10)||1)-1];
+  if (!pick) return;
+  const at = (src.about.split("pin ")[1]||"").split(" ")[0] || "uncited";
+
+  const copy = {
+    n: part.n,
+    from: {who:src.title, part:part.n, at, mode},
+    body: mode==="copy" ? part.body
+        : mode==="summary" ? "<em>(your summary goes here — your words, their claim)</em>"
+        : null,
+    shots: mode==="copy" ? part.shots : null
+  };
+  if (mode==="cite") copy.body =
+    `<span style="font-family:var(--sans);font-size:12px;color:var(--muted)">
+     cited at ${at} — nothing carried. Open it where it lives.</span>`;
+
+  pick[1].parts.push(copy);
+  openId = pick[0];
+  render();
+}
+
+function addFragment(){
+  const n = prompt("Fragment name — anything. timbre, walk, what-she-orders, lore/1974…");
+  if (!n) return;
+  DOSSIERS[openId].parts.push({n:n.trim(), body:"<em>(empty — and an empty fragment is honest)</em>"});
+  render();
+}
+
+// ---------------------------------------------------------------- reorder
+let dragged = null;
+function dnd(el){
+  el.addEventListener("dragstart",e=>{dragged=el;el.classList.add("drag");e.dataTransfer.effectAllowed="move";});
+  el.addEventListener("dragend",()=>{dragged&&dragged.classList.remove("drag");
+      document.querySelectorAll(".frag").forEach(f=>f.classList.remove("over"));});
+  el.addEventListener("dragover",e=>{e.preventDefault();if(el!==dragged)el.classList.add("over");});
+  el.addEventListener("dragleave",()=>el.classList.remove("over"));
+  el.addEventListener("drop",e=>{
+    e.preventDefault(); if(!dragged||el===dragged) return;
+    const ps = DOSSIERS[openId].parts;
+    const [moved] = ps.splice(+dragged.dataset.i,1);
+    ps.splice(+el.dataset.i,0,moved);
+    render();
+  });
+}
+
+render();
+</script>

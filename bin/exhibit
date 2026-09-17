@@ -1,0 +1,279 @@
+#!/usr/bin/env python3
+"""exhibit — turn a Discord channel export into a guided chronological exhibit.
+
+    bin/exhibit build  <name> <channel-id>   fetch, graft, landmark, theme
+    bin/exhibit rebuild <name>               re-do everything but the fetch
+    bin/exhibit theme  <name>                re-apply exhibit.css only  (fast)
+    bin/exhibit publish <name>               copy the built page into the site
+
+Design notes, because the ordering is genuinely confusing:
+
+  * The RAW export is cached under notes/<name>/. It is fetched once. Every
+    other verb works from that cache, so iterating on CSS costs seconds, not a
+    re-download of thousands of messages.
+
+  * Writes are atomic. Everything is composed in memory and written to a
+    tempfile in the destination directory, then os.replace()d into place. A
+    failed or interrupted run never leaves a half-written exhibit behind.
+
+  * Every injected block is fenced by sentinels and removed before being
+    re-added, so any verb can be run any number of times and converges on the
+    same output. Re-running is the normal case, not the exception.
+
+  * Order: an exhibit reads CHRONOLOGICALLY (oldest first) by default — it is
+    an argument unfolding, not a feed. Pass --newest-first for the reversed
+    reading. Threads are always chronological inside, whichever way the
+    channel around them runs.
+"""
+
+import argparse
+import html
+import os
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+from glob import glob
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.dirname(HERE)
+NOTES = os.path.join(os.path.dirname(REPO), "notes")
+THEME_FILE = os.path.join(HERE, "exhibit.css")
+
+S = {
+    "order": ("/* EXHIBIT-ORDER:BEGIN */", "/* EXHIBIT-ORDER:END */"),
+    "graft": ("/* EXHIBIT-GRAFT:BEGIN */", "/* EXHIBIT-GRAFT:END */"),
+    "theme": ("/* EXHIBIT-THEME:BEGIN */", "/* EXHIBIT-THEME:END */"),
+}
+
+GRAFT_CSS = """
+.thread-graft{margin:0.4rem 0 0.2rem 72px;border-left:2px solid #4f545c;background:rgba(79,84,92,0.08)}
+.thread-graft>summary{cursor:pointer;padding:0.3rem 0.6rem;color:#00aff4;font-size:0.85rem;list-style:none}
+.thread-graft>summary::-webkit-details-marker{display:none}
+.thread-graft>summary::before{content:"\\25B8 ";display:inline-block}
+.thread-graft[open]>summary::before{content:"\\25BE "}
+.thread-graft__body{display:flex;flex-direction:column;padding:0.2rem 0 0.5rem 0.6rem}
+.exhibit-day{position:sticky;top:0;z-index:2;padding:0.5rem 0 0.35rem;margin:2rem 0 0.75rem;
+  border-bottom:1px solid rgba(255,255,255,0.14);background:inherit;
+  font-size:0.75rem;letter-spacing:0.16em;text-transform:uppercase;opacity:0.72}
+"""
+
+
+def fence(markup, key, block):
+    """Replace the sentinel-fenced region for `key`, or append before </style>."""
+    begin, end = S[key]
+    payload = "\n%s\n%s\n%s\n" % (begin, block.strip(), end)
+    if begin in markup and end in markup:
+        a = markup.index(begin)
+        b = markup.index(end) + len(end)
+        return markup[:a] + payload.strip("\n") + markup[b:]
+    i = markup.rfind("</style>")
+    if i == -1:
+        sys.exit("exhibit: no </style> in document; cannot inject %s" % key)
+    return markup[:i] + payload + markup[i:]
+
+
+def message_ids(markup):
+    return re.findall(r"data-message-id=[\"']?(\d+)", markup)
+
+
+def id_from_name(path):
+    m = re.search(r"\[(\d+)\]\.html$", os.path.basename(path))
+    return m.group(1) if m else None
+
+
+def span_of_div(markup, start):
+    depth = 0
+    for m in re.finditer(r"<div\b|</div>", markup[start:]):
+        depth += 1 if m.group(0) == "<div" else -1
+        if depth == 0:
+            return start + m.end()
+    return None
+
+
+def thread_title(markup, fallback="thread"):
+    m = re.search(r"<title>(.*?)</title>", markup, re.S)
+    if not m:
+        return fallback
+    t = html.unescape(re.sub(r"\s+", " ", m.group(1))).strip()
+    t = re.sub(r"\s*\[\d+\]\s*$", "", t)
+    return t.split(" - ")[-1].strip() or fallback
+
+
+def raw_dir(name):
+    return os.path.join(NOTES, name)
+
+
+def load_export(name):
+    d = raw_dir(name)
+    # Only files the exporter wrote: those carry a "[channel-id].html" suffix.
+    # This excludes our own built page and any stray artefacts in the dir.
+    files = [f for f in sorted(glob(os.path.join(d, "*.html"))) if id_from_name(f)]
+    if not files:
+        sys.exit("exhibit: no export in %s — run `exhibit build` first" % d)
+    docs = {f: open(f, encoding="utf-8", errors="replace").read() for f in files}
+    parents = [f for f in files
+               if id_from_name(f)
+               and not any(id_from_name(f) in message_ids(docs[g]) for g in files if g != f)]
+    if len(parents) != 1:
+        sys.exit("exhibit: expected 1 parent export, found %d" % len(parents))
+    return parents[0], docs
+
+
+def do_graft(parent_html, parent, docs):
+    """Splice every thread under its anchor in ONE pass.
+
+    The naive version re-slices parent_html once per thread. With ~2000 threads
+    and a 60 MB page that is quadratic and effectively hangs. Instead: locate
+    every insertion point first, then rebuild the document a single time.
+    """
+    inserts = []
+    for f, doc in docs.items():
+        if f == parent:
+            continue
+        tid = id_from_name(f)
+        if not tid:
+            continue
+        anchor = re.search(
+            r"<div id=[\"']?chatlog__message-container-%s[\"']?[^>]*>" % re.escape(tid),
+            parent_html)
+        if not anchor:
+            continue
+        end = span_of_div(parent_html, anchor.start())
+        if end is None:
+            continue
+        m = re.search(r"<div class=[\"']?chatlog[\"']?[^>]*>", doc)
+        if not m:
+            continue
+        inner_end = span_of_div(doc, m.start())
+        if inner_end is None:
+            continue
+        body = doc[m.end():inner_end - len("</div>")]
+        n = len(set(message_ids(doc)))
+        block = (
+            '<details class="thread-graft" id="thread-%s">'
+            '<summary>%s <span class="thread-graft__count">&middot; %d %s</span></summary>'
+            '<div class="thread-graft__body">%s</div></details>'
+        ) % (tid, html.escape(thread_title(doc)), n, "reply" if n == 1 else "replies", body)
+        inserts.append((end, block))
+
+    if not inserts:
+        return parent_html, 0
+    inserts.sort(key=lambda t: t[0])
+    out, prev = [], 0
+    for at, block in inserts:
+        out.append(parent_html[prev:at])
+        out.append(block)
+        prev = at
+    out.append(parent_html[prev:])
+    return "".join(out), len(inserts)
+
+
+DAY_RE = re.compile(
+    r'<div class=chatlog__short-timestamp title="([A-Za-z]+, [A-Za-z]+ \d+, \d{4})[^"]*"')
+
+
+def add_landmarks(markup):
+    """Insert a sticky date heading whenever the calendar day changes.
+
+    This is the spine of the timeline. Without it a two-year channel is an
+    undifferentiated column and there is no way to feel duration.
+    """
+    markup = re.sub(r'<div class="exhibit-day">.*?</div>', "", markup, flags=re.S)
+    out, last, count = [], None, 0
+    pos = 0
+    for m in re.finditer(r"<div class=chatlog__message-group>", markup):
+        seg = markup[m.end():m.end() + 4000]
+        d = DAY_RE.search(seg)
+        if not d:
+            continue
+        day = d.group(1)
+        if day != last:
+            out.append(markup[pos:m.start()])
+            out.append('<div class="exhibit-day">%s</div>' % html.escape(day))
+            pos = m.start()
+            last = day
+            count += 1
+    out.append(markup[pos:])
+    return "".join(out), count
+
+
+def build_page(name, newest_first=False):
+    parent, docs = load_export(name)
+    page = docs[parent]
+    page, grafted = do_graft(page, parent, docs)
+    page, days = add_landmarks(page)
+    order = (".chatlog{display:flex;flex-direction:column-reverse}" if newest_first
+             else ".chatlog{display:flex;flex-direction:column}")
+    page = fence(page, "order", order)
+    page = fence(page, "graft", GRAFT_CSS)
+    theme = open(THEME_FILE, encoding="utf-8").read() if os.path.exists(THEME_FILE) else ""
+    page = fence(page, "theme", theme)
+    return page, grafted, days, len(set(message_ids(page)))
+
+
+def atomic_write(path, text):
+    d = os.path.dirname(path) or "."
+    os.makedirs(d, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=d, suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(text)
+        os.replace(tmp, path)
+    except BaseException:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+        raise
+
+
+def cmd_build(a):
+    if a.channel:
+        print("  fetching channel %s ..." % a.channel)
+        r = subprocess.run([os.path.join(HERE, "discord-export"),
+                            "export", a.name, a.channel, NOTES])
+        if r.returncode != 0:
+            sys.exit("exhibit: fetch failed; nothing was written")
+    finish(a)
+
+
+def finish(a):
+    page, grafted, days, msgs = build_page(a.name, a.newest_first)
+    out = os.path.join(raw_dir(a.name), "%s.html" % a.name)
+    atomic_write(out, page)
+    print("  %d messages, %d threads grafted, %d date landmarks" % (msgs, grafted, days))
+    print("  order: %s" % ("newest first" if a.newest_first else "chronological"))
+    print("  wrote %s (%.1f MB)" % (out, os.path.getsize(out) / 1e6))
+
+
+def cmd_publish(a):
+    src = os.path.join(raw_dir(a.name), "%s.html" % a.name)
+    if not os.path.exists(src):
+        sys.exit("exhibit: %s not built yet" % a.name)
+    dst = os.path.join(REPO, "%s.html" % a.name)
+    atomic_write(dst, open(src, encoding="utf-8").read())
+    print("  published %s -> %s" % (a.name, dst))
+    print("  NOTE: repo root is SERVED. Add to _config.yml exclude: to keep it private.")
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    for verb in ("build", "rebuild", "theme", "publish"):
+        p = sub.add_parser(verb)
+        p.add_argument("name")
+        if verb == "build":
+            p.add_argument("channel")
+        p.add_argument("--newest-first", action="store_true")
+    a = ap.parse_args()
+    if a.cmd == "build":
+        cmd_build(a)
+    elif a.cmd in ("rebuild", "theme"):
+        a.channel = None
+        finish(a)
+    elif a.cmd == "publish":
+        cmd_publish(a)
+
+
+if __name__ == "__main__":
+    main()
