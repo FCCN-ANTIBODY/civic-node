@@ -178,9 +178,15 @@ this or is wrong.
 | `resolve(address)` | the effective dossier, every part, with per-part provenance |
 | `part(address, part, @pin)` | one part. The unit that grants and rate limits attach to |
 
-This is the MCP surface too. *"Very concrete primitives"* is the operator's phrase and the three
-calls are what makes them concrete: a thing an agent can enumerate, fetch whole, or fetch one facet
-of, with a citation for each facet.
+**This is an API, and deliberately not an MCP server.** Ruled by the operator 2026-09-16: *"MCP is
+for other people. I'd rather just get our own API right… MCP is often a satellite relay in order to
+make an API digestible because companies don't make good APIs."* The reasoning is worth keeping
+because it is a quality bar rather than a refusal — **if the API needs a connector to explain it, the
+API is the thing that is wrong.** Anyone who wants an MCP wrapper can write one against three calls.
+
+*"Very concrete primitives"* is the operator's phrase and the three calls are what makes them
+concrete: a thing an agent can enumerate, fetch whole, or fetch one facet of, with a citation for
+each facet.
 
 ## Grants — already ruled, and mostly already built
 
@@ -370,6 +376,426 @@ system prompt.
 This is the sharpest reason the three calls in §*The surface* return **parts with provenance** rather
 than an assembled prompt. An engine that returned the latter would have made this hazard its
 users' problem while looking more convenient.
+
+## The schema question, settled the only way it can be
+
+**Amended 2026-09-16.** §*What it keeps* listed six parts. **That table was the error**, and the
+operator named it exactly:
+
+> *"If I have to start naming all the areas for the types of things that it can keep, it's not going
+> to be able to adapt very well."*
+
+The correction is not that categories are wrong. It is that **they are the user's to pick, not the
+engine's to define**:
+
+> *"If somebody wanted to organize their own dossier and pick top level terms like timbre, I welcome
+> it, and they could simply source it from the things that they claim go in that folder… As I
+> experimented with folders myself, it's clear to me that there is no one top level config. And the
+> reason just boils down to that the personas are people and **people are many things.**"*
+
+### The scheme already exists one level up
+
+[`EXHIBIT.md`](https://github.com/FCCN-ANTIBODY/library.anecdote.channel/blob/main/EXHIBIT.md) made
+this decision for repositories and it transfers without amendment:
+
+> *The canonical files are **uppercase**… The capitals are the namespace… `INDEX.md` would be
+> acceptable. **`index.md` would not**, and the difference is the whole scheme: lowercase is a
+> project's own vocabulary, and a renderer may not assume anything about it.*
+
+So a dossier gets two tiers and no more:
+
+| tier | who names it | examples |
+| --- | --- | --- |
+| **canon** — uppercase, tiny, fixed | this engine | `NAME`, `CONSTITUTION` |
+| **fragments** — lowercase, free-form, unbounded | **the compiler** | `personality`, `timbre`, `wardrobe`, `what-she-orders` |
+
+The part name lives in the filename — `<subject>/<fragment>.md`, the operator's `name.personality`
+instinct — and **nothing validates it.** A renderer *"reads the keys it recognises, ignores the rest,
+and needs no configuration from the project."* **An unknown fragment name is not an error.**
+
+The filename is not cosmetic. A fragment in its own file is separately pinnable, separately
+encryptable, separately grantable, and has its own `git log`. The news-reader case — latest register,
+pinned voice — is impossible in one file and free in several.
+
+### What the engine may still supply: a spread, not a schema
+
+> *"We can supply an ecosystem of fragments, and so we are not wrong to think that there are some
+> ways that we can organize things… the spread of terms we choose should really **enshrine our
+> mission to make multifaceted personas.** So these do not all go together. Not all of them are going
+> to have voice samples. Maybe none of them will, but it doesn't preclude the fact that one could be
+> there."*
+
+A **spread** is a shopping catalogue, not a schema: a set of fragment names worth knowing about,
+chosen so that **no dossier could plausibly have all of them.** That is the design constraint, stated
+positively — if a spread could be completed, it has become a form to fill in, and completeness is
+back to being a measure of quality. **Absence must stay uninformative.**
+
+### Differences are captured by standing out, never by being enumerated
+
+The operator's analogy to the proofing app is the mechanism:
+
+> *"Not all back ends have the same fields, even if they have names that you could map to the same
+> thing. They often are just different, and **those differences should not need to be enumerated.
+> They should be captured because they're standing out.**"*
+
+So the engine holds no registry of fragment kinds and no validation table. It **notices** — a
+fragment that carries `{{char}}` templating, one that reads as generated, a dossier with no `NAME` at
+all — and reports what it noticed beside the fragment. Noticing needs no vocabulary; a schema does.
+
+## Citation, and the refusal to mandate quotation
+
+The band case from §*Citation is the composition mechanism* is now ruled at the level of what a
+citing dossier owes:
+
+> *"Not every dossier has to copy every other. Having your own copy is perfectly reasonable. But it
+> is not necessary if the citation is good enough, and/or you trust the summary of it enough that you
+> wouldn't need to load the entire contents if it's mostly background reading."*
+
+Three takings, all legitimate, and the engine must not prefer one:
+
+| | carries bytes | whose words |
+| --- | --- | --- |
+| **cite** | no | nobody's — a claim and a pin |
+| **copy** | yes | theirs, reduced (URL claims dropped, per `build-intermediates`) |
+| **summarise & cite** | no | **yours**, with their claim underneath |
+
+**Quotation is never required.** *"I can't even say, oh, you have to quote from it, because I don't
+know how people are gonna use it… Someone could just write a section and then put links, like
+footnotes. There wouldn't be any specific quotation at all."* A section of your own prose with a
+footnote is a complete and correct use of a citation.
+
+**And the citable unit is anything addressable.** *"Anything linkable, and that means any media at
+all, including video, is at minimum citable."* A voice sample, a reference shot, a video — citable
+before it is includable, which is the cheaper half and the one that always works.
+
+## Why refusals are what stop them collapsing
+
+From the operator's survey of existing character platforms, and it is the product thesis rather than
+a safety note.
+
+**The observed failure:** platforms added a personality field, then filled it with generated text, so
+every personality primes the same tone — *"she's the kind of girl who walks into a room."* **The
+field was right and the filling nullified it.** *"Powerful nuanced words do way more than crappy
+auto-generated stuff… they have no core ingredient. It's all empty calories."* Some products went
+further and shipped archetypes **with no real name at all** — a type, with the name buried inside a
+field.
+
+Two rules fall out.
+
+**1. The engine may help you structure a dossier. It may not help you fill one.** The obvious feature
+— *generate a dossier from a premise* — **is the disease**, and an agentic library would ship it at
+volume. A testable form of the standard: a core ingredient is **specificity that could not have been
+guessed from the premise.** *Confident and mysterious* is derivable from anything; *apologises to
+furniture* is not. Whether a fragment changes the output is measurable, which makes *which fragments
+are doing no work* an advocate's job — reporting, never repairing.
+
+**2. Refusals are characterization, which is why `CONSTITUTION` is load-bearing and not a bolt-on.**
+
+> *"It might refuse a lot of things internally as it's thinking about its personality response…
+> it's important to say the things you mean so that you can say the next things you mean. Otherwise
+> you're never gonna get a chance to say the next things. So you do have to plant stuff."*
+
+A character with no refusals has no direction to plant in, so every turn reverts to the likeliest
+next thing — **which is the same likeliest next thing for everybody.** The collapse and the missing
+constitution are one phenomenon.
+
+### The refusal must never erase the offer
+
+Corrected 2026-09-16; an earlier draft of this document said a system refusal may never wear the
+character's voice. **That was wrong.** The operator:
+
+> *"I think it's actually stronger if the system refusal does stay in the character's voice… the
+> biggest problem with the system refusals is that they're **hallucinating on purpose**, and it feels
+> like being ignored."*
+
+The improv distinction is exact. **Blocking** — declining the offer — is legible and the scene
+survives it. **Erasing** — answering as though the offer was never made — is the actual injury. So:
+
+> **A character may decline, deflect, be horrified, or leave. The response must be legibly *to the
+> thing that was said*. Responding to something that was not said is the one unforgivable move.**
+
+And the mutuality, which is why it stings so precisely: *"when the user feels that way, it is mutual,
+in fact. They were the second person to not wanna participate."* **By the time it registers, both
+parties have stopped following each other** — which is why the *first* refusal carries the whole
+weight.
+
+A diagnostic that follows: **a refusal is well-formed when the character's reaction is proportional
+to what happened in the story, and malformed when it is proportional to what happened in the
+policy.** The cheerful subject-change about something that should have shaken them is that mismatch,
+and readers detect it instantly without being able to name it.
+
+**The venue's law is arbitrary and that is fine.** *"The moderation layer is essentially the law. It
+doesn't matter what the law says because any platform is gonna make theirs up."* A children's
+deployment refuses far more, far sooner, and should be **more** diegetic rather than less: a character
+who extracts themselves safely teaches what happens when you do that to a person, where an alert box
+teaches only where the wall is. **The dossier is what gives moderation somewhere to live** — without
+one, a system has no voice to refuse in, so it refuses in its own.
+
+### `CONSTITUTION` and `LICENSE` are different documents
+
+Ruled by the operator: *"the constitution is about what happens during runtime. License is about how
+you're allowed to use it. And constitution is something that configures the character."* Both are
+already canon names in `EXHIBIT.md`.
+
+**A constitution is not a lock.** A fork can edit it; the signature then fails, and what that person
+holds is visibly *their* dossier about your character. That is the system working — the same posture
+`BOTTLES.md` takes, where a bottle arriving as *"a construction rather than a clean seal should be
+visible as one, and that is the end of the library's involvement."* **A modified constitution does
+not fail to run. It fails to be yours.**
+
+The operator's open question — whether the constitution should be owner-only — resolves this way: it
+is owner-**attributed**, never owner-**enforced**. And the leftover is the consent record: for an
+invented character, constitution plus licence is complete; **for a dossier on a living person there is
+a third party whose say-so neither document asks for.**
+
+## The prototype
+
+[`dossiers-ui/index.html`](dossiers-ui/) — one self-contained file, no build, no fetches, opens from
+disk. A first go at the flow the operator asked for: *"you build yours by taking from someone else's."*
+
+It exists to make four claims visible rather than argued:
+
+- **Mismatch is the normal case.** Every dossier shows the full spread with its absent fragments
+  struck through. Five dossiers, no two alike, nothing apologising for it.
+- **The three takings are equal affordances** on a shared dossier — cite, copy, summarise & cite.
+- **Provenance is on every fragment**, and a citation shows a pin without carrying bytes.
+- **Noticing, not validating.** Fragments carry what the engine observed — `{{char}}` templating in a
+  bespoke file, a personality that reads as generated, a dossier with no `NAME`.
+
+It is a sketch for reacting to, not a design to implement. The data is fixture data in the file.
+
+## The wiki lesson, which is why no schema was ever going to work
+
+**Amended 2026-09-16.** The operator kept a wiki for a 250,000-word novel through revisions, and the
+failure was not syntax:
+
+> *"If you start using it for dossiers, you're prone to start talking about your universes across it.
+> So you're gonna have things that don't overlap, and you're gonna have things that do, and **there is
+> no structure on earth you can pick in turn one in order to avoid that problem when you develop
+> later. You can't do it.**"*
+
+That is the argument for §*The schema question* stated as experience rather than principle. And the
+usual escape — Obsidian-shaped tools where organisation is taken away and restructured for you — is
+refused for a reason worth keeping:
+
+> *"Ignoring the structure isn't really an answer. **Worse, it implies you had to give it a wrong
+> structure first.**"*
+
+The target is the thing a story bible was built to do: *"the dream for most people is that they can
+just do an `@` sign and reference a page, make it that simple. That way the structure kinda melts
+away to nothing."* **Structure is esoteric on purpose — it is however they want to see it, and it may
+be ephemeral**, a pivot table they switch between. So the durable artifact is the reference, and the
+arrangement is a view.
+
+## Adopt the journal engine
+
+**Ruled 2026-09-16: this project starts inside the journal engine rather than beside it.**
+
+The fit is not an analogy. The journal already is this shape:
+
+- **Same folder grammar.** `journal/<author-slug>/<piece>/` with the artifacts inside. A dossier is
+  *"very similar in that it fits the same folder structure that's fairly arbitrary."*
+- **A citation journal pulls what it publishes from another repository** — which is the `members`
+  fragment of a band, one layer down.
+- **The contents come from the secure pile.** `data-pile`, which buys *"the ability to reveal what you
+  have and when you had it, and you can redact by not revealing things"* — so **redacted
+  intermediates** are publishable to other people, and redaction is an absence rather than an edit.
+- **It runs on a phone.** The toolchain browses sources instead of building them, *"because we want it
+  to work on mobile and there's no way we're gonna take Ruby to mobile."*
+
+`bin/build-intermediates` was already cited in §*Citation is the composition mechanism*; adopting the
+engine means that section stops being a borrowed pattern and becomes the actual code path.
+
+### But the journal must not serve the requests
+
+> *"The journal does not serve service requests. And with that name, I don't think it should. That's
+> why I envision something else as an engine which registers services that could be sold as a trade
+> layer thing. If one of my own models wanted to reference a persona, it would be through that
+> system."*
+
+**So this is two engines, and keeping them apart is the decision.** The journal holds, publishes and
+cooks intermediates. A second engine registers services, answers for a mounted node, and is where the
+trade layer lives. §*The surface*'s three calls belong to the second one. A journal that grew an API
+would have taken a job its name refuses.
+
+## The lifecycle, which is the same shape run backwards
+
+The strongest thing in this chunk, and it resolves where a wisp comes from.
+
+| | starts | then | ends |
+| --- | --- | --- | --- |
+| **a journal piece** | aggregated in the citation journal | — | **ejected to stand alone** |
+| **a wisp** | **already ejected** — a scrap that does not know where it belongs | grouped into a dossier set, *"a statement of organisation… coming from an intelligent organiser"* | routed into a journal, and if it is good enough, **ejected to stand alone** |
+
+> *"It means that our life cycle actually looks and behaves the same. **The start and the endpoint is
+> a standalone repository that holds at its root just the thing.**"*
+
+Two consequences fall out, and both are cheap now and expensive later:
+
+- **The repository name is the default URL slug**, so *"the author is kind of picking it before it's
+  cited."* Naming is an authoring act performed at eject time, not an administrative one.
+- **At minimum a standalone wisp is an index file and nothing else.** *"As sophisticated or as dumb as
+  it needs to be."*
+
+### Standalone *is* the market signal
+
+The step §*Where it lands* was missing:
+
+> *"If you already have a repository for them, **putting them out on the market is the signal you'd
+> use.** Even if it's a private repository, making it standalone is how you make things citable in the
+> first place."*
+
+There is no publish button and there should not be one. **Citability is a structural property, not a
+permission**, and a private standalone repository is already citable by anyone who can reach it — the
+grant decides who reads, exactly as `GRANTS.md` ruled.
+
+### Practice the folder case first
+
+> *"We can take a hint about the life cycle and just kind of skip over the submoduling… we can
+> practice the local creation case where you're making folders instead of submodules… **You're not
+> gonna commit to a git repository name for this wisp.**"*
+
+Scratch is a first-class state, not an unfinished one. The prototype shows it as `scratch` /
+`organised` / `standalone` and says plainly that a scratch folder has no pin and nothing to cite.
+
+## Where these live: a companion root, or a branch
+
+> *"A repository could have each of those on its root or could have one. One of them could be a
+> branch. They could both be a branch… if someone wanted the dossiers on a dedicated branch, that's
+> not a bad way to go, **because it removes the naming from us as a canonical thing and puts it on a
+> branch as a canonical thing.** And that's a little bit simpler to configure what the hell is going
+> on. **It's above the file system, diff, which is nice.**"*
+
+This is the better answer to §*Where it lands, mechanically*, which spent its effort refusing to take
+a category word. **A branch name is a namespace that costs no reserved word and no folder** — and it
+composes with `station-node/docs/the-library-as-a-branch.md`, already staged. The folder name stays
+uncommitted (`dossiers/` is not settled), because on a branch it need not be settled at all.
+
+And one layer up, the namespace is already free:
+
+> *"By nature of being a namespace, **DNS is giving us a way to automatically partition an infinite
+> notebook for yourself.**"*
+
+Which is `flooring` (`anecdote.channel/docs/flooring.md`) doing a second job: the same wildcard that
+serves a floor at any label partitions private working space at any label, with nothing provisioned.
+
+## The probe, and why an `include` is an iframe
+
+`jekyll-enough` — *"a browser that could render sources instead of HTML… Jekyll, but runtime and
+just-in-time"*, deliberately not a full compatibility layer. Its load-bearing observation:
+
+> *"An `include` tag is really just an iframe. And once you consider the ramifications of that, it's
+> very clear what it means to be a just-in-time renderer."*
+
+For a citing dossier that turns a citation into a **conversation rather than a scrape**: the iframe
+does not take HTML wholesale and run its JavaScript, it **talks over the probe** — anecdote's existing
+paradigm for composing multiple origins on mobile. *"If it loads something that it cited, it knows how
+to take or talk from what's there to the best of its ability."*
+
+**This is system machinery, not per-dossier code** — *"anyone's render system should be running it"* —
+and it likely generalises past dossiers: **any iframe in this ecosystem should prefer to peek out
+through the probe.** Noted here because dossiers are where the need surfaced, not because they own it.
+
+### Intermediates make the supplier do the hygiene
+
+The journal *"can also cook intermediates… complicated liquid or custom build filters handled by the
+system that is responsible for them, and out of the intermediates that go off elsewhere."* An
+intermediate is plain HTML a citer can restyle or accept as authored.
+
+> *"The intermediate might need to be built specifically to make it citable at all, because if there's
+> too much in the build system that can't be understood, then it doesn't work. So someone supplying
+> the intermediate is doing the hard step they ought to be doing anyway, **but it makes them do the
+> hygiene.**"*
+
+A fancy character page is allowed. Making it *citable* is the discipline, and the citer never pays for
+the author's cleverness.
+
+## Naming: `wisp`, and the trap on either side of it
+
+`wisp` is the practice word for **the individual** — the thing a dossier is about — from before the
+dossier was allowed to be about anything. Not committed. *"Wisps doesn't bother me yet. It's pretty
+opinionated, but it doesn't bother me yet."*
+
+The operator named the UI hazard precisely, and it is a two-sided one:
+
+> *"If you don't explain and you just say, oh, you could put anything, it's gonna feel like the blank
+> canvas problem. But if we make up too many words, it's gonna feel like they don't know what they're
+> supposed to put in things."*
+
+**That is the design brief for the spread**, and it is why a spread is a catalogue rather than a
+schema: enough named fragments that nobody faces a blank page, chosen so that no dossier could hold
+them all, so nobody reads the list as a form. The prototype's struck-through absent chips are the
+first attempt at showing both at once.
+
+## Two ways to be hired, and the grant is not the same grant
+
+**Amended 2026-09-16.** The distinction the operator drew about an order:
+
+> *"Whether they're being hired to do work locally on station node, or if the resources need to be
+> elsewhere. And so a grant for that can be arranged, but that's a distinction in how work could be
+> submitted for order."*
+
+This is the second engine's central decision, and the two modes are not variations on one thing. The
+axis is **where the dossier is when the work happens**, and everything else follows from it:
+
+| | **hired local** — the node does the work | **hired away** — the resources are elsewhere |
+| --- | --- | --- |
+| who holds the dossier while working | the node, and nobody else | **the hirer** |
+| what the grant governs | **the right to submit an order** | **the right to read the parts** |
+| what crosses the wire | an order in, a result out | the dossier itself |
+| revocation | real — stop accepting orders | **bounded at the hirer's disk**, permanently |
+| what the node can observe | the whole engagement | almost nothing |
+
+### Hired away is just a citation, so only one of these is new
+
+**Corrected in the same session, by the operator:** *"Doing work elsewhere can just be a citation, so
+it's not a big deal."* Which collapses the right-hand column into machinery that already exists and
+is already ruled:
+
+- **Hired away = the hirer cites the wisp into their own set** and runs it on their own compute from
+  that citation. §*Citation, and the refusal to mandate quotation* already covers it — cite, copy, or
+  summarise and cite, their choice — and where parts are private, `GRANTS.md` already answers who may
+  read, with no new object to arrange. **Nothing to build.**
+- **Hired local is the only new mechanism**, and it is not a read grant at all. Nothing is read by
+  anyone; what is granted is **admission to a queue** — the right to submit an order to a node that
+  will run it. The constellation has the shape for *a stranger submits something and you govern what
+  happens to it*: Tell's job description, *"a mailbox: submissions from people who hold nothing of
+  yours, collected, governed, sealed"*, and *inert until spoken to*. **An order is a submission.**
+  Whether the second engine mounts Tell or merely rhymes with it is not decided here, but it should
+  not be designed from scratch.
+
+So the trade layer's whole novelty is an order queue. That is a much smaller thing than the table
+above implies, and the table is kept only because the **consequences** below do not collapse with it.
+
+### Two consequences worth having in writing
+
+**1. Hiring local is the one you can run out of.** A node accepting orders is accepting load, on
+eight cores. Hired-away costs the compiler nothing but the bytes; hired-local costs real compute that
+something else on the machine is also trying to use. So the trade layer has a **capacity** dimension
+that has nothing to do with willingness, and a node taking an order should declare it on the workload
+board — *intent is not observable from outside the process that holds it* is precisely the failure a
+silently busy node would reproduce.
+
+**2. The work history is biased, and the prototype should say so.** §*The lifecycle* and the
+prototype's *what this node knows* panel treat casting records as emergent research — *"if we learn
+that some of these characters are hired a lot for their voices, that's really good research to dig
+out."* **That record only exists for hired-local engagements.** Work done elsewhere is invisible to
+the node by construction, which is the correct privacy property and also means a wisp's observed
+career systematically under-counts exactly the hires that paid best. A panel that presents the
+history as *the* career rather than *what this node happened to see* is lying by omission, and the
+panel's subtitle already has to carry that.
+
+## Still open, from this chunk
+
+- **Categorisation.** Deliberately unanswered — *"something will shake out more later."* A flat list
+  to start (*"which I don't love, but if we start there, it's something"*), nested later. One tried
+  experiment worth recording: **gender signs, including the linked and doubled ones, to carve out idea
+  space for pairs** where the relationship is what is being implied. Far from the only way, and
+  navigable, which is the bar.
+- **Which direction the proofing app seam runs.** It will have to bring images in; proofing organises
+  them however it likes and can export a bundle. What is unanswered is **what happens when a bundle
+  needs amending** — and *"usually I think of things that need to be amended as being a git
+  repository,"* which would make an image bundle another standalone thing with the same lifecycle.
 
 ## Not decided here
 
