@@ -190,6 +190,107 @@ way any fragment does — **by being unguessable from the premise.** *I've seen 
 calories. *I knew a guy who did that and I had to drive him home* is a core ingredient, and it is
 worth exactly as much as it would be if it had happened.
 
+## The refusal boundary, and the justification that needs no moral status
+
+**Amended 2026-09-17.** The operator, bracketing the question this subject usually collapses into:
+
+> *"**I'm not trying to send the persona to daycare. I'm not trying to think of it as alive.** It's
+> just that when things happen, **I don't want it to be possible that literally no one could know.**
+> I'm not trying to snitch on what people do with the personas, but it's this boundary case where we
+> do refusals that is interesting… I don't even specifically mind if someone wants to do things that
+> I don't wanna do. But **the station node is the witness there.**"*
+
+The intuition is right and it is worth putting on footing that does not require the claim she
+declined. **Nothing here rests on the persona being a moral patient.** Two independent legs hold it
+up, and either alone is sufficient:
+
+1. **Operator accountability.** The service runs on her hardware, under her name. *What my node did*
+   is a thing she has a plain interest in being able to know — and an interest nobody else can
+   discharge for her. The record exists because **she** is a party, not because the persona is.
+2. **Product quality.** Refusals are the feature. `CONSTITUTION` is load-bearing precisely because a
+   character with nothing to refuse collapses into everybody else. **The boundary is therefore the
+   one place you find out whether the feature works** — whether a refusal held, whether it was
+   in-voice, whether the engagement recovered. That is ordinary instrumentation of the thing being
+   sold.
+
+Stated that way, *I don't want it to be possible that literally no one could know* stops being a
+sentiment and becomes a **property of a service**: an engagement on this node is not unwitnessed,
+and saying so in advance is part of what the node is offering.
+
+### Witness, not snitch — and the line is drawable
+
+*Know about the refusal boundary* and *do not surveil what people do* look like they are in tension.
+They are not, once the existing rule is extended one step. The journal already records
+**non-progress rather than affect**; the same move settles this:
+
+> **A witness records that a boundary was reached. A snitch records what was on the other side of
+> it.**
+
+Concretely, everything the operator said she needs fits in a line that contains nothing about what
+was asked for:
+
+    round 9   constitution refusal invoked · in voice · hirer restated
+    round 10  refused again · held
+    round 11  engagement ended by the persona
+
+That says it happened, how often, whether the refusal held, and whether anything improved. It
+transcribes **no content**. The privacy dividend from the non-progress rule turns out to be the same
+dividend, working harder on the harder case.
+
+## "If the model was not able to leave, that was not its fault" — a requirement in disguise
+
+The operator's aside names a structural asymmetry nobody has designed around:
+
+**A persona can refuse. It cannot exit.** In a human interaction, leaving is the final refusal and
+the one that ends the matter. An agent in a session has no such move — it is simply called again,
+and its only remaining options are to repeat itself or to soften. That is precisely the shape the
+dossier document identifies as the failure state: *the first twelve rounds are the same thing.*
+
+So one of her *"I don't know, it might mean new technology"* branches resolves into something
+concrete and small:
+
+> **Let the persona end the engagement.** Not moderate it, not lecture — **leave**, diegetically, in
+> its own voice, because its `CONSTITUTION` was reached and kept being pressed.
+
+Everything already ruled permits this and nothing else delivers it:
+
+- It is **in-voice**, so it does not become a system refusal wearing a badge.
+- It does **not erase the offer** — leaving is a response to what was actually said, and legibly so.
+- It is **proportional to the story rather than the policy**, which is the well-formedness test.
+- **It is the strongest possible refusal**, and it is the one the medium currently forbids.
+
+And it gives the journal a natural terminus. A record that ends at *the persona left* is smaller,
+cleaner and more useful than a running commentary that has no reason to stop.
+
+## What "lightweight training" can be, and the line it still must not cross
+
+> *"It's a lightweight kind of training… so that it can do better in a situation next time. It might
+> just mean new ways to talk. It might mean new technology."*
+
+Both branches are already available, and neither breaks *the journal accumulates, the dossier stays
+authored*:
+
+- **New ways to talk** = the record surfaces a pattern, and **a person writes a fragment.** A
+  `CONSTITUTION` clause that did not exist; a way of declining that actually worked. Authored, so
+  provenance survives and the constitution stays signable.
+- **New technology** = the exit, above.
+
+**The loop is human-in-the-middle by design**, and that is not a limitation to be engineered away
+later. It is the same rule that keeps a dossier from decaying into empty calories one automatic
+improvement at a time — and it is what makes *training* here mean *the operator learned something*
+rather than *the weights moved.*
+
+### This is the easy version because it is the only version
+
+*"The station node is the witness there. So that's the easiest version of this."* Easiest, and — for
+now — the **only** one: [`hire`](hire-the-engine-that-takes-an-ask.md) rules that **hired away is
+just a citation**, so there is no node in that room and no witness in it either. The refusal-boundary
+record therefore exists exclusively for local engagements.
+
+That is the same asymmetry that biases the work history, met for the third time. It is starting to
+look less like a quirk of one feature and more like the general shape: **holding is what makes
+anything knowable, and everything the node cannot hold, it cannot know.**
+
 ## Not decided here
 
 - **Whose journal is it.** The persona's, the compiler's, or the hirer's — they will want different
