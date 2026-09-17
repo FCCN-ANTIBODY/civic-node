@@ -727,6 +727,59 @@ schema: enough named fragments that nobody faces a blank page, chosen so that no
 them all, so nobody reads the list as a form. The prototype's struck-through absent chips are the
 first attempt at showing both at once.
 
+## Two ways to be hired, and the grant is not the same grant
+
+**Amended 2026-09-16.** The distinction the operator drew about an order:
+
+> *"Whether they're being hired to do work locally on station node, or if the resources need to be
+> elsewhere. And so a grant for that can be arranged, but that's a distinction in how work could be
+> submitted for order."*
+
+This is the second engine's central decision, and the two modes are not variations on one thing. The
+axis is **where the dossier is when the work happens**, and everything else follows from it:
+
+| | **hired local** — the node does the work | **hired away** — the resources are elsewhere |
+| --- | --- | --- |
+| who holds the dossier while working | the node, and nobody else | **the hirer** |
+| what the grant governs | **the right to submit an order** | **the right to read the parts** |
+| what crosses the wire | an order in, a result out | the dossier itself |
+| revocation | real — stop accepting orders | **bounded at the hirer's disk**, permanently |
+| what the node can observe | the whole engagement | almost nothing |
+
+### The grant word is doing two jobs and they should not be merged
+
+`GRANTS.md` rules a grant as *who may **read** what is held* — never who may fetch, never consulted
+at the moment of reading. **That is exactly the hired-away grant** and nothing needs inventing: the
+parts travel as ciphertext, the hirer brings a key scoped to that one engagement, and the floor's
+*one-key-one-service* property is the thing that keeps the engagement from becoming a standing claim
+on everything the compiler holds.
+
+**The hired-local grant is a different object**, and calling it a grant without saying so would lose
+the difference. Nothing is read by anyone. What is being granted is **admission to a queue** — the
+right to submit an order to a node that will run it. The constellation already has the shape for
+*a stranger submits something to you and you govern what happens to it*: that is Tell's job
+description, *"a mailbox: submissions from people who hold nothing of yours, collected, governed,
+sealed"*, and *inert until spoken to*. **An order is a submission.** Whether the second engine
+mounts Tell or merely rhymes with it is not decided here, but it should not be designed from scratch.
+
+### Two consequences worth having in writing
+
+**1. Hiring local is the one you can run out of.** A node accepting orders is accepting load, on
+eight cores. Hired-away costs the compiler nothing but the bytes; hired-local costs real compute that
+something else on the machine is also trying to use. So the trade layer has a **capacity** dimension
+that has nothing to do with willingness, and a node taking an order should declare it on the workload
+board — *intent is not observable from outside the process that holds it* is precisely the failure a
+silently busy node would reproduce.
+
+**2. The work history is biased, and the prototype should say so.** §*The lifecycle* and the
+prototype's *what this node knows* panel treat casting records as emergent research — *"if we learn
+that some of these characters are hired a lot for their voices, that's really good research to dig
+out."* **That record only exists for hired-local engagements.** Work done elsewhere is invisible to
+the node by construction, which is the correct privacy property and also means a wisp's observed
+career systematically under-counts exactly the hires that paid best. A panel that presents the
+history as *the* career rather than *what this node happened to see* is lying by omission, and the
+panel's subtitle already has to carry that.
+
 ## Still open, from this chunk
 
 - **Categorisation.** Deliberately unanswered — *"something will shake out more later."* A flat list
