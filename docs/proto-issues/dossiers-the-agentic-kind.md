@@ -564,6 +564,181 @@ It exists to make four claims visible rather than argued:
 
 It is a sketch for reacting to, not a design to implement. The data is fixture data in the file.
 
+## The wiki lesson, which is why no schema was ever going to work
+
+**Amended 2026-09-16.** The operator kept a wiki for a 250,000-word novel through revisions, and the
+failure was not syntax:
+
+> *"If you start using it for dossiers, you're prone to start talking about your universes across it.
+> So you're gonna have things that don't overlap, and you're gonna have things that do, and **there is
+> no structure on earth you can pick in turn one in order to avoid that problem when you develop
+> later. You can't do it.**"*
+
+That is the argument for §*The schema question* stated as experience rather than principle. And the
+usual escape — Obsidian-shaped tools where organisation is taken away and restructured for you — is
+refused for a reason worth keeping:
+
+> *"Ignoring the structure isn't really an answer. **Worse, it implies you had to give it a wrong
+> structure first.**"*
+
+The target is the thing a story bible was built to do: *"the dream for most people is that they can
+just do an `@` sign and reference a page, make it that simple. That way the structure kinda melts
+away to nothing."* **Structure is esoteric on purpose — it is however they want to see it, and it may
+be ephemeral**, a pivot table they switch between. So the durable artifact is the reference, and the
+arrangement is a view.
+
+## Adopt the journal engine
+
+**Ruled 2026-09-16: this project starts inside the journal engine rather than beside it.**
+
+The fit is not an analogy. The journal already is this shape:
+
+- **Same folder grammar.** `journal/<author-slug>/<piece>/` with the artifacts inside. A dossier is
+  *"very similar in that it fits the same folder structure that's fairly arbitrary."*
+- **A citation journal pulls what it publishes from another repository** — which is the `members`
+  fragment of a band, one layer down.
+- **The contents come from the secure pile.** `data-pile`, which buys *"the ability to reveal what you
+  have and when you had it, and you can redact by not revealing things"* — so **redacted
+  intermediates** are publishable to other people, and redaction is an absence rather than an edit.
+- **It runs on a phone.** The toolchain browses sources instead of building them, *"because we want it
+  to work on mobile and there's no way we're gonna take Ruby to mobile."*
+
+`bin/build-intermediates` was already cited in §*Citation is the composition mechanism*; adopting the
+engine means that section stops being a borrowed pattern and becomes the actual code path.
+
+### But the journal must not serve the requests
+
+> *"The journal does not serve service requests. And with that name, I don't think it should. That's
+> why I envision something else as an engine which registers services that could be sold as a trade
+> layer thing. If one of my own models wanted to reference a persona, it would be through that
+> system."*
+
+**So this is two engines, and keeping them apart is the decision.** The journal holds, publishes and
+cooks intermediates. A second engine registers services, answers for a mounted node, and is where the
+trade layer lives. §*The surface*'s three calls belong to the second one. A journal that grew an API
+would have taken a job its name refuses.
+
+## The lifecycle, which is the same shape run backwards
+
+The strongest thing in this chunk, and it resolves where a wisp comes from.
+
+| | starts | then | ends |
+| --- | --- | --- | --- |
+| **a journal piece** | aggregated in the citation journal | — | **ejected to stand alone** |
+| **a wisp** | **already ejected** — a scrap that does not know where it belongs | grouped into a dossier set, *"a statement of organisation… coming from an intelligent organiser"* | routed into a journal, and if it is good enough, **ejected to stand alone** |
+
+> *"It means that our life cycle actually looks and behaves the same. **The start and the endpoint is
+> a standalone repository that holds at its root just the thing.**"*
+
+Two consequences fall out, and both are cheap now and expensive later:
+
+- **The repository name is the default URL slug**, so *"the author is kind of picking it before it's
+  cited."* Naming is an authoring act performed at eject time, not an administrative one.
+- **At minimum a standalone wisp is an index file and nothing else.** *"As sophisticated or as dumb as
+  it needs to be."*
+
+### Standalone *is* the market signal
+
+The step §*Where it lands* was missing:
+
+> *"If you already have a repository for them, **putting them out on the market is the signal you'd
+> use.** Even if it's a private repository, making it standalone is how you make things citable in the
+> first place."*
+
+There is no publish button and there should not be one. **Citability is a structural property, not a
+permission**, and a private standalone repository is already citable by anyone who can reach it — the
+grant decides who reads, exactly as `GRANTS.md` ruled.
+
+### Practice the folder case first
+
+> *"We can take a hint about the life cycle and just kind of skip over the submoduling… we can
+> practice the local creation case where you're making folders instead of submodules… **You're not
+> gonna commit to a git repository name for this wisp.**"*
+
+Scratch is a first-class state, not an unfinished one. The prototype shows it as `scratch` /
+`organised` / `standalone` and says plainly that a scratch folder has no pin and nothing to cite.
+
+## Where these live: a companion root, or a branch
+
+> *"A repository could have each of those on its root or could have one. One of them could be a
+> branch. They could both be a branch… if someone wanted the dossiers on a dedicated branch, that's
+> not a bad way to go, **because it removes the naming from us as a canonical thing and puts it on a
+> branch as a canonical thing.** And that's a little bit simpler to configure what the hell is going
+> on. **It's above the file system, diff, which is nice.**"*
+
+This is the better answer to §*Where it lands, mechanically*, which spent its effort refusing to take
+a category word. **A branch name is a namespace that costs no reserved word and no folder** — and it
+composes with `station-node/docs/the-library-as-a-branch.md`, already staged. The folder name stays
+uncommitted (`dossiers/` is not settled), because on a branch it need not be settled at all.
+
+And one layer up, the namespace is already free:
+
+> *"By nature of being a namespace, **DNS is giving us a way to automatically partition an infinite
+> notebook for yourself.**"*
+
+Which is `flooring` (`anecdote.channel/docs/flooring.md`) doing a second job: the same wildcard that
+serves a floor at any label partitions private working space at any label, with nothing provisioned.
+
+## The probe, and why an `include` is an iframe
+
+`jekyll-enough` — *"a browser that could render sources instead of HTML… Jekyll, but runtime and
+just-in-time"*, deliberately not a full compatibility layer. Its load-bearing observation:
+
+> *"An `include` tag is really just an iframe. And once you consider the ramifications of that, it's
+> very clear what it means to be a just-in-time renderer."*
+
+For a citing dossier that turns a citation into a **conversation rather than a scrape**: the iframe
+does not take HTML wholesale and run its JavaScript, it **talks over the probe** — anecdote's existing
+paradigm for composing multiple origins on mobile. *"If it loads something that it cited, it knows how
+to take or talk from what's there to the best of its ability."*
+
+**This is system machinery, not per-dossier code** — *"anyone's render system should be running it"* —
+and it likely generalises past dossiers: **any iframe in this ecosystem should prefer to peek out
+through the probe.** Noted here because dossiers are where the need surfaced, not because they own it.
+
+### Intermediates make the supplier do the hygiene
+
+The journal *"can also cook intermediates… complicated liquid or custom build filters handled by the
+system that is responsible for them, and out of the intermediates that go off elsewhere."* An
+intermediate is plain HTML a citer can restyle or accept as authored.
+
+> *"The intermediate might need to be built specifically to make it citable at all, because if there's
+> too much in the build system that can't be understood, then it doesn't work. So someone supplying
+> the intermediate is doing the hard step they ought to be doing anyway, **but it makes them do the
+> hygiene.**"*
+
+A fancy character page is allowed. Making it *citable* is the discipline, and the citer never pays for
+the author's cleverness.
+
+## Naming: `wisp`, and the trap on either side of it
+
+`wisp` is the practice word for **the individual** — the thing a dossier is about — from before the
+dossier was allowed to be about anything. Not committed. *"Wisps doesn't bother me yet. It's pretty
+opinionated, but it doesn't bother me yet."*
+
+The operator named the UI hazard precisely, and it is a two-sided one:
+
+> *"If you don't explain and you just say, oh, you could put anything, it's gonna feel like the blank
+> canvas problem. But if we make up too many words, it's gonna feel like they don't know what they're
+> supposed to put in things."*
+
+**That is the design brief for the spread**, and it is why a spread is a catalogue rather than a
+schema: enough named fragments that nobody faces a blank page, chosen so that no dossier could hold
+them all, so nobody reads the list as a form. The prototype's struck-through absent chips are the
+first attempt at showing both at once.
+
+## Still open, from this chunk
+
+- **Categorisation.** Deliberately unanswered — *"something will shake out more later."* A flat list
+  to start (*"which I don't love, but if we start there, it's something"*), nested later. One tried
+  experiment worth recording: **gender signs, including the linked and doubled ones, to carve out idea
+  space for pairs** where the relationship is what is being implied. Far from the only way, and
+  navigable, which is the bar.
+- **Which direction the proofing app seam runs.** It will have to bring images in; proofing organises
+  them however it likes and can export a bundle. What is unanswered is **what happens when a bundle
+  needs amending** — and *"usually I think of things that need to be amended as being a git
+  repository,"* which would make an image bundle another standalone thing with the same lifecycle.
+
 ## Not decided here
 
 - **Whether `subject` is a reference or a string — now half answered.** D9 settles the site case:

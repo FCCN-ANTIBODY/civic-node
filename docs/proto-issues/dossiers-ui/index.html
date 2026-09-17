@@ -81,6 +81,30 @@ header.doc .about{font-family:var(--sans);font-size:12.5px;color:var(--muted)}
 #foot{position:fixed;bottom:0;left:224px;right:0;background:#efe9dc;border-top:1px solid var(--rule);
    font-family:var(--mono);font-size:11px;color:var(--muted);padding:7px 46px;display:flex;gap:18px}
 #foot b{color:var(--ink);font-weight:600}
+
+/* lifecycle */
+.state{font-family:var(--sans);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+  padding:2px 7px;border-radius:2px;vertical-align:middle;margin-left:10px;font-weight:600}
+.state.scratch{background:#e6dfd0;color:#7d7466}
+.state.organised{background:#dfe6d6;color:#4a6b3f}
+.state.standalone{background:var(--stamp);color:#fff}
+.sstate{font-family:var(--sans);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+/* what the NODE knows — deliberately not paper. Not authored, not a fragment. */
+.node{margin:36px 0 0;background:#211d18;color:#ece5d8;border:1px solid #211d18}
+.node h3{font-family:var(--sans);font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+  margin:0;padding:12px 18px;color:#b9ac95;border-bottom:1px solid #3a342b;font-weight:600}
+.node .sub{font-family:var(--sans);font-size:11.5px;color:#8d8272;padding:10px 18px 0}
+.row{display:flex;gap:14px;padding:11px 18px;border-bottom:1px solid #322c24;font-size:14px;align-items:baseline}
+.row:last-child{border-bottom:0}
+.row .k{font-family:var(--mono);font-size:11px;color:#c9a227;flex:0 0 132px}
+.row .v{flex:1;font-family:var(--sans);font-size:12.5px;line-height:1.5}
+.row .t{font-family:var(--mono);font-size:10.5px;color:#8d8272;margin-left:auto;white-space:nowrap}
+.live{display:inline-block;width:6px;height:6px;border-radius:50%;background:#7ac74f;margin-right:6px}
+.market{border:1px solid var(--rule);background:#fffdf8;padding:14px 18px;margin:16px 0 0}
+.market p{font-family:var(--sans);font-size:12.5px;color:var(--muted);margin:0 0 10px;line-height:1.5}
+.market button{font-family:var(--sans);font-size:12px;padding:7px 14px;border:1px solid var(--stamp);
+  background:#fff;color:var(--stamp);border-radius:2px;cursor:pointer}
 .note{font-family:var(--sans);font-size:12.5px;color:var(--muted);line-height:1.5;
    border-left:2px solid var(--rule);padding-left:12px;margin:26px 0 0}
 </style>
@@ -102,6 +126,12 @@ const CANON = ["NAME","CONSTITUTION"];   // the only fixed words. Everything els
 
 const DOSSIERS = {
   rydona: { owner:"mine", kind:"Character", title:"Rydona", about:"compiled by autumn · pin 4c1f0ab",
+    state:"standalone", slug:"rydona-vass",
+    rooms:[{k:"tell floor",v:"harbour-lights · in scene, 3 present",t:"41 min", live:true},
+           {k:"a stranger's node",v:"cited by <b>Sundown Quartet</b> · members",t:"standing"}],
+    history:[{k:"2026-08-30",v:"voice sample auditioned — narration trial, declined",t:"their node"},
+             {k:"2026-09-04",v:"cast · reading generated harbour bulletins",t:"ongoing"},
+             {k:"2026-09-11",v:"cast · same voice, different venue",t:"ongoing"}],
     parts:[
       {n:"NAME", body:"Rydona Vass. Harbour-pilot, second generation. Answers to Ryd from almost nobody."},
       {n:"personality", body:"Talks like she is still reading the water. Long pauses that are not hesitation — she is waiting for the tide to say something. Apologises to furniture. Will not be hurried by anyone who has not been on a boat.",
@@ -115,7 +145,9 @@ const DOSSIERS = {
       {n:"reference", shots:["download.webp","download-1","download-3","download-7"]}
     ]},
 
-  ainsley:{ owner:"mine", kind:"Character", title:"Ainsley", about:"compiled by autumn · pin 9de3c74",
+  ainsley:{ owner:"mine", kind:"Character", title:"Ainsley", about:"compiled by autumn · scratch folder",
+    state:"scratch",
+    rooms:[], history:[],
     parts:[
       {n:"NAME", body:"Ainsley Roe."},
       {n:"reference", shots:["download","copy 2","download-2","-3 copy","-5","-6","-8"]},
@@ -124,6 +156,9 @@ const DOSSIERS = {
     ]},
 
   quartet:{ owner:"mine", kind:"Collective", title:"The Sundown Quartet", about:"compiled by autumn · pin 22b8e01",
+    state:"organised",
+    rooms:[{k:"library/dossiers",v:"grouped here — a statement of organisation, not yet its own repo",t:"—"}],
+    history:[],
     parts:[
       {n:"NAME", body:"The Sundown Quartet. Four players, one of whom is always leaving."},
       {n:"continuity", body:"Formed out of a dissolved wedding band in 1974. The line-up that matters is the third one."},
@@ -135,6 +170,7 @@ const DOSSIERS = {
     ]},
 
   dw:{ owner:"theirs", kind:"Brand", title:"Discovery Written", about:"compiled by the brand · pin 7a04e19 · shared",
+    state:"standalone", slug:"discovery-written",
     parts:[
       {n:"NAME", body:"Discovery Written — a studio that publishes what it learns while it learns it."},
       {n:"CONSTITUTION", body:"Never implies a finished thing is finished. Never uses a customer's word back at them as if it were ours. Will say <em>we do not know yet</em> in public, on purpose, and will not soften it afterwards.",
@@ -143,6 +179,8 @@ const DOSSIERS = {
     ]},
 
   molloy:{ owner:"theirs", kind:"Character", title:"Molloy", about:"compiled by a stranger · pin e5c11f2 · shared",
+    state:"standalone", slug:"molloy",
+    history:[{k:"2026-07-19",v:"cast · voice, 14 engagements",t:"emergent"}],
     parts:[
       {n:"personality", body:"She's the kind of girl who walks into a room and everyone notices. Confident, mysterious, with a playful streak that keeps you guessing.",
        noticed:"Reads as <b>generated</b>: no detail here could not have been guessed from the premise. Nothing in it would change an answer."},
@@ -161,7 +199,8 @@ function sidebar(){
     Object.entries(DOSSIERS).filter(([,d])=>d.owner===which).forEach(([id,d])=>{
       const b = document.createElement("button");
       b.className="d"; b.setAttribute("aria-current", id===openId);
-      b.innerHTML = d.title + "<small>"+d.kind+" · "+d.parts.length+" fragments</small>";
+      b.innerHTML = d.title + "<small>"+d.kind+" · "+d.parts.length+" fragments &nbsp;<span class='sstate'>"+
+        (d.state||"scratch")+"</span></small>";
       b.onclick = ()=>{ openId=id; render(); };
       $(box).appendChild(b);
     });
@@ -176,7 +215,8 @@ function render(){
 
   m.insertAdjacentHTML("beforeend",
     `<header class="doc"><div class="kind">${d.kind}${mine?"":" · window shopping"}</div>
-     <h2>${d.title}</h2><div class="about">${d.about}</div></header>`);
+     <h2>${d.title}<span class="state ${d.state||"scratch"}">${d.state||"scratch"}</span></h2>
+     <div class="about">${d.about}</div></header>`);
 
   // the spread. Every name that exists anywhere, so mismatch is the visible fact.
   const all = [...new Set(Object.values(DOSSIERS).flatMap(x=>x.parts.map(p=>p.n)))];
@@ -196,6 +236,8 @@ function render(){
     `<button id="add">+ fragment &nbsp;<span style="opacity:.6">any name you like — nothing validates it</span></button>`);
   if ($("#add")) $("#add").onclick = addFragment;
 
+  m.appendChild(nodePanel(d));
+
   m.insertAdjacentHTML("beforeend", mine
     ? `<p class="note">Drag a fragment to reorder. Renaming one keeps its history — git is underneath, so a
        reorganisation is a move, not a migration, and it can be undone non-linearly.</p>`
@@ -203,10 +245,43 @@ function render(){
        the bytes. <b>Copy</b> takes them. <b>Summarise</b> keeps your own words and cites underneath.
        Nothing here requires you to quote — a section of your own prose with a footnote is a legitimate use.</p>`);
 
+  const pin = (d.about.split("pin ")[1]||"").split(" ")[0];
   $("#foot").innerHTML =
-    `<span>library/<b>dossiers</b>/${openId}/</span><span>pin <b>${d.about.split("pin ")[1].split(" ")[0]}</b></span>`+
+    `<span>library/<b>dossiers</b>/${openId}/</span>`+
+    `<span>${pin ? "pin <b>"+pin+"</b>" : "<b>no pin</b> — scratch folder, nothing to cite"}</span>`+
     `<span>${d.parts.length} fragments · ${CANON.filter(c=>here.has(c)).length}/2 canon</span>`+
     `<span style="margin-left:auto">nothing validates a fragment name</span>`;
+}
+
+// What the STATION NODE knows — never a fragment, never authored, never cited.
+// Deliberately styled as telemetry so it cannot be mistaken for dossier content.
+function nodePanel(d){
+  const el = document.createElement("div");
+  const rooms = d.rooms||[], hist = d.history||[];
+  const row = r => `<div class="row"><span class="k">${r.live?'<span class="live"></span>':""}${r.k}</span>
+     <span class="v">${r.v}</span><span class="t">${r.t}</span></div>`;
+
+  let market = "";
+  if (d.state !== "standalone") market = `<div class="market">
+     <p><b>Not citable yet.</b> ${d.state==="scratch"
+        ? "This is a scratch folder — no repository, no slug, nothing anyone else can point at. That is a fine place to start and you have not committed to a name."
+        : "Grouped, which is a statement of organisation. Still nothing standing on its own."}</p>
+     <p>Making it standalone <b>is</b> the market signal — even as a private repository. The repo name
+        becomes the URL slug, so you pick it here, before anyone cites it.</p>
+     <button>Put it on the market →</button></div>`;
+
+  el.innerHTML = `<div class="node">
+    <h3>What this node knows</h3>
+    <div class="sub">Not part of the dossier. Not authored, not cited, not carried when someone takes from this —
+      it is what the station node observed. It would be empty on a node that only keeps notes.</div>
+    ${rooms.length ? `<div style="padding-top:8px">${rooms.map(row).join("")}</div>`
+      : `<div class="row"><span class="v" style="color:#8d8272">In no rooms. Nothing has mounted this.</span></div>`}
+    ${hist.length ? `<h3 style="border-top:1px solid #3a342b">Work history · emergent</h3>
+       <div class="sub">Nobody planned to collect this. It fell out of aggregation — and
+         <b>which voices get hired</b> is the research nobody asked for.</div>
+       <div style="padding-top:8px">${hist.map(row).join("")}</div>` : ""}
+  </div>${market}`;
+  return el;
 }
 
 function fragment(p,i,mine){
@@ -255,7 +330,7 @@ function takeInto(part, mode){
     targets.map(([id,d],n)=>(n+1)+". "+d.title).join("\n"), "1");
   const pick = targets[(parseInt(into,10)||1)-1];
   if (!pick) return;
-  const at = src.about.split("pin ")[1].split(" ")[0];
+  const at = (src.about.split("pin ")[1]||"").split(" ")[0] || "uncited";
 
   const copy = {
     n: part.n,
