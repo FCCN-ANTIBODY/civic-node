@@ -746,21 +746,26 @@ axis is **where the dossier is when the work happens**, and everything else foll
 | revocation | real — stop accepting orders | **bounded at the hirer's disk**, permanently |
 | what the node can observe | the whole engagement | almost nothing |
 
-### The grant word is doing two jobs and they should not be merged
+### Hired away is just a citation, so only one of these is new
 
-`GRANTS.md` rules a grant as *who may **read** what is held* — never who may fetch, never consulted
-at the moment of reading. **That is exactly the hired-away grant** and nothing needs inventing: the
-parts travel as ciphertext, the hirer brings a key scoped to that one engagement, and the floor's
-*one-key-one-service* property is the thing that keeps the engagement from becoming a standing claim
-on everything the compiler holds.
+**Corrected in the same session, by the operator:** *"Doing work elsewhere can just be a citation, so
+it's not a big deal."* Which collapses the right-hand column into machinery that already exists and
+is already ruled:
 
-**The hired-local grant is a different object**, and calling it a grant without saying so would lose
-the difference. Nothing is read by anyone. What is being granted is **admission to a queue** — the
-right to submit an order to a node that will run it. The constellation already has the shape for
-*a stranger submits something to you and you govern what happens to it*: that is Tell's job
-description, *"a mailbox: submissions from people who hold nothing of yours, collected, governed,
-sealed"*, and *inert until spoken to*. **An order is a submission.** Whether the second engine
-mounts Tell or merely rhymes with it is not decided here, but it should not be designed from scratch.
+- **Hired away = the hirer cites the wisp into their own set** and runs it on their own compute from
+  that citation. §*Citation, and the refusal to mandate quotation* already covers it — cite, copy, or
+  summarise and cite, their choice — and where parts are private, `GRANTS.md` already answers who may
+  read, with no new object to arrange. **Nothing to build.**
+- **Hired local is the only new mechanism**, and it is not a read grant at all. Nothing is read by
+  anyone; what is granted is **admission to a queue** — the right to submit an order to a node that
+  will run it. The constellation has the shape for *a stranger submits something and you govern what
+  happens to it*: Tell's job description, *"a mailbox: submissions from people who hold nothing of
+  yours, collected, governed, sealed"*, and *inert until spoken to*. **An order is a submission.**
+  Whether the second engine mounts Tell or merely rhymes with it is not decided here, but it should
+  not be designed from scratch.
+
+So the trade layer's whole novelty is an order queue. That is a much smaller thing than the table
+above implies, and the table is kept only because the **consequences** below do not collapse with it.
 
 ### Two consequences worth having in writing
 
