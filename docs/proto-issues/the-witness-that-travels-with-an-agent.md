@@ -82,6 +82,10 @@ one thing that concedes:
 harness; a witness record is evidence about *what failed to help inside an engagement*. Those are the
 two halves, and the second one is the half an author can act on.
 
+**This is not the only output, and probably not the main one** — see *What accumulated experience is
+actually for*, below, which reframes the journal as a source of diegetic texture first and a
+measurement second.
+
 It is also better than the cold-start substitute the dossier document proposes. An ablation asks
 whether a fragment changes an output; a witness saw whether the output helped.
 
@@ -112,6 +116,79 @@ A persona going out to work is a concern, so it gets a branch. Which means a wis
 hired eleven times has **eleven engagement branches on its own repository** — and that is the
 `standalone repository holding just the thing` from the lifecycle earning its keep a second time: the
 witness has somewhere to write that travels with the wisp and not with the hirer.
+
+## What accumulated experience is actually for — and it is not recall
+
+**Amended 2026-09-17, and it reframes this document.** The sections above treat the journal as an
+instrument: evidence for an author about what did not help. That is one output and it is not the one
+the operator wants most.
+
+> *"It's not that I need the personas to remember all the jobs they had, but I want a persona to be
+> very capable of diegetically including in their responses that, like, **no, I'm not gonna do that,
+> I knew a guy once.** It's not really a real memory thing. But if it's sufficient to improve the
+> diegetic shit, I'm interested."*
+
+**The bar is texture, not fidelity**, and that collapses the engineering enormously. A memory system
+must be accurate, complete and retrievable. **A source of diegetic texture must only be evocative.**
+*I knew a guy once* does not require a guy.
+
+### It is the refusal thesis, one turn later
+
+[`dossiers-the-agentic-kind.md`](dossiers-the-agentic-kind.md) rules that **refusals are
+characterisation** — a character with nothing to refuse reverts to the likeliest next thing, which is
+the same likeliest next thing for everybody. This is the next move in that argument:
+
+> **A refusal with a history behind it is a refusal nobody else could have made.**
+
+*No* is generic. *No, I knew a guy once* is not, and it is not generic **even when the guy is
+invented.** That is the whole finding: the thing that keeps a character distinct is not accumulated
+fact, it is accumulated **reasons shaped like experience.**
+
+### One observation, two renderings
+
+The two purposes do not need two systems, and noticing that is what keeps this cheap.
+
+| | the witness's rendering | the persona's rendering |
+| --- | --- | --- |
+| *what it says* | rounds 3–14 restated the same unmet need | *"Somebody kept asking me the same thing a dozen times and never once said what they actually wanted."* |
+| *for* | the author, deciding what to change | the room, right now |
+| *register* | flat, structural, no affect | **the dossier's** |
+
+**Same observation. The dossier already supplies the second rendering** — that is what `register`
+and `CONSTITUTION` are *for*. So nothing new is needed: the journal holds the fact, the dossier holds
+the voice, and the diegetic line is the composition of the two.
+
+### The line this must not cross, and it is already drawn
+
+Inventing a past brushes against this project's sharpest existing rule — *the biggest problem with
+system refusals is that they're **hallucinating on purpose***. It does not violate it, and the
+distinction is the same one already made:
+
+| | is |
+| --- | --- |
+| *"I knew a guy once"* | **in-fiction content**, in the character's own voice. The medium working |
+| *"you never said that"* | **erasing the offer.** A false claim about what just happened |
+
+> **A persona may invent its own past freely. It may never misrepresent what passed between you.**
+
+Those are different registers and conflating them would break the good rule while trying to honour
+it.
+
+### So this does not depend on the witness at all
+
+The practical consequence, and it is the useful one: **if the goal is texture rather than recall,
+experience can simply be authored.** A fragment — `knew-a-guy.md`, `history.md`, whatever the
+compiler types, since nothing validates the name — gets *I knew a guy once* today, with no hiring,
+no engagements and no witness in the loop.
+
+**The witness enriches this over time; it is not a prerequisite for it.** Which reorders the work:
+authored experience is available now and cheap, and the witness becomes the thing that keeps it
+growing from real engagements rather than the thing that makes it possible.
+
+And the existing quality bar transfers without amendment. An invented past earns its place the same
+way any fragment does — **by being unguessable from the premise.** *I've seen things* is empty
+calories. *I knew a guy who did that and I had to drive him home* is a core ingredient, and it is
+worth exactly as much as it would be if it had happened.
 
 ## Not decided here
 
