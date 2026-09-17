@@ -1,0 +1,163 @@
+#!/usr/bin/env python3
+"""discord-graft — fold DiscordChatExporter thread files into their parent page.
+
+    bin/discord-graft <export-dir> [-o OUT.html]
+
+DiscordChatExporter with --include-threads writes one HTML file per channel:
+the parent plus one per thread. This stitches them into a single page, with
+each thread collapsed under the message it was started from.
+
+Two facts make the graft exact rather than heuristic:
+
+  * A thread's snowflake IS the id of the message it was started from, so the
+    anchor is found by id, never by matching text.
+  * A thread export does not repeat its anchor message, so nothing is deduped.
+
+Ordering, which is the subtle part:
+
+  The parent's `.chatlog` is `flex-direction: column-reverse` so the channel
+  reads newest-first. That reversal applies only to `.chatlog`'s *direct*
+  children. A graft is injected *inside* a message container, so it is not a
+  flex item of `.chatlog` and its messages stay chronological — which is what
+  a thread wants. The graft explicitly re-asserts `column` so it cannot
+  inherit a reversal from a future stylesheet change.
+"""
+
+import argparse
+import html
+import os
+import re
+import sys
+from glob import glob
+
+GRAFT_CSS = """
+/* CCGROUP-GRAFT: threads folded under their anchor message */
+.thread-graft{margin:0.4rem 0 0.2rem 72px;border-left:2px solid #4f545c;border-radius:3px 0 0 3px;background:rgba(79,84,92,0.08)}
+.thread-graft>summary{cursor:pointer;padding:0.3rem 0.6rem;color:#00aff4;font-size:0.85rem;font-weight:500;list-style:none;user-select:none}
+.thread-graft>summary::-webkit-details-marker{display:none}
+.thread-graft>summary::before{content:"\\25B8 ";display:inline-block;transition:transform .12s ease}
+.thread-graft[open]>summary::before{transform:rotate(90deg)}
+.thread-graft>summary:hover{color:#fff;background:rgba(79,84,92,0.18)}
+.thread-graft__count{color:#a3a6aa;font-weight:400}
+/* Threads read oldest-first even though the channel around them is reversed. */
+.thread-graft__body{display:flex;flex-direction:column;padding:0.2rem 0 0.5rem 0.6rem}
+"""
+
+
+def message_ids(markup):
+    return re.findall(r"data-message-id=[\"']?(\d+)", markup)
+
+
+def id_from_name(path):
+    m = re.search(r"\[(\d+)\]\.html$", os.path.basename(path))
+    return m.group(1) if m else None
+
+
+def thread_title(markup, fallback):
+    m = re.search(r"<title>(.*?)</title>", markup, re.S)
+    if not m:
+        return fallback
+    title = html.unescape(re.sub(r"\s+", " ", m.group(1))).strip()
+    # "Server - parent-channel - Thread title [id]" -> "Thread title"
+    title = re.sub(r"\s*\[\d+\]\s*$", "", title)
+    return title.split(" - ")[-1].strip() or fallback
+
+
+def span_of_div(markup, start):
+    """Return the end offset of the <div ...> that begins at `start`."""
+    depth = 0
+    for m in re.finditer(r"<div\b|</div>", markup[start:]):
+        depth += 1 if m.group(0) == "<div" else -1
+        if depth == 0:
+            return start + m.end()
+    return None
+
+
+def extract_groups(markup):
+    """The message groups inside a thread export's .chatlog, without its
+    preamble or postamble."""
+    m = re.search(r"<div class=[\"']?chatlog[\"']?[^>]*>", markup)
+    if not m:
+        return None
+    end = span_of_div(markup, m.start())
+    if end is None:
+        return None
+    return markup[m.end():end - len("</div>")]
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("export_dir")
+    ap.add_argument("-o", "--output")
+    args = ap.parse_args()
+
+    files = sorted(glob(os.path.join(args.export_dir, "*.html")))
+    files = [f for f in files if "grafted" not in os.path.basename(f)]
+    if not files:
+        sys.exit("discord-graft: no .html files in %s" % args.export_dir)
+
+    docs = {f: open(f, encoding="utf-8", errors="replace").read() for f in files}
+
+    # The parent is the file whose own id is not a message inside any other
+    # file. Every thread's id appears as its anchor message in the parent.
+    parents = []
+    for f in files:
+        fid = id_from_name(f)
+        if fid and not any(fid in message_ids(docs[g]) for g in files if g != f):
+            parents.append(f)
+    if len(parents) != 1:
+        sys.exit("discord-graft: expected exactly 1 parent, found %d" % len(parents))
+    parent = parents[0]
+    parent_html = docs[parent]
+
+    grafted = skipped = 0
+    for f in files:
+        if f == parent:
+            continue
+        tid = id_from_name(f)
+        anchor = re.search(
+            r"<div id=[\"']?chatlog__message-container-%s[\"']?[^>]*>" % re.escape(tid),
+            parent_html,
+        )
+        if not anchor:
+            print("  SKIP  no anchor message %s for %s" % (tid, os.path.basename(f)[:48]))
+            skipped += 1
+            continue
+        body = extract_groups(docs[f])
+        if body is None:
+            print("  SKIP  no .chatlog in %s" % os.path.basename(f)[:48])
+            skipped += 1
+            continue
+
+        end = span_of_div(parent_html, anchor.start())
+        if end is None:
+            print("  SKIP  unbalanced anchor container for %s" % tid)
+            skipped += 1
+            continue
+
+        n = len(set(message_ids(docs[f])))
+        title = html.escape(thread_title(docs[f], "thread"))
+        block = (
+            '<details class="thread-graft" id="thread-%s">'
+            '<summary>%s <span class="thread-graft__count">&middot; %d %s</span></summary>'
+            '<div class="thread-graft__body">%s</div></details>'
+        ) % (tid, title, n, "reply" if n == 1 else "replies", body)
+
+        parent_html = parent_html[:end] + block + parent_html[end:]
+        grafted += 1
+        print("  grafted  %-46s %d msg" % (title[:46], n))
+
+    if "CCGROUP-GRAFT" not in parent_html:
+        i = parent_html.rfind("</style>")
+        if i == -1:
+            sys.exit("discord-graft: no </style> in parent; cannot add graft CSS")
+        parent_html = parent_html[:i] + GRAFT_CSS + parent_html[i:]
+
+    out = args.output or os.path.join(args.export_dir, "grafted.html")
+    with open(out, "w", encoding="utf-8") as fh:
+        fh.write(parent_html)
+    print("\n  wrote %s  (%d grafted, %d skipped)" % (out, grafted, skipped))
+
+
+if __name__ == "__main__":
+    main()

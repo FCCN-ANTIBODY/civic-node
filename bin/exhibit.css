@@ -1,0 +1,87 @@
+/* exhibit.css — the look of the exhibit, not of Discord.
+ *
+ * Edit this file freely and re-run `bin/exhibit theme <name>`. That re-applies
+ * the theme to the already-downloaded export in seconds; it does not re-fetch
+ * anything. Everything between the BEGIN/END sentinels in the built page is
+ * replaced wholesale each time, so this file is the only source of truth.
+ *
+ * It loads AFTER the exporter's bundled stylesheet, so plain selectors win
+ * without !important. Keep it that way.
+ *
+ * Sections:
+ *   1. Page frame        2. Reading column     3. Message rows
+ *   4. Threads           5. Chrome to suppress 6. Date landmarks
+ */
+
+/* ---- 1. Page frame ------------------------------------------------------ */
+/* Discord's near-black is a chat affordance. An exhibit wants paper. */
+:root{
+  --ink:#e8e6e1;
+  --ink-quiet:#9a968f;
+  --ink-faint:#6f6b65;
+  --ground:#14150f;
+  --rule:rgba(232,230,225,0.14);
+  --accent:#c8a86b;
+  --measure:68ch;
+}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:1.02rem;
+  line-height:1.55;
+}
+
+/* ---- 2. Reading column -------------------------------------------------- */
+/* Full-bleed chat is unreadable as prose. Constrain the measure. */
+.preamble,.chatlog{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.chatlog{border:0;padding:2rem 0 6rem}
+
+/* ---- 3. Message rows ---------------------------------------------------- */
+/* Collapse the avatar gutter: in a single-author exhibit it is dead space. */
+.chatlog__message{grid-template-columns:0 1fr}
+.chatlog__message-aside{width:0;padding:0;overflow:hidden}
+.chatlog__message:hover{background:transparent}
+.chatlog__message-group{margin-bottom:1.15rem}
+.chatlog__content{padding-right:0;font-size:1.02rem}
+.chatlog__author{color:var(--ink);font-weight:600;letter-spacing:0.01em}
+.chatlog__author-tag{display:none}
+.chatlog__timestamp,.chatlog__short-timestamp{color:var(--ink-faint);font-size:0.72rem}
+.chatlog__markdown-quote-border{border-color:var(--accent)}
+.chatlog__markdown-pre{background:rgba(255,255,255,0.05)}
+.chatlog__markdown-mention{background:transparent;color:var(--accent);font-weight:600}
+
+/* ---- 4. Threads --------------------------------------------------------- */
+/* An aside in the margin of the argument, not a Discord side panel. */
+.thread-graft{
+  margin:0.6rem 0 0.6rem 0;
+  border-left:3px solid var(--accent);
+  border-radius:0;
+  background:rgba(200,168,107,0.05);
+}
+.thread-graft>summary{color:var(--accent);font-size:0.8rem;letter-spacing:0.04em;text-transform:uppercase}
+.thread-graft>summary:hover{background:rgba(200,168,107,0.10);color:var(--ink)}
+.thread-graft__count{color:var(--ink-faint);text-transform:none;letter-spacing:0}
+.thread-graft__body{padding-left:1rem}
+
+/* ---- 5. Chrome to suppress ---------------------------------------------- */
+/* Artefacts of the medium that carry no meaning in an exhibit. */
+.preamble__guild-icon-container{display:none}
+.preamble__entries-container{margin-left:0}
+.preamble{grid-template-columns:1fr;padding:3rem 0 1rem;border-bottom:1px solid var(--rule)}
+.preamble__entry{color:var(--ink);font-size:1.6rem;font-weight:600}
+.preamble__entry--small{color:var(--ink-quiet);font-size:0.9rem;font-style:italic}
+.chatlog__reaction{display:none}          /* reactions are chat, not argument */
+.postamble{max-width:var(--measure);margin:0 auto;border-top:1px solid var(--rule);color:var(--ink-faint)}
+
+/* ---- 6. Date landmarks -------------------------------------------------- */
+/* A two-year arc needs signposts. The exporter has no date separators, so
+ * these are the timestamps promoted into the margin. */
+.chatlog__message-group:first-child{margin-top:0}
+
+/* ---- print -------------------------------------------------------------- */
+@media print{
+  body{background:#fff;color:#111}
+  .thread-graft{border-left-color:#999}
+  .thread-graft[open]>summary::before{content:""}
+}
