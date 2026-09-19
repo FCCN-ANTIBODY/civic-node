@@ -1,1 +1,68 @@
-no draft yet - replace this file: line 1 becomes the PR title, the rest the body
+Roll the library-engine pin forward, and say why nothing rolled it
+
+## What this does
+
+Moves `.library-engine` from `61613f6` to `8ede250`, its engine's current `main` —
+22 commits. The old pin was a strict ancestor, so this is a fast-forward; there is
+no divergence to resolve and nothing to reconcile.
+
+## The finding, which matters more than the bump
+
+**The library engine is the only mounted engine that nothing rolls forward.**
+
+`modules-upgrade.yml` runs four jobs — journal, atlas, tell, antidote — and each one
+`uses:` that module's *own* `.github/actions/advance-engine`. I checked all five
+mounts:
+
+| engine | ships `advance-engine`? | rolled by a job? |
+|---|---|---|
+| journal | yes | yes |
+| atlas | yes | yes |
+| tell | yes | yes |
+| antidote | yes | yes |
+| **library** | **no** | **no** |
+
+That is consistent rather than an oversight in isolation: `AGENTS.md` notes the
+library engine ships no build, and `advance-engine`'s whole job is to build-gate a
+candidate pin before writing it back. No build → no action → no job.
+
+But the consequence was not chosen: this pin cannot move on its own, so it will
+drift again by exactly this much, silently, and the next person will bump it by
+hand again. `modules-force-pin.yml` is not a fallback either — its `module` choice
+list is `journal`/`atlas`/`tell` only, so the one engine with no scheduled roller
+is also the one the manual escape hatch cannot name.
+
+## What was verified, and how
+
+- Pins read from the tree (`git ls-tree origin/main <path>`), not from the
+  checkout, per `AGENTS.md`. All six recorded pins matched their checkouts on a
+  fresh thaw — no `+` in `git submodule status`, so nothing had drifted locally.
+- The other five pins are already at their engine's `origin/main`. Only the
+  library engine was behind.
+- `git merge-base --is-ancestor 61613f6 origin/main` → true (fast-forward).
+- The 22 commits touch `ADOPTING.md`, `GRANTS.md`, `OPEN.md`, `README.md`,
+  `adoption/README.md`, `adoption/engines.yml`, `adoption/worked/artist-lockers.md`
+  — documentation and adoption config, no build output. There is nothing here a
+  build gate would have caught, which is why bumping it ungated is safe *this time*
+  and is not an argument that it is safe in general.
+- Staged by name (`git add -- .library-engine`), pin only. `git diff --cached
+  --stat` shows one file, one line.
+
+## Deliberately not done
+
+- **No roller job added here.** Adding a `library` job to `modules-upgrade.yml`
+  would reference `./.library-engine/.github/actions/advance-engine`, which does not
+  exist — the fix has to start in the library engine, a repo this one does not own.
+  That is a petition, not a commit in this PR, and it is not filed yet.
+- **Not added to `modules-force-pin.yml`'s choice list.** That would be a real
+  one-line improvement and needs no upstream change, but it is a different concern
+  from this bump and belongs in its own PR so you can take one and sit on the other.
+  Worth noting `all` there expands to `journal atlas tell`, so it misses antidote
+  too.
+
+## The decision for you
+
+Whether the library engine should grow a build-less `advance-engine` (one that
+rolls without gating, since there is no build to gate), or whether this pin is
+meant to be moved by hand as an editorial act. Both are defensible. Right now it is
+neither — it is unrolled by accident and looks identical to healthy.
