@@ -1766,6 +1766,28 @@ clicks. The node already walks every piece at build time to generate per-paragra
 `_data/` — a journal that indexed its own prose there would owe GitHub nothing, which is where the
 offline origin is going regardless.
 
+**The way out is the build we already run, and it inverts the submodule problem.** GitHub's code
+search cannot follow a submodule. The node's build *already does*, because it checks them out — so
+an index built here reaches exactly what `repo:` cannot, and the ejection stops being a
+findability problem the moment search stops being outsourced. The parts are in place: pieces carry
+`tags:` in front matter, and `bin/stats.sh` already walks every `index.md` to generate `_data/`.
+What is missing is small and worth specifying rather than improvising:
+
+- **A generator that emits a page per named query**, at a real URL, inert once written. The engine
+  already ships `_plugins/`, so this is in-idiom and vendorless.
+- **A site-owned list of the named queries.** The obvious searches are *enumerable, not
+  computable* — prebake the ones a reader actually wants (a tag, a named set of tags, a beat)
+  instead of the powerset of tags, which is where this kind of thing usually dies.
+- **A `search.json` beside them** for client-side narrowing, so the static pages are the floor and
+  not the ceiling, with no server either way.
+
+What comes out is the same shape as an intermediate: baked, inert, needing no build system to be
+read. And it ends this section rather than patching it — a journal that indexes its own prose has
+no reason to point its Search link at GitHub at all, which is where the offline origin is going
+anyway. The open part is whether a **tag is the piece's claim or the journal's arrangement** (see
+the same question about `rank`, below), and who owns the named-query list when a journal is mounted
+by someone else.
+
 - **Blocks:** a journal citing more than one author (the hand-kept query is unusable the moment
   several are mounted); any claim that the footer's "Search" means the writing rather than the
   repository; a citation journal's ejected pieces being findable at all from the journal that
