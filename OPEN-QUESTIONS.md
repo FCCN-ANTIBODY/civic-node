@@ -1745,6 +1745,20 @@ things it does not answer:
    of a list maintained one tier up. Nothing links that today, so anything findable across the
    ejection boundary is findable by happenstance.
 
+**The term is hostage to the same problem.** The query carries `hippocratic`, which reads like a
+stray filter and is a deliberate one: an empty code search is not a valid starting state, so the
+link hands the reader an *example* term and lands them in a working search they can retype rather
+than on an error. It works as an example only because it is the one word every repository in the
+constellation shares, by carrying the license reference — which makes the rule for `search_repos`
+stricter than the list looks: **a repository appears in this search when it carries a license
+reference, and not otherwise.** That is a strange thing for findability to rest on, and it is
+load-bearing today — `cite-autumn-ryan` contained the word zero times until it was given a README
+carrying the badge and the authors' clause (tiliv/cite-autumn-ryan#7), which is also the
+convention an ejected piece should take with it: `README.md` as the common landing, because every
+client renders it on a phone without a build, a directory listing, or an `index.html`. A better
+way to reference licenses is wanted and is not ready; when it arrives it decides, as a side
+effect, whether "search this journal" has a term at all.
+
 And the instrument itself is a question. `repo:` is the only handle GitHub gives a static site with
 no index of its own; the query syntax is web-UI-only (the legacy REST search engine rejects the
 grouped `(repo:a OR repo:b)` form outright), so nothing we can run verifies the link a reader
