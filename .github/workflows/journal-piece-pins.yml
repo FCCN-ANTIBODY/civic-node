@@ -1,0 +1,53 @@
+name: "Maintain · piece pins"
+
+# The tier below journal-engine-citations.yml. That workflow advances the author
+# journals THIS node mounts and commits the new pins here; this one advances the
+# piece pins each of those journals owns, and pushes them into the journal's own
+# repository — because a piece that has been ejected into a repository of its own
+# is pinned by the journal, not by the node. Without it, a piece updated in its own
+# repository never reaches a reader: the journal keeps pointing at the old commit,
+# and this node faithfully publishes the journal's stale claim.
+#
+# The Monday chain, innermost first, so each tier is already settled when the tier
+# above takes it:
+#
+#   05:00  piece pins      (this)                  -> journals take their pieces
+#   06:00  citation pins   (journal-engine-citations.yml) -> node takes the journals
+#   07:00  module pins     (modules-upgrade.yml)   -> node takes the engines
+#
+# CREDENTIAL, and why this can be a no-op. The default GITHUB_TOKEN cannot write to
+# a repository this node merely mounts, and a node should not be assumed to hold a
+# key to an author's repository just because it publishes them. CITATION_PIN_TOKEN
+# is therefore optional: unset, this job REPORTS which piece pins have gone stale
+# and changes nothing, which is worth reading on its own. Set it to a token with
+# `contents: write` on the mounted journals to have the bumps actually land.
+#
+# The arrangement that needs no cross-repo credential at all is for each citation
+# journal to run the same engine action itself, with its own GITHUB_TOKEN. If that
+# is where this ends up, delete this workflow rather than leaving it unarmed — the
+# node holding a key to an author's repo is a thing to give up deliberately, not to
+# forget about.
+
+on:
+  schedule:
+    - cron: '0 5 * * 1'  # Mondays 05:00 UTC — an hour ahead of the author advance
+  workflow_dispatch:
+
+permissions:
+  contents: read  # nothing is written to THIS repository; the commits land in the journals
+
+jobs:
+  pieces:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Advance piece pins inside each mounted journal
+        uses: ./.journal-engine/.github/actions/advance-pieces
+        with:
+          token: ${{ secrets.CITATION_PIN_TOKEN }}
