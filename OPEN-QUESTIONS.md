@@ -1798,3 +1798,84 @@ by someone else.
 **Where it came from.** 2026-09-21, from noticing the footer was an anachronism of the era when the
 journal and the node were one repository — and that fixing it by hand only holds while there is one
 author to name.
+
+---
+
+## CC. The citation journal: `cite-`, the intermediate, and why a submodule is a citation
+
+**Tier: node.** Not deferred for lack of a decision — most of this is decided and being done. It
+is written here because it is the shape several repositories are already growing into, and nothing
+states it in one place, so each new repo re-derives it or gets it subtly wrong.
+
+**`cite-` is a convention, not a mechanism.** A repository whose job is to *be a canonical
+reference* carries `cite-` in front of its name. It buys nothing technically. After two or three it
+reads as a promise, which is the entire value, and it costs one hyphen. It is not limited to prose:
+a license could live in a `cite-` repository, and **mounting it as a submodule would be the
+citation.**
+
+**A submodule stands canonical, and that is the proximate motive, not a side effect.** A pin names
+an exact commit. Updating it is visible; *not* updating it is visible too. Companies rewrite their
+terms whenever they like, without telling anyone, and write them into everything — a license you
+cannot diff is a license that changed while you were reading it. A license mounted as a submodule
+cannot move under a reader silently: either the pin moved, or it did not, and both are legible to
+anyone who looks. That is not a necessity of the medium. It is a choice those companies made, and
+this is the counter-example to it.
+
+**There are three journal shapes, and the second one is the general case.**
+
+| shape | folders are | example |
+| --- | --- | --- |
+| single author | pieces | `tiliv/cite-autumn-ryan` — the author *is* the repository |
+| field editor | contributors' own repositories | NCCV — composed exclusively of individual submodules, because the editor publishes other people's work |
+| area journal | **beats**, not author names | a Fort Collins citation journal: a beat may itself be a submodule, and individual stories are submoduled inside it |
+
+The third is where this is heading and it is already half-built: ten pieces have been ejected from
+`cite-autumn-ryan` into repositories of their own (`cite-autumn-ryan-<piece>`), which is the
+single-author journal discovering it was an area journal all along. One of the ejected pieces sits
+over on NCCV's side. The end state is plausibly **repositories that are the license, citable
+exactly the same way.**
+
+**The intermediate is the product of the seam.** An area journal's job includes baking its content
+into a form that needs no build system: inert, perhaps entry-level Liquid, meant to pass through
+*someone else's* build — not for the author, for the consumer of the template. It exists to
+separate the gears: areas publish on their own cadences, and one platform composes them on its own.
+The engine already does the narrow version (`build-intermediates`, which carries arrangement and
+reduced pieces and refuses anything containing template syntax); this is the same idea one tier out,
+where the composing platform is a different organization entirely. **The NCCV platform is the
+closest thing to ANTIBODY and is not wearing much yet** — its job is to submodule area journals and
+compose the intermediate at the point where each is hooked in. It *could* cite this journal; it will
+not, because taking someone's entire journal is not an editor's job. The form and function would be
+exactly that regardless, which is why the seam has to work before anyone needs it.
+
+**The permalink problem turns into a manifest, which is the interesting part.** A cited piece
+travels, so it has to wear front matter naming the canonical places it knows it is hosted. That
+reads as a liability and is the opposite: an explicit statement of **what the author knows** versus
+what other people are doing with the piece. A piece can be prepared to be canonical at specific URLs
+*no matter where it is mounted* — signed by the author the same way the words are, and checkable as
+unmodified. The result is a segmented trust surface instead of one site's unilateral claim about
+where a thing lives. (This is the live tension with the engine's `build-intermediates` rule that
+URL-space claims do **not** travel with a reduced piece. Both are right at their own tier; what is
+not written is where the boundary sits.)
+
+**A piece carries no byline on purpose, and the missing author landing is the same decision.**
+Pieces are not individually signed, because they all belong to the author whose journal it is.
+Removing the byline from the page makes a reader wonder who wrote it, and the journal's front
+answers plainly, with a contact email. It is the **first canary**: a reader complaining they cannot
+tell who wrote something has announced they were not paying attention, while the metadata was being
+offered the whole time — which makes it their problem, not a defect in the offer. So
+`/journal/<author>/` returning nothing is a known state, not a gap: nothing links there, every piece
+is linked from the front, and the styled `sitemap.xml` is the listable form. If it ever gets a
+landing, it is that introduction block — the layout that introduces the author and their contact —
+and not a directory.
+
+- **Blocks:** an area journal with beats (nobody has written what a beat *is* as a mount);
+  NCCV composing an intermediate it did not build; the boundary between a piece's own canonical-URL
+  manifest and a mounting site's URL-space claims; a `cite-` license repository being mounted as a
+  citation rather than copied as text.
+- **Not this:** a registry, a namespace authority, or a rule that a piece may live in only one
+  place. The whole point is that a piece is mounted in several and can prove which of them it
+  expected.
+
+**Where it came from.** 2026-09-21, dictated in the session that fixed the journal footer's search
+scope — the footer turned out to be the smallest visible symptom of a structure that was already
+three moves further along than anything written down.
