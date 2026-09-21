@@ -47,6 +47,29 @@ civic_abbr: FCCN
 civic_tag: For immediate replication
 repo_url: https://github.com/FCCN-ANTIBODY/civic-node
 repo_name: FCCN-ANTIBODY/civic-node
+
+# What the footer's Search link covers, OR'd into one GitHub code search (engine:
+# .journal-engine/_layouts/root.html). This node's own repo is here because the machinery and
+# the constitution prose live in it; `journal/autumn-ryan` is here because that is where the
+# JOURNAL lives — it was published from this repo once, and the link went on pointing at the
+# repo after the prose left for a citation journal of its own. A search that cannot reach the
+# writing is not a search of this journal.
+#
+# A name in this list is not enough on its own: the query's term is `hippocratic`, an example
+# term because an empty code search is not a valid starting state, and it matches only because
+# every repository in the constellation carries the license reference. cite-autumn-ryan
+# contained the word zero times until tiliv/cite-autumn-ryan#7 gave it a README carrying the
+# badge and the authors' clause. Add a repository here and put the license where its words are.
+#
+# Every mounted citation journal belongs in this list; today there is one. Two things this does
+# NOT solve, deferred in OPEN-QUESTIONS.md "BB": `repo:` does not follow submodules, and
+# cite-autumn-ryan is headed for exactly that — roughly ten of its pieces are to become
+# repositories of their own, at which point listing the journal here stops reaching them; and a
+# list kept by hand goes stale the first time an author is added without touching this file.
+search_repos:
+  - FCCN-ANTIBODY/civic-node
+  - tiliv/cite-autumn-ryan
+
 og_description: >-
   We assert that there are degrees of information quality, that we must not
   struggle to distinguish them and that they are these: 1) First-party claims

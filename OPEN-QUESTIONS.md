@@ -1709,3 +1709,70 @@ that "writable bottle" had been said many times without anyone asking what *vali
 the ideator's own Freudian shorthand — *a goblin in the data bottle* — and it stays because it names
 a thing nothing else in the vocabulary names: a small resident arrangement that came with the
 container.
+
+---
+
+## BB. "Search this journal" reaches the wrong repositories, and cannot reach the right ones
+
+**Tier: node.** Small, visible, and unsolved in a way that gets worse with every author.
+
+The journal footer's **Search** is a GitHub code search scoped with `repo:`. It named this node's
+own repository, because when it was written the journal *was* this repository — prose and machinery
+in one tree. The prose has since left for a citation journal of its own
+(`journal/autumn-ryan` → `tiliv/cite-autumn-ryan`), and the link went on pointing at what stayed
+behind: a reader searching "this journal" was searching the engine mount, the workflows and the
+constitution, and not one line of the writing.
+
+The scope is now a list a site keeps in `_config.yml` (`search_repos`), OR'd into one query, and it
+names the citation journal. That is the whole fix, and it is deliberately the cheap one. Three
+things it does not answer:
+
+1. **Who keeps the list?** It is typed by hand one tier above the thing it describes, so it is
+   correct until an author is added. The mounting site already declares its citation journals in
+   `.gitmodules` under `journal/`, which is the same list derived rather than repeated — at the
+   cost of the engine reading git plumbing to render a footer link, which is a bigger thing to
+   hand an engine than it first sounds.
+2. **`repo:` does not follow submodules.** A citation journal that ejects pieces into
+   repositories of their own is covered only down to its own top level. `cite-autumn-ryan` has
+   not done this yet — no branch of it carries a gitlink as of 2026-09-21 — but roughly ten of
+   its pieces are headed there, and they are the pieces most likely to be worth finding, so the
+   scope this section fixes is scoped to shrink. OR-ing the ejected repositories in as well is
+   unbounded: that list is per-piece, changes without the node hearing about it, and would put
+   dozens of `repo:` terms in a footer link.
+3. **So the citation journal has to own an intermediate concept.** The honest shape is that a
+   journal publishes, about itself, *where its pieces currently live* — one fetchable statement
+   the way `journal.yml` states what a site is — and a search of that journal consults it instead
+   of a list maintained one tier up. Nothing links that today, so anything findable across the
+   ejection boundary is findable by happenstance.
+
+**The term is hostage to the same problem.** The query carries `hippocratic`, which reads like a
+stray filter and is a deliberate one: an empty code search is not a valid starting state, so the
+link hands the reader an *example* term and lands them in a working search they can retype rather
+than on an error. It works as an example only because it is the one word every repository in the
+constellation shares, by carrying the license reference — which makes the rule for `search_repos`
+stricter than the list looks: **a repository appears in this search when it carries a license
+reference, and not otherwise.** That is a strange thing for findability to rest on, and it is
+load-bearing today — `cite-autumn-ryan` contained the word zero times until it was given a README
+carrying the badge and the authors' clause (tiliv/cite-autumn-ryan#7), which is also the
+convention an ejected piece should take with it: `README.md` as the common landing, because every
+client renders it on a phone without a build, a directory listing, or an `index.html`. A better
+way to reference licenses is wanted and is not ready; when it arrives it decides, as a side
+effect, whether "search this journal" has a term at all.
+
+And the instrument itself is a question. `repo:` is the only handle GitHub gives a static site with
+no index of its own; the query syntax is web-UI-only (the legacy REST search engine rejects the
+grouped `(repo:a OR repo:b)` form outright), so nothing we can run verifies the link a reader
+clicks. The node already walks every piece at build time to generate per-paragraph git history into
+`_data/` — a journal that indexed its own prose there would owe GitHub nothing, which is where the
+offline origin is going regardless.
+
+- **Blocks:** a journal citing more than one author (the hand-kept query is unusable the moment
+  several are mounted); any claim that the footer's "Search" means the writing rather than the
+  repository; a citation journal's ejected pieces being findable at all from the journal that
+  publishes them.
+- **Not this:** a third-party search vendor, or a crawler. Zero vendors is the standing constraint,
+  and the index we would need is a by-product of a build we already run.
+
+**Where it came from.** 2026-09-21, from noticing the footer was an anachronism of the era when the
+journal and the node were one repository — and that fixing it by hand only holds while there is one
+author to name.
