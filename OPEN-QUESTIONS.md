@@ -1776,3 +1776,80 @@ offline origin is going regardless.
 **Where it came from.** 2026-09-21, from noticing the footer was an anachronism of the era when the
 journal and the node were one repository — and that fixing it by hand only holds while there is one
 author to name.
+
+### The goblin is clubhouse rules, not a background check
+
+`Ruled 2026-09-21 by the operator.` Everything above makes the rules **machine**-legible — hooks,
+written on the artifact, obeyed rather than presented. None of it required them to be legible to a
+**person**, and that is now a requirement:
+
+> *"We want to see evidence. We don't want it to be invisible. We're not trying to hide what these
+> rules are. It's supposed to be right in your face… in backwards crappy letters, carved into a big
+> tree somewhere, what the rules of the clubhouse are. This is not like a background check."*
+
+So a bottle carrying a goblin carries a **CONSTITUTION** — plain shouty prose saying what the goblin
+will refuse — beside the hook implementations, which sit in front of the holder rather than behind
+anything. Installing them is an honest step somebody takes and can see. The constitution is the
+canonical statement, the hooks are its implementation, and both sides read the same copy.
+
+**THE ARGUMENT THAT SETTLES IT IS TRANSITIVITY**, and it is the operator's, the same day:
+
+> *"It's literally the only way for someone to give the repository to someone else too, and for the
+> same things to hold true."*
+
+Every other arrangement degrades on the second hop — a server the third party cannot reach, a token
+that cannot be handed on without leaking, a secret that must be shared to be useful, or a rule nobody
+wrote down that the second holder has to take on faith from the first. A constitution in the tree is
+the only form a party who was **never in the original conversation** can check unaided. The "no
+issuer to call" bullet above justified obeying-the-signs by *offline operation*; transitivity is the
+stronger reason, because it survives not only the network being gone but **the original parties**
+being gone.
+
+**The same act turns out to appear at two layers.** Publishing the rules removes the author from the
+*interpretation*. Signing the root commit and then removing one's own key removes the author from the
+*authority* — and that move is self-authenticating, because a divestment commit must be signed by the
+very key it removes, so only the holder can perform it; because later work must fast-forward, it
+becomes a mandatory ancestor of everything the holder ever does. It proves declaration, never
+destruction: a retained copy could still sign, and the record would convict rather than prevent,
+which is `composer/gesture.mjs`'s "imperfect intrusion leaves a smudge" arriving here. **A bottle you
+can hand on is a bottle that does not need you**, for either meaning of need.
+
+### What travels — and why the simple case is simpler than the table above
+
+`Scoped 2026-09-21 by the operator`, because the two-layer table has been read as the general shape
+when it is not:
+
+> *"The two hooks thing comes from when we're talking about a data pile in particular, which is the
+> age key stuff. Technically, if we're just giving around clones of the only branch that matters,
+> nobody is specifically under pressure to prove where it came from. So the data pile layer is about
+> making sure that it's rewritable in a vacuum."*
+
+| case | what the goblin is for | what it does not need |
+| --- | --- | --- |
+| a clone of the one branch that matters | stating what counts as a valid change, so both sides agree | provenance proof at every hop; attested execution |
+| a data pile inside a bottle | being rewritable **in a vacuum** — a courier delivers a diff with no issuer to call | (this is where the age keys and the outer hook layer live) |
+
+So the open questions about attested execution belong to the **data-pile** half. A control branch
+handed to a client needs the constitution and the signature rules and nothing else, and can ship long
+before §AA's harder half is answered.
+
+**AND HOOKS CANNOT TRAVEL, which is tested rather than assumed.** "The shape of the idea" above says a
+repository *"can be configured to behave — hooks, and whatever else the starting state chose to cook
+in."* Hooks specifically cannot arrive that way: `.git/hooks` is not in the object graph. Measured
+2026-09-21 — a tracked `.githooks/pre-commit` survived a bundle-and-clone, a `.git/hooks/pre-receive`
+did not, and a submodule's **contents** did not either, though `.gitmodules` did.
+
+The goblin is therefore **tree-resident or it does not travel at all** — which is what the
+constitution requirement wanted anyway:
+
+- Tree-resident rules are **inside the signed bytes**, covered by the very signature the derivation
+  proof depends on. A `.git/hooks` goblin would have sat outside the thing being attested.
+- Activation is `core.hooksPath` pointed at those tracked files, so **the file a holder reads is the
+  file that runs.** Copying into `.git/hooks` makes a second copy that can drift from the one the
+  constitution describes, which is the failure this whole document is arranged against.
+- Activation is a **declared step in the constitution**, never an assumption. station-node has
+  already paid for the alternative — `guidance/FORGOT.log`, 2026-09-21: *"the hook script was carried
+  and its activation was not."*
+- A wizard shipped as a submodule needs **its own bundle**; one bundle per repository. The upside is
+  that the submodule boundary is then the *update* boundary, so a wizard fast-forwards independently
+  of the project that links it.
