@@ -1,68 +1,36 @@
-Roll the library-engine pin forward, and say why nothing rolled it
+§AA: the goblin gets a constitution, and the two-layer model gets scoped to data piles
 
-## What this does
+Transcribes two rulings made 2026-09-21 and one tested mechanical fact. Nothing here designs — it
+records decisions and a measurement, for the operator to strike through.
 
-Moves `.library-engine` from `61613f6` to `8ede250`, its engine's current `main` —
-22 commits. The old pin was a strict ancestor, so this is a fast-forward; there is
-no divergence to resolve and nothing to reconcile.
+**The constitution requirement.** §AA made the rules machine-legible and never required them to be
+legible to a person. Now it does: a goblin ships with a CONSTITUTION in shouty prose beside the hook
+implementations, installing them is an honest visible step, and both sides read the same copy.
+*"This is not like a background check."*
 
-## The finding, which matters more than the bump
+**Transitivity is the argument, and it is stronger than the offline one already in the doc.** A
+constitution in the tree is the only form a party who was never in the original conversation can
+check unaided — every alternative degrades on the second hop. §AA justified obeying-the-signs by
+offline operation; this survives the original parties being gone, not just the network.
 
-**The library engine is the only mounted engine that nothing rolls forward.**
+Also records the divestment move (sign the root, then remove your own key — self-authenticating,
+becomes a mandatory ancestor, proves declaration and never destruction) as the same act one layer
+down: removing the author from authority as publishing removes them from interpretation.
 
-`modules-upgrade.yml` runs four jobs — journal, atlas, tell, antidote — and each one
-`uses:` that module's *own* `.github/actions/advance-engine`. I checked all five
-mounts:
+**Scoping the two-layer table**, which had been reading as the universal shape: it is the *data-pile*
+case, where the point is being rewritable in a vacuum. A clone of the one branch that matters is
+under no pressure to prove provenance at every hop, so a control branch can ship long before attested
+execution is answered.
 
-| engine | ships `advance-engine`? | rolled by a job? |
-|---|---|---|
-| journal | yes | yes |
-| atlas | yes | yes |
-| tell | yes | yes |
-| antidote | yes | yes |
-| **library** | **no** | **no** |
+**One correction, measured.** "The shape of the idea" says a repository can be configured to behave
+via hooks. `.git/hooks` is not in the object graph and survives neither a clone nor a bundle — tested
+2026-09-21, along with submodule contents (`.gitmodules` travels, the contents do not). So the goblin
+is tree-resident or it does not travel, `core.hooksPath` is the honest activation because the file you
+read is the file that runs, and that activation belongs in the constitution rather than in an
+assumption — station-node already paid for the alternative.
 
-That is consistent rather than an oversight in isolation: `AGENTS.md` notes the
-library engine ships no build, and `advance-engine`'s whole job is to build-gate a
-candidate pin before writing it back. No build → no action → no job.
+## Merge qualifications
 
-But the consequence was not chosen: this pin cannot move on its own, so it will
-drift again by exactly this much, silently, and the next person will bump it by
-hand again. `modules-force-pin.yml` is not a fallback either — its `module` choice
-list is `journal`/`atlas`/`tell` only, so the one engine with no scheduled roller
-is also the one the manual escape hatch cannot name.
-
-## What was verified, and how
-
-- Pins read from the tree (`git ls-tree origin/main <path>`), not from the
-  checkout, per `AGENTS.md`. All six recorded pins matched their checkouts on a
-  fresh thaw — no `+` in `git submodule status`, so nothing had drifted locally.
-- The other five pins are already at their engine's `origin/main`. Only the
-  library engine was behind.
-- `git merge-base --is-ancestor 61613f6 origin/main` → true (fast-forward).
-- The 22 commits touch `ADOPTING.md`, `GRANTS.md`, `OPEN.md`, `README.md`,
-  `adoption/README.md`, `adoption/engines.yml`, `adoption/worked/artist-lockers.md`
-  — documentation and adoption config, no build output. There is nothing here a
-  build gate would have caught, which is why bumping it ungated is safe *this time*
-  and is not an argument that it is safe in general.
-- Staged by name (`git add -- .library-engine`), pin only. `git diff --cached
-  --stat` shows one file, one line.
-
-## Deliberately not done
-
-- **No roller job added here.** Adding a `library` job to `modules-upgrade.yml`
-  would reference `./.library-engine/.github/actions/advance-engine`, which does not
-  exist — the fix has to start in the library engine, a repo this one does not own.
-  That is a petition, not a commit in this PR, and it is not filed yet.
-- **Not added to `modules-force-pin.yml`'s choice list.** That would be a real
-  one-line improvement and needs no upstream change, but it is a different concern
-  from this bump and belongs in its own PR so you can take one and sit on the other.
-  Worth noting `all` there expands to `journal atlas tell`, so it misses antidote
-  too.
-
-## The decision for you
-
-Whether the library engine should grow a build-less `advance-engine` (one that
-rolls without gating, since there is no build to gate), or whether this pin is
-meant to be moved by hand as an editorial act. Both are defensible. Right now it is
-neither — it is unrolled by accident and looks identical to healthy.
+- [x] additive: one new subsection pair at the end of §AA; nothing above it edited
+- [x] every claim either quoted from the operator or measured with the date
+- [ ] the operator's review — these are her rulings and her repo, transcribed
