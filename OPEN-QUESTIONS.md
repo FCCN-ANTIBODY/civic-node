@@ -1328,6 +1328,33 @@ different signer, a non-forward version, or failed file integrity — and `sw.js
   reasoning about "the cache policy" as a single switch will be wrong about two layers out of three.
   **Blocks:** any honest claim about what a holder is running.
 
+- **THE CANARY DOES NOT DROP WHEN THE SIGNATURE DISAPPEARS, ONLY WHEN IT CHANGES.** This is the
+  hole, and it is the cheapest move available to whoever takes the origin. `sw.js`'s
+  `checkFirmware()` opens with:
+
+      if (!signed) return { mode: "unpinned" };   // no manifest: pinning dormant
+
+  — and it returns that **whether or not a pin already exists**. So a holder who pinned signer X
+  meets a captor who simply does not serve `/firmware.json`: the fetch 404s, `signed` is null, and
+  the function reports *dormant*. No refusal, no `rejected` written, nothing surfaced. The pin is
+  only ever tested against a manifest that shows up, so silence passes.
+
+  A captor does not have to defeat the signature. They have to omit it.
+
+  **Never-pinned plus no manifest is genuinely dormant. Pinned plus no manifest is a REGRESSION**,
+  and it is the one a canary exists to catch — an origin that was signing and stopped has changed in
+  the way that matters, whether by capture, by rollback, or by someone quietly turning it off.
+  Distinguishing the two is a missing case rather than a judgement call; what to *do* about it is
+  the judgement call.
+  **Blocks:** the canary meaning anything against the threat it was built for.
+
+- **A canary only its own device can see is a weak one.** The verdict is derived locally, which is
+  right — it must not depend on the origin to report its own capture. But a drop that lands in
+  IndexedDB is witnessed by nobody. §S already reaches for the shape of an answer in the
+  poisoned-sign / call-for-aid protocol; the holder-side half is that a drop should be **visible on
+  the surface the holder already looks at**, and ideally carryable to a peer, so that two devices
+  disagreeing about an origin is itself evidence.
+
 - **Open: what a red light should do about a demo.** The shell is the thing worth freezing — it is
   pinned, versioned and load-bearing. A demo is a moving surface whose whole value is being current.
   Freezing everything on a refusal is simple and wrong; freezing only the shell is right and means a
