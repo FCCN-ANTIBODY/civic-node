@@ -1880,3 +1880,42 @@ constitution requirement wanted anyway:
 - A wizard shipped as a submodule needs **its own bundle**; one bundle per repository. The upside is
   that the submodule boundary is then the *update* boundary, so a wizard fast-forwards independently
   of the project that links it.
+
+## CC. The build function — two local deploys look alike, and two is not enough to say why
+
+**Tier: node.** Named here so that it is not written early.
+
+Publishing that needs private reach has moved off the cloud and onto the station, and two scripts
+now do it: FC-Public-Media `contact-sheets/deploy.sh`, and NCCV-OPINION/platform `bin/deploy`
+(2026-10-17). They have the same skeleton: resolve a credential the station already holds, fetch
+with the operator's own access, gate on tests, build, upload to Cloudflare Pages. In code they
+share exactly one thing, the Keychain entry `cloudflare-api-token` that FCPM's `cf-auth.sh` keeps.
+The temptation is to lift the skeleton into a function every site calls. Not yet, because the
+three things that would decide its shape are open:
+
+1. **What a build produces.** Today, a Pages upload. Also wanted: a composite site lodged in a
+   library as an item carrying its signatures, landed rather than sideloaded, so it does not matter
+   where it came from; and an artifact published anywhere at all, so long as we can fetch it. Those
+   may be one function with three sinks or three functions, and a Pages upload cannot tell you which.
+2. **Whose access it runs on.** Both scripts reach private repositories on the operator's personal
+   GitHub credential and one personal Cloudflare login, on two stations sharing that credential for
+   now. Account provisioning for an organisation is being worked out at FCPM first. What "the
+   credential the station holds" means waits on what that settles to.
+3. **What is a fault and what is a withdrawal.** NCCV answers this for itself: an area it cannot
+   fetch stops the deploy, and withdrawal is `enabled: false`. That answer belongs to NCCV. A site
+   that cites nothing has no such distinction, and one with contributor pieces may need it twice.
+
+- **Blocks:** nothing today. Each site that needs private reach writes its own deploy, and that is
+  the intended cost until the shape shows.
+- **Not this:** a cloud runner holding a token. That is what these replaced. NCCV's
+  `SUBMODULE_TOKENS` expired on 2026-09-21, thirty days after it was set, and the site deployed an
+  empty Fort Collins, green, every week for four weeks. A cloud publisher comes back deliberately
+  or not at all.
+- **Closes when:** a third site, or the first library landing, makes it plain which half of these
+  scripts is the function and which half is the site.
+
+**Where it came from.** 2026-10-17, moving NCCV's build off GitHub Actions and onto the station
+(NCCV-OPINION/platform#26, NCCV-OPINION/cite-fort-collins#23), and noticing that the result had
+the shape of FCPM's deploy without either knowing about the other. *"There might be some sort of
+build function that we're imagining here, but I don't think we know enough about it to write one
+yet."*
