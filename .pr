@@ -1,36 +1,12 @@
-§AA: the goblin gets a constitution, and the two-layer model gets scoped to data piles
+§CC: the build function, deferred by name
 
-Transcribes two rulings made 2026-09-21 and one tested mechanical fact. Nothing here designs — it
-records decisions and a measurement, for the operator to strike through.
-
-**The constitution requirement.** §AA made the rules machine-legible and never required them to be
-legible to a person. Now it does: a goblin ships with a CONSTITUTION in shouty prose beside the hook
-implementations, installing them is an honest visible step, and both sides read the same copy.
-*"This is not like a background check."*
-
-**Transitivity is the argument, and it is stronger than the offline one already in the doc.** A
-constitution in the tree is the only form a party who was never in the original conversation can
-check unaided — every alternative degrades on the second hop. §AA justified obeying-the-signs by
-offline operation; this survives the original parties being gone, not just the network.
-
-Also records the divestment move (sign the root, then remove your own key — self-authenticating,
-becomes a mandatory ancestor, proves declaration and never destruction) as the same act one layer
-down: removing the author from authority as publishing removes them from interpretation.
-
-**Scoping the two-layer table**, which had been reading as the universal shape: it is the *data-pile*
-case, where the point is being rewritable in a vacuum. A clone of the one branch that matters is
-under no pressure to prove provenance at every hop, so a control branch can ship long before attested
-execution is answered.
-
-**One correction, measured.** "The shape of the idea" says a repository can be configured to behave
-via hooks. `.git/hooks` is not in the object graph and survives neither a clone nor a bundle — tested
-2026-09-21, along with submodule contents (`.gitmodules` travels, the contents do not). So the goblin
-is tree-resident or it does not travel, `core.hooksPath` is the honest activation because the file you
-read is the file that runs, and that activation belongs in the constitution rather than in an
-assumption — station-node already paid for the alternative.
+Records a deferral rather than designing anything. Two local deploys (FCPM contact-sheets,
+NCCV bin/deploy) now share a skeleton; the three questions that would decide a shared function's
+shape (what a build produces, whose access it runs on, fault vs withdrawal) are open, so it is
+not written.
 
 ## Merge qualifications
 
-- [x] additive: one new subsection pair at the end of §AA; nothing above it edited
-- [x] every claim either quoted from the operator or measured with the date
-- [ ] the operator's review — these are her rulings and her repo, transcribed
+- [x] additive: one new section at the end of the file, nothing above it edited
+- [x] facts only: dates and PRs measured this session, the operator quoted, nothing designed
+- [ ] the operator's review
